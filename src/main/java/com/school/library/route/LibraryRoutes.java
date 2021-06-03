@@ -12,6 +12,7 @@ import com.school.library.borrowsetting.BorrowSettingController;
 import com.school.library.catalog.CatalogController;
 import com.school.library.depositrecharge.DepositRechargeController;
 import com.school.library.heartbeat.HeartBeatController;
+import com.school.library.schupdate.UpgradeController;
 import com.school.library.statistics.StatisticsController;
 import com.school.library.userinfo.UserInfoController;
 
@@ -46,6 +47,7 @@ public class LibraryRoutes extends JFniceBaseRoutes {
         add("/api/depositRecharge", DepositRechargeController.class);
         add("/api/book", BookController.class);
         add("/api/heartBeat", HeartBeatController.class);
+        add("/api/Upgrade", UpgradeController.class); //年级升级
     }
 
 }
