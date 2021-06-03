@@ -1,0 +1,132 @@
+#[[#render(BASE_VIEW_PATH + "/Public/head.html")]]#
+</head>
+<body>
+	<div id="app"></div>
+	<script>
+		var parentIds = #[[#]]#(JsonKit.toJson(parentIds));
+		var selectedIds = [];
+		for ( var i = 0; i < parentIds.length; i++ ) {
+			selectedIds.push(parentIds[i].toString());
+		}
+		selectedIds.push('#[[#]]#(#(firstCharLowerModelName)Id)');
+		
+		var treeData = [
+			#[[{ value: '#(topId)', label: '作为一级XX' },
+		    #define tree(childList, level)
+		    	#for( child : childList )
+		        	#if( child.childList == null || child.childList.size() == 0 )
+		            	{ value: '#(child.id)', label: '#(child.name)' },
+		       		#else
+		           		{ value: '#(child.id)', label: '#(child.name)', children: [#@tree(child.childList, level + 1)] },
+		         	#end
+		    	#end
+			#end]]#
+			#[[#]]#@tree(#(firstCharLowerModelName)List, 1)
+		];
+	</script>
+	<script type="text/babel">
+		const { Cascader, Form, Input, Radio, Row, Col, Icon, Button, LocaleProvider, locales, message } = antd;
+		class AjaxForm extends React.Component {
+			state = {
+				loading: false
+			};
+			
+			toggleLoading = () => {
+				this.setState({loading: !this.state.loading});
+			}
+
+			onSubmit = (e) => {
+				e.preventDefault();
+				this.props.form.validateFieldsAndScroll((err, values) => {
+					if ( err ) {
+						return;
+					}
+					
+					this.toggleLoading();
+					$.ajax({
+						type: 'POST',
+						dataType: 'json',
+						url: '#[[#(ACTION_URL)]]#',
+						data: { 
+							...values,
+							pid: values.pid[values.pid.length - 1]
+						},
+						success: (data) => {
+							this.toggleLoading();
+							if ( data.state == 'ok' ) {
+								message.success(data.msg, 0.5, () => {
+									try { 
+										JnGetParentApp().JnTable.reload();
+									} catch (e) {}
+									JnCloseModal();
+								});
+							} else {
+								message.error(data.msg);
+							}
+						}
+					});
+				});
+			}
+			
+			render() {
+				const formItemLayout = {
+      				labelCol: { span: 4},
+      				wrapperCol: { span: 20 },
+    			};
+				const tailformItemLayout = {
+      				wrapperCol: { offset: 4, span: 20 },
+    			};
+			
+				const { getFieldDecorator } = this.props.form;
+				return (
+					<Form className="jn-ajax-form" onSubmit={this.onSubmit}>
+          				<Form.Item { ...formItemLayout } label="上级">
+							{getFieldDecorator('pid', {
+								initialValue: selectedIds,
+								rules: [{ required: true, message: '选择上级！' }]
+							})(
+								<Cascader options={treeData} expandTrigger="hover" changeOnSelect autoFocus />
+							)}
+						</Form.Item>
+						<Form.Item { ...formItemLayout } label="名称">
+            				{getFieldDecorator('name', {
+								rules: [{ required: true, message: '请输入名称！' }]
+							})(
+								<Input autocomplete="off" />
+							)}
+         				</Form.Item>
+						<Form.Item { ...formItemLayout } label="状态">
+							{getFieldDecorator('status', { initialValue: 1 })(
+            					<Radio.Group>
+       								<Radio value={1}>正常</Radio>
+        							<Radio value={0}>禁用</Radio>
+      							</Radio.Group>
+							)}
+         				</Form.Item>
+						<Form.Item className="btn-box" { ...tailformItemLayout }>
+          					<Button type="primary" disabled={this.state.loading} htmlType="submit">添加</Button>
+							<Button onClick={() => {JnCloseModal()}}>取消</Button>
+						</Form.Item>
+       				</Form>
+				);
+			}
+		}
+		const WrappedAjaxForm = Form.create()(AjaxForm);
+
+		class App extends React.Component {
+			render() {
+    			return (
+					<div className="jn-content">
+						<Row>
+							<Col span={16} offset={4}>
+								<WrappedAjaxForm wrappedComponentRef={form => this.ajaxForm = form} />
+							</Col>
+						</Row>
+					</div>
+    			);
+  			}
+		}
+		ReactDOM.render(<LocaleProvider locale={locales.zh_CN}><App /></LocaleProvider>, document.getElementById('app'));
+	</script>
+</body>
+</html>

@@ -1,0 +1,3 @@
+#[[#]]#namespace("#(modelName)Logic")
+
+#[[#]]#end

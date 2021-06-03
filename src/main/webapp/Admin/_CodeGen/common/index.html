@@ -1,0 +1,111 @@
+#[[#render(BASE_VIEW_PATH + "/Public/head.html")]]#
+	<script src="#[[#(STATIC_PATH)]]#/antd/components/JnTableTree.js"></script>
+</head>
+<body>
+	<div id="app"></div>
+	<script type="text/babel">
+		const { Input, Popconfirm, Row, Col, Breadcrumb, Icon, Button, Affix, LocaleProvider, locales, message } = antd;
+		const getRenders = (app) => {
+			return {
+				'seq': (text, record, index) => {
+					return app.JnTable.state.pagination.pageSize * (app.JnTable.state.pagination.current - 1) + index + 1;
+				},
+				'status': (text, record, index) => {
+					return <Icon type={record.status ? "check-circle-o" : "close-circle-o"} className={`jn-status ${record.status ? '' : 'disabled'}`} />
+				},
+				'name': (text, record, index) => {
+					return record.icon ? <span><Icon type={record.icon} /> {record.name}</span> : record.name
+				},
+				'sort': {
+					show: true,
+					function: (text, record, index) => {
+						return <Input className="input-sort" tabIndex={1000 + index} autocomplete="off" size="small" maxLength={6} defaultValue={record.sort} onChange={(e) => record.sort = e.target.value} />
+					}
+				},
+				'action': {
+					show: true,
+					function: (text, record, index) => {
+						return (
+							<div className="table-action">
+								<JnAuthorized permissions={['#[[#]]#(PROJECT_NAME):#[[#]]#(CONTROLLER_NAME):add']}>
+									<a href="javascript:;" onClick={() => JnOpenModal(app, '添加子XX', '#[[#(CONTROLLER_URL)]]#/add?id=' + record.id, 680, 260)}>添加子XX</a>
+								: null }
+								<JnAuthorized permissions={['#[[#]]#(PROJECT_NAME):#[[#]]#(CONTROLLER_NAME):edit']}>
+									<a href="javascript:;" onClick={() => JnOpenModal(app, '编辑XX', '#[[#(CONTROLLER_URL)]]#/edit?id=' + record.id, 680, 260)}>编辑</a>
+								: null }
+								<JnAuthorized permissions={['#[[#]]#(PROJECT_NAME):#[[#]]#(CONTROLLER_NAME):delete']}>
+									<Popconfirm title="确定删除吗?" onConfirm={() => JnAjaxPost(app.JnTable, '#[[#(CONTROLLER_URL)]]#/delete?id=' + record.id)}>
+										<a href="javascript:;">删除</a>
+									</Popconfirm>
+								: null }
+							</div>
+						);
+					}
+				}
+			}
+		};
+		
+		class App extends React.Component {
+			state = {
+				pinned: false
+			};
+			
+			togglePin = () => {
+				this.setState({pinned: !this.state.pinned}, () => {
+					if ( !this.state.pinned ) {
+						$(window).scrollTop(0);
+					}
+				});
+			}
+			
+			render() {
+    			return (
+					<div>
+          				<Row className={`jn-header ${this.state.pinned ? 'hide' : ''}`}>
+      						<Col span={12}>
+								<Breadcrumb>
+    								<Breadcrumb.Item>
+      									<Icon type="desktop"/>
+										<span>#(moduleName)</span>
+    								</Breadcrumb.Item>
+								</Breadcrumb>
+							</Col>
+      						<Col span={12} className="action-box">
+								<Button icon="sync" onClick={() => this.JnTable.reload()}></Button>
+							</Col>
+    					</Row>
+						<div className="jn-content">
+							<Affix>
+								<Row className="jn-action-bar">
+      								<Col className="jn-action-bar-left" span={18}>
+										<JnAuthorized permissions="#[[#]]#(PROJECT_NAME):#[[#]]#(CONTROLLER_NAME):sort">
+											<Button type="primary" onClick={() => JnSort(this.JnTable, '#[[#(CONTROLLER_URL)]]#/sort')} ghost>排序</Button>
+        								: null }
+										<JnAuthorized permissions="#[[#]]#(PROJECT_NAME):#[[#]]#(CONTROLLER_NAME):excel">
+											<Button type="primary" onClick={() => JnExportExcel(this.JnTable, '#[[#(CONTROLLER_URL)]]#/excel')} ghost>导出Excel</Button>
+										: null }
+									</Col>
+      								<Col className="jn-action-bar-right" span={6}>
+										<Button className={this.state.pinned ? 'active' : null} icon="pushpin-o" onClick={this.togglePin}></Button>
+										<Button icon="setting" onClick={() => this.JnTable.toggleModal()}></Button>
+										<JnAuthorized permissions="#[[#]]#(PROJECT_NAME):#[[#]]#(CONTROLLER_NAME):add">
+											<Button icon="plus" type="primary" onClick={() => JnOpenModal(this, '添加XX', '#[[#(CONTROLLER_URL)]]#/add', 680, 260)}>添加</Button>
+										: null }
+									</Col>
+    							</Row>
+							</Affix>
+      						<JnTableTree ref={table => this.JnTable = table} 
+								access="#[[#]]#(PROJECT_NAME):#[[#]]#(CONTROLLER_NAME):list"
+								renders={getRenders(this)}
+								childrenColumnName="childList"
+								showCheckBox={false}
+								affixedTop={52} />
+						</div>
+					</div>
+    			);
+  			}
+		}
+		ReactDOM.render(<LocaleProvider locale={locales.zh_CN}><App /></LocaleProvider>, document.getElementById('app'));
+	</script>
+</body>
+</html>

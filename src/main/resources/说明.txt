@@ -1,0 +1,21 @@
+config.properties:
+    修改数据库地址、用户名和密码
+    修改平台框架接口地址
+    修改人事系统接口地址
+
+ehcache.xml:
+    java.io.tmpdir/XXX/ehcache
+    	修改XXX为项目名
+
+j2cache.properties
+	修改Redis的主机地址和密码
+	jgroups.channel.name = XXX
+        redis.channel = XXX
+    		修改XXX为项目名
+
+j2cache-share.properties
+	修改Redis的主机地址和密码
+
+log4j.properties:
+    log4j.appender.file.File=${catalina.home}/logs/XXX.log
+	 	修改XXX为项目名
