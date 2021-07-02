@@ -10,7 +10,7 @@ Table: asset
  type        | varchar(100)   | NO   |     | ('')    |         
  create_time | datetime(23,3) | YES  |     |         |         
  save_time   | datetime(23,3) | YES  |     |         |         
- saved       | bit(1)         | NO   |     | ((0))   |         
+ saved       | bit(1)         | NO   |     |         |         
 -------------+----------------+------+-----+---------+---------
 
 Table: book
@@ -172,7 +172,70 @@ Table: book_storage_item
  catalog_no       | varchar(16)         | YES  |     |         |         
 ------------------+---------------------+------+-----+---------+---------
 
+Table: book_storage_item_bar_code
+----------------------+---------------------+------+-----+---------+---------
+ Field                | Type                | Null | Key | Default | Remarks 
+----------------------+---------------------+------+-----+---------+---------
+ id                   | bigint identity(19) | NO   | PRI |         |         
+ del                  | bit(1)              | YES  |     |         |         
+ create_time          | datetime(23,3)      | YES  |     |         |         
+ create_user_code     | varchar(50)         | YES  |     |         |         
+ create_user_name     | varchar(64)         | YES  |     |         |         
+ update_time          | datetime(23,3)      | YES  |     |         |         
+ update_user_code     | varchar(50)         | YES  |     |         |         
+ school_code          | varchar(50)         | YES  |     |         |         
+ book_storage_id      | bigint(19)          | YES  |     |         |         
+ book_storage_item_id | bigint(19)          | YES  |     |         |         
+ book_id              | bigint(19)          | YES  |     |         |         
+ bar_code             | varchar(64)         | YES  |     |         |         
+ check_no             | varchar(32)         | YES  |     |         |         
+ status               | int(10)             | YES  |     |         |         
+ price                | int(10)             | YES  |     |         |         
+----------------------+---------------------+------+-----+---------+---------
+
 Table: borrow_book
+------------------+---------------------+------+-----+---------+---------
+ Field            | Type                | Null | Key | Default | Remarks 
+------------------+---------------------+------+-----+---------+---------
+ id               | bigint identity(19) | NO   | PRI |         |         
+ del              | bit(1)              | YES  |     |         |         
+ create_time      | datetime(23,3)      | YES  |     |         |         
+ create_user_code | varchar(50)         | YES  |     |         |         
+ create_user_name | varchar(64)         | YES  |     |         |         
+ update_time      | datetime(23,3)      | YES  |     |         |         
+ update_user_code | varchar(50)         | YES  |     |         |         
+ school_code      | varchar(50)         | YES  |     |         |         
+ grd_code         | varchar(50)         | YES  |     |         |         
+ grd_name         | varchar(50)         | YES  |     |         |         
+ cls_code         | varchar(50)         | YES  |     |         |         
+ cls_name         | varchar(50)         | YES  |     |         |         
+ stu_code         | varchar(50)         | YES  |     |         |         
+ sno              | varchar(50)         | YES  |     |         |         
+ dpt_name         | varchar(50)         | YES  |     |         |         
+ borrower         | varchar(50)         | YES  |     |         |         
+ catalog_name     | varchar(64)         | YES  |     |         |         
+ check_no         | varchar(32)         | YES  |     |         |         
+ price            | int(10)             | YES  |     |         |         
+ book_name        | varchar(128)        | YES  |     |         |         
+ author           | varchar(64)         | YES  |     |         |         
+ publisher        | varchar(128)        | YES  |     |         |         
+ publish_date     | date(10)            | YES  |     |         |         
+ bar_code         | varchar(64)         | YES  |     |         |         
+ borrow_time      | datetime(23,3)      | YES  |     |         |         
+ return_time      | datetime(23,3)      | YES  |     |         |         
+ book_status      | int(10)             | YES  |     |         |         
+ return_status    | int(10)             | YES  |     |         |         
+ over_days        | int(10)             | YES  |     |         |         
+ deductions       | int(10)             | YES  |     |         |         
+ explain          | varchar(512)        | YES  |     |         |         
+ book_img_url     | varchar(256)        | YES  |     |         |         
+ user_code        | varchar(50)         | YES  |     |         |         
+ dpt_code         | varchar(50)         | YES  |     |         |         
+ book_id          | bigint(19)          | YES  |     |         |         
+ catalog_no       | varchar(16)         | YES  |     |         |         
+------------------+---------------------+------+-----+---------+---------
+
+Table: borrow_book_his
 ------------------+---------------------+------+-----+---------+---------
  Field            | Type                | Null | Key | Default | Remarks 
 ------------------+---------------------+------+-----+---------+---------
@@ -289,7 +352,60 @@ Table: deposit_recharge
  user_code        | varchar(50)         | YES  |     |         |         
 ------------------+---------------------+------+-----+---------+---------
 
+Table: deposit_recharge_his
+------------------+---------------------+------+-----+---------+---------
+ Field            | Type                | Null | Key | Default | Remarks 
+------------------+---------------------+------+-----+---------+---------
+ id               | bigint identity(19) | NO   | PRI |         |         
+ del              | bit(1)              | YES  |     |         |         
+ create_time      | datetime(23,3)      | YES  |     |         |         
+ create_user_code | varchar(50)         | YES  |     |         |         
+ create_user_name | varchar(64)         | YES  |     |         |         
+ update_time      | datetime(23,3)      | YES  |     |         |         
+ update_user_code | varchar(50)         | YES  |     |         |         
+ school_code      | varchar(50)         | YES  |     |         |         
+ grd_code         | varchar(50)         | YES  |     |         |         
+ grd_name         | varchar(50)         | YES  |     |         |         
+ cls_code         | varchar(50)         | YES  |     |         |         
+ cls_name         | varchar(50)         | YES  |     |         |         
+ stu_code         | varchar(50)         | YES  |     |         |         
+ sno              | varchar(50)         | YES  |     |         |         
+ dpt_name         | varchar(50)         | YES  |     |         |         
+ user_name        | varchar(50)         | YES  |     |         |         
+ card_no          | varchar(32)         | YES  |     |         |         
+ recharge_amount  | int(10)             | YES  |     |         |         
+ recharge_time    | datetime(23,3)      | YES  |     |         |         
+ user_code        | varchar(50)         | YES  |     |         |         
+------------------+---------------------+------+-----+---------+---------
+
 Table: deposit_return
+------------------+---------------------+------+-----+---------+---------
+ Field            | Type                | Null | Key | Default | Remarks 
+------------------+---------------------+------+-----+---------+---------
+ id               | bigint identity(19) | NO   | PRI |         |         
+ del              | bit(1)              | YES  |     |         |         
+ create_time      | datetime(23,3)      | YES  |     |         |         
+ create_user_code | varchar(50)         | YES  |     |         |         
+ create_user_name | varchar(64)         | YES  |     |         |         
+ update_time      | datetime(23,3)      | YES  |     |         |         
+ update_user_code | varchar(50)         | YES  |     |         |         
+ school_code      | varchar(50)         | YES  |     |         |         
+ grd_code         | varchar(50)         | YES  |     |         |         
+ grd_name         | varchar(50)         | YES  |     |         |         
+ cls_code         | varchar(50)         | YES  |     |         |         
+ cls_name         | varchar(50)         | YES  |     |         |         
+ stu_code         | varchar(50)         | YES  |     |         |         
+ sno              | varchar(50)         | YES  |     |         |         
+ dpt_name         | varchar(50)         | YES  |     |         |         
+ user_name        | varchar(50)         | YES  |     |         |         
+ card_no          | varchar(32)         | YES  |     |         |         
+ return_amount    | int(10)             | YES  |     |         |         
+ return_time      | datetime(23,3)      | YES  |     |         |         
+ user_code        | varchar(50)         | YES  |     |         |         
+ dpt_code         | varchar(50)         | YES  |     |         |         
+------------------+---------------------+------+-----+---------+---------
+
+Table: deposit_return_his
 ------------------+---------------------+------+-----+---------+---------
  Field            | Type                | Null | Key | Default | Remarks 
 ------------------+---------------------+------+-----+---------+---------
@@ -375,5 +491,39 @@ Table: user_info
  img_url          | varchar(128)        | YES  |     |         |         
  version          | bigint(19)          | YES  |     |         |         
  user_type        | varchar(16)         | YES  |     |         |         
+ can_borrow       | smallint(5)         | YES  |     | ((1))   |         
+------------------+---------------------+------+-----+---------+---------
+
+Table: user_info_his
+------------------+---------------------+------+-----+---------+---------
+ Field            | Type                | Null | Key | Default | Remarks 
+------------------+---------------------+------+-----+---------+---------
+ id               | bigint identity(19) | NO   | PRI |         |         
+ del              | bit(1)              | YES  |     |         |         
+ create_time      | datetime(23,3)      | YES  |     |         |         
+ create_user_code | varchar(50)         | YES  |     |         |         
+ create_user_name | varchar(64)         | YES  |     |         |         
+ update_time      | datetime(23,3)      | YES  |     |         |         
+ update_user_code | varchar(50)         | YES  |     |         |         
+ school_code      | varchar(50)         | YES  |     |         |         
+ grd_code         | varchar(50)         | YES  |     |         |         
+ grd_name         | varchar(50)         | YES  |     |         |         
+ cls_code         | varchar(50)         | YES  |     |         |         
+ cls_name         | varchar(50)         | YES  |     |         |         
+ stu_code         | varchar(50)         | YES  |     |         |         
+ sno              | varchar(50)         | YES  |     |         |         
+ stu_name         | varchar(50)         | YES  |     |         |         
+ dpt_code         | varchar(50)         | YES  |     |         |         
+ dpt_name         | varchar(50)         | YES  |     |         |         
+ user_code        | varchar(50)         | YES  |     |         |         
+ user_name        | varchar(50)         | YES  |     |         |         
+ sex              | smallint(5)         | YES  |     |         |         
+ card_no          | varchar(32)         | YES  |     |         |         
+ mobile           | varchar(11)         | YES  |     |         |         
+ deposit          | int(10)             | YES  |     |         |         
+ img_url          | varchar(128)        | YES  |     |         |         
+ version          | bigint(19)          | YES  |     |         |         
+ user_type        | varchar(16)         | YES  |     |         |         
+ can_borrow       | smallint(5)         | YES  |     | ((1))   |         
 ------------------+---------------------+------+-----+---------+---------
 

@@ -217,4 +217,11 @@ public abstract class BaseUserInfo<M extends BaseUserInfo<M>> extends Model<M> i
 		return getStr("user_type");
 	}
 
+	public void setCanBorrow(java.lang.Short canBorrow) {
+		set("can_borrow", canBorrow);
+	}
+
+	public java.lang.Short getCanBorrow() {
+		return getShort("can_borrow");
+	}
 }

@@ -95,4 +95,14 @@
             #end
     #end
 
+    #sql("stopOrRecoverBorrow")
+        update user_info set can_borrow = #para(can_borrow)
+            where del = 0 and school_code = #para(school_code)
+            #if(user_type == 'stu')
+            and stu_code = #(user_code)
+            #else
+            and user_code = #(user_code)
+            #end
+    #end
+
 #end

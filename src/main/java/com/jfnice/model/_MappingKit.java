@@ -19,20 +19,24 @@ public class _MappingKit {
 		arp.addMapping("asset", "id", Asset.class);
 		arp.addMapping("book", "id", Book.class);
 		arp.addMapping("book_bar_code", "id", BookBarCode.class);
-		arp.addMapping("book_storage_item_bar_code", "id", BookStorageItemBarCode.class);
 		arp.addMapping("book_damaged", "id", BookDamaged.class);
 		arp.addMapping("book_inventory", "id", BookInventory.class);
 		arp.addMapping("book_inventory_item", "id", BookInventoryItem.class);
 		arp.addMapping("book_storage", "id", BookStorage.class);
 		arp.addMapping("book_storage_item", "id", BookStorageItem.class);
+		arp.addMapping("book_storage_item_bar_code", "id", BookStorageItemBarCode.class);
 		arp.addMapping("borrow_book", "id", BorrowBook.class);
+		arp.addMapping("borrow_book_his", "id", BorrowBookHis.class);
 		arp.addMapping("borrow_setting", "id", BorrowSetting.class);
 		arp.addMapping("catalog", "id", Catalog.class);
 		arp.addMapping("deposit_recharge", "id", DepositRecharge.class);
+		arp.addMapping("deposit_recharge_his", "id", DepositRechargeHis.class);
 		arp.addMapping("deposit_return", "id", DepositReturn.class);
+		arp.addMapping("deposit_return_his", "id", DepositReturnHis.class);
 		arp.addMapping("dict", "id", Dict.class);
 		arp.addMapping("search", "id", Search.class);
 		arp.addMapping("user_info", "id", UserInfo.class);
+		arp.addMapping("user_info_his", "id", UserInfoHis.class);
 	}
 }
 

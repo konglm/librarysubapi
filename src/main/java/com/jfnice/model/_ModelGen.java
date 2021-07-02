@@ -33,7 +33,7 @@ public class _ModelGen {
         // base model 所使用的包名
         String baseModelPackageName = "com.jfnice.model.base";
         // base model 文件保存路径
-        String baseModelOutputDir = PathKit.getWebRootPath() + "/src/main/java/com/jfnice/base/model/base";
+        String baseModelOutputDir = PathKit.getWebRootPath() + "/src/main/java/com/jfnice/model/base";
 
         // model 所使用的包名 (MappingKit 默认使用的包名)
         String modelPackageName = "com.jfnice.model";

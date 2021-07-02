@@ -472,4 +472,11 @@ public class UserInfoLogic {
 		return this.service.existsByType(schoolCode, userType);
 	}
 
+	public boolean stopOrRecoverBorrow(String schoolCode, String userType, String userCode, int canBorrow){
+		Kv kv = Kv.by("user_type", userType).set("user_code", userCode).set("can_borrow", canBorrow).set("school_code", schoolCode);
+		SqlPara barSql = Db.getSqlPara("UserInfoLogic.stopOrRecoverBorrow", kv);
+		Db.update(barSql);
+		return true;
+	}
+
 }

@@ -9,6 +9,7 @@ import com.jfinal.kit.JsonKit;
 import com.jfinal.plugin.activerecord.Page;
 import com.jfinal.plugin.activerecord.tx.Tx;
 import com.jfnice.enums.OpCodeEnum;
+import com.jfnice.ext.CurrentUser;
 import com.school.api.gx.PtApi;
 import com.jfnice.annotation.JsyPermissions;
 import com.jfnice.core.JFniceBaseController;
@@ -97,6 +98,18 @@ public class UserInfoController extends JFniceBaseController {
 	public void returnDeposit() {
 		Long id = getParaToLong("id");
 		ok(this.logic.returnDeposit(id));
+	}
+
+	/**
+	 * 暂停/恢复借阅
+	 */
+	@JsyPermissions(OpCodeEnum.INDEX)
+	@Before(TxPost.class)
+	public void stopOrRecoverBorrow() {
+		String userType = getPara("user_type");
+		String userCode = getPara("user_code");
+		int canBorrow = getInt("canBorrow");
+		ok(this.logic.stopOrRecoverBorrow(CurrentUser.getSchoolCode(), userType, userCode, canBorrow));
 	}
 
 
