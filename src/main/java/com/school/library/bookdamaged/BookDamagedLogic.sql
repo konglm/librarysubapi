@@ -38,12 +38,10 @@
             LEFT JOIN  user_info ui  ON  bb.stu_code = ui.stu_code  OR bb.user_code = ui.user_code
         ) AS a ON a.borrow_id = bd.borrow_id
         where bd.del = 0
-        #if(judge)
         #if(judge == '0')
         and bd.judge = 0
         #else
         and bd.judge in ( 1,2 )
-        #end
         #end
         #if(book_status)
         and bd.book_status = #para(book_status)
