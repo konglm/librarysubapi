@@ -554,4 +554,19 @@ public class BookStorageLogic {
 		return json;
 	}
 
+	/**
+	 * 通过入库事件获取入库明细
+	 * @param name
+	 * @param startTime
+	 * @param endTime
+	 * @param keyword
+	 * @param pageNumber
+	 * @param pageSize
+	 * @return
+	 */
+	public Page<Record> getItemByName(String name, String beginTime, String endTime, String keyword, int pageNumber, int pageSize){
+		Page<Record> items = this.itemBarCodeService.getItemByName(CurrentUser.getSchoolCode(), name, beginTime, endTime, keyword, pageNumber, pageSize);
+		return items;
+	}
+
 }

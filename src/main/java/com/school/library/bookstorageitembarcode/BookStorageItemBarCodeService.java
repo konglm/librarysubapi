@@ -167,4 +167,26 @@ public class BookStorageItemBarCodeService extends JFniceBaseService<BookStorage
 		return BookStorageItemBarCode.dao.find(sqlPara);
 	}
 
+	/**
+	 * 通过入库事件获取入库明细
+	 * @param schoolCode
+	 * @param name
+	 * @param startTime
+	 * @param endTime
+	 * @param keyword
+	 * @param pageNumber
+	 * @param pageSize
+	 * @return
+	 */
+	public Page<Record> getItemByName(String schoolCode, String name, String beginTime, String endTime, String keyword, int pageNumber, int pageSize){
+		CondPara condPara = new CondPara();
+		condPara.put("school_code", schoolCode);
+		condPara.put("name", name);
+		condPara.put("begin_time", beginTime);
+		condPara.put("end_time", endTime);
+		condPara.put("keyword", keyword);
+		SqlPara sqlPara = Db.getSqlPara("BookStorageItemBarCodeLogic.getItemByName", condPara);
+		return Db.paginate(pageNumber, pageSize, sqlPara);
+	}
+
 }

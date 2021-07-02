@@ -200,4 +200,18 @@ public class BookStorageController extends JFniceBaseController {
 		ok(this.logic.getCountByStorageId(bookStorageId));
 	}
 
+	/**
+	 * 通过入库事件获取入库明细
+	 */
+	public void getItemByName(){
+		String name = getPara("name");
+		String beginTime = getPara("begin_time");
+		String endTime = getPara("end_time");
+		String keyword = getPara("keyword");
+		int pageNumber = getParaToInt("page_number", SysConstants.DEFAULT_PAGE_NUMBER);
+		int pageSize = getParaToInt("page_size", SysConstants.DEFAULT_PAGE_SIZE);
+		ok(this.logic.getItemByName(name, beginTime, endTime, keyword, pageNumber, pageSize));
+
+	}
+
 }

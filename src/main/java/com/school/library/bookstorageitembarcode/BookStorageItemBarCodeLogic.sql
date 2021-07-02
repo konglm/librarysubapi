@@ -69,5 +69,25 @@
 	        order by bar_code desc
 	#end
 
+    #sql("getItemByName")
+	    select a.book_storage_id, a.book_storage_item_id, a.bar_code, b.book_name, b.author, b.publisher, b.price, c.name
+	    , c.create_time, c.create_user_code, c.create_user_name
+	    from book_storage_item_bar_code a, book_storage_item b, book_storage c
+        where a.del = 0 and b.del = 0 and c.del = 0 and a.book_storage_item_id = b.id and a.book_storage_id = c.id
+        and a.school_code = #para(school_code)
+        #if(name)
+          and c.name like ('%' + #para(name) + '%')
+        #end
+        #if(begin_time)
+          AND CONVERT(varchar,c.create_time,23) >= #para(begin_time)
+        #end
+        #if(end_time)
+          AND CONVERT(varchar,c.create_time,23) <= #para(end_time)
+        #end
+        #if(keyword)
+          and (a.bar_code like ('%' + #para(keyword) + '%') or b.book_name like ('%' + #para(keyword) + '%')
+          or b.author like ('%' + #para(keyword) + '%'))
+        #end
+	#end
 
 #end
