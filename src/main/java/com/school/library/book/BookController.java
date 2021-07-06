@@ -1,6 +1,7 @@
 package com.school.library.book;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.jfinal.aop.Before;
 import com.jfinal.aop.Inject;
@@ -21,10 +22,12 @@ import com.jfnice.core.JFniceBaseController;
 import com.jfnice.ext.CondPara;
 import com.jfnice.interceptor.TxPost;
 import com.jfnice.model.Book;
+import com.school.api.model.BookList;
 import com.school.library.bookbarcode.BookBarCodeLogic;
 import com.school.library.bookstorageitembarcode.BookStorageItemBarCodeKit;
 import com.school.library.catalog.CatalogLogic;
 import com.school.library.catalog.CatalogService;
+import com.school.library.constants.SysConstants;
 import com.school.library.kit.CommonKit;
 import com.school.library.search.SearchLogic;
 import org.apache.commons.collections4.CollectionUtils;
@@ -199,6 +202,53 @@ public class BookController extends JFniceBaseController {
 		ok("删除成功");
 	}
 
+	/**
+	 * 查询在馆图书
+	 */
+	public void getBooksIn(){
+		int catalogId = getInt("catalog_id");
+		String beginTime = getPara("begin_time");
+		String endTime = getPara("end_time");
+		String keyword = getPara("keyword");
+		int pageNumber = getParaToInt("page_number", SysConstants.DEFAULT_PAGE_NUMBER);
+		int pageSize = getParaToInt("page_size", SysConstants.DEFAULT_PAGE_SIZE);
+		BookList bookList = new BookList();
+		bookList.setTotalCnt(this.logic.getBooksInCnt(catalogId, beginTime, endTime, keyword));
+		bookList.setTotalAmount(this.logic.getBooksInAmount(catalogId, beginTime, endTime, keyword));
+		bookList.setList(this.logic.getBooksIn(catalogId, beginTime, endTime, keyword, pageNumber, pageSize));
+		ok(bookList);
+
+	}
+
+	/**
+	 * 查询外借图书
+	 */
+	public void getBooksBorrow(){
+		int catalogId = getInt("catalog_id");
+		int isOverDay= getInt("is_over_day");
+		String beginTime = getPara("begin_time");
+		String endTime = getPara("end_time");
+		String keyword = getPara("keyword");
+		int pageNumber = getParaToInt("page_number", SysConstants.DEFAULT_PAGE_NUMBER);
+		int pageSize = getParaToInt("page_size", SysConstants.DEFAULT_PAGE_SIZE);
+		BookList bookList = new BookList();
+		bookList.setTotalCnt(this.logic.getBooksBorrowCnt(catalogId, isOverDay, beginTime, endTime, keyword));
+		bookList.setTotalAmount(this.logic.getBooksBorrowAmount(catalogId, isOverDay, beginTime, endTime, keyword));
+		bookList.setList(this.logic.getBooksBorrow(catalogId, isOverDay, beginTime, endTime, keyword, pageNumber, pageSize));
+		ok(bookList);
+
+	}
+
+	public void getBookInfoByBar(){
+		String barCode = getPara("bar_code");
+		int pageNumber = getParaToInt("page_number", SysConstants.DEFAULT_PAGE_NUMBER);
+		int pageSize = getParaToInt("page_size", SysConstants.DEFAULT_PAGE_SIZE);
+		JSONObject bookinfo = this.logic.getBookInfoByBar(barCode, pageNumber, pageSize);
+		if(bookinfo == null){
+			throw new ErrorMsg("未找到该图书!");
+		}
+		ok("查询书籍成功",bookinfo);
+	}
 
 
 

@@ -171,7 +171,7 @@ public class BookStorageItemBarCodeService extends JFniceBaseService<BookStorage
 	 * 通过入库事件获取入库明细
 	 * @param schoolCode
 	 * @param name
-	 * @param startTime
+	 * @param beginTime
 	 * @param endTime
 	 * @param keyword
 	 * @param pageNumber
@@ -189,4 +189,171 @@ public class BookStorageItemBarCodeService extends JFniceBaseService<BookStorage
 		return Db.paginate(pageNumber, pageSize, sqlPara);
 	}
 
+	/**
+	 * 查询在馆图书
+	 * @param schoolCode
+	 * @param catalogId
+	 * @param beginTime
+	 * @param endTime
+	 * @param keyword
+	 * @param pageNumber
+	 * @param pageSize
+	 * @return
+	 */
+	public Page<Record> getBooksIn(String schoolCode, int catalogId, String beginTime, String endTime, String keyword, int pageNumber, int pageSize){
+		CondPara condPara = new CondPara();
+		condPara.put("school_code", schoolCode);
+		condPara.put("catalog_id", catalogId);
+		condPara.put("begin_time", beginTime);
+		condPara.put("end_time", endTime);
+		condPara.put("keyword", keyword);
+		SqlPara sqlPara = Db.getSqlPara("BookStorageItemBarCodeLogic.getBooksIn", condPara);
+		return Db.paginate(pageNumber, pageSize, sqlPara);
+	}
+
+	/**
+	 *
+	 * @param schoolCode
+	 * @param catalogId
+	 * @param beginTime
+	 * @param endTime
+	 * @param keyword
+	 * @param pageNumber
+	 * @param pageSize
+	 * @return
+	 */
+	public Record getBooksInCnt(String schoolCode, int catalogId, String beginTime, String endTime, String keyword){
+		CondPara condPara = new CondPara();
+		condPara.put("school_code", schoolCode);
+		condPara.put("catalog_id", catalogId);
+		condPara.put("begin_time", beginTime);
+		condPara.put("end_time", endTime);
+		condPara.put("keyword", keyword);
+		SqlPara sqlPara = Db.getSqlPara("BookStorageItemBarCodeLogic.getBooksInCnt", condPara);
+		return Db.findFirst(sqlPara);
+	}
+
+	/**
+	 *
+	 * @param schoolCode
+	 * @param catalogId
+	 * @param beginTime
+	 * @param endTime
+	 * @param keyword
+	 * @param pageNumber
+	 * @param pageSize
+	 * @return
+	 */
+	public Record getBooksInAmount(String schoolCode, int catalogId, String beginTime, String endTime, String keyword){
+		CondPara condPara = new CondPara();
+		condPara.put("school_code", schoolCode);
+		condPara.put("catalog_id", catalogId);
+		condPara.put("begin_time", beginTime);
+		condPara.put("end_time", endTime);
+		condPara.put("keyword", keyword);
+		SqlPara sqlPara = Db.getSqlPara("BookStorageItemBarCodeLogic.getBooksInAmount", condPara);
+		return Db.findFirst(sqlPara);
+	}
+
+	/**
+	 * 查询在馆图书
+	 * @param schoolCode
+	 * @param catalogId
+	 * @param isOverDay
+	 * @param beginTime
+	 * @param endTime
+	 * @param keyword
+	 * @param pageNumber
+	 * @param pageSize
+	 * @return
+	 */
+	public Page<Record> getBooksBorrow(String schoolCode, int catalogId, int isOverDay, String beginTime, String endTime, String keyword, int pageNumber, int pageSize){
+		CondPara condPara = new CondPara();
+		condPara.put("school_code", schoolCode);
+		condPara.put("catalog_id", catalogId);
+		condPara.put("is_over_day", isOverDay);
+		condPara.put("begin_time", beginTime);
+		condPara.put("end_time", endTime);
+		condPara.put("keyword", keyword);
+		SqlPara sqlPara = Db.getSqlPara("BookStorageItemBarCodeLogic.getBooksBorrow", condPara);
+		return Db.paginate(pageNumber, pageSize, sqlPara);
+	}
+
+	/**
+	 *
+	 * @param schoolCode
+	 * @param catalogId
+	 * @param isOverDay
+	 * @param beginTime
+	 * @param endTime
+	 * @param keyword
+	 * @param pageNumber
+	 * @param pageSize
+	 * @return
+	 */
+	public Record getBooksBorrowCnt(String schoolCode, int catalogId, int isOverDay, String beginTime, String endTime, String keyword){
+		CondPara condPara = new CondPara();
+		condPara.put("school_code", schoolCode);
+		condPara.put("catalog_id", catalogId);
+		condPara.put("is_over_day", isOverDay);
+		condPara.put("begin_time", beginTime);
+		condPara.put("end_time", endTime);
+		condPara.put("keyword", keyword);
+		SqlPara sqlPara = Db.getSqlPara("BookStorageItemBarCodeLogic.getBooksBorrowCnt", condPara);
+		return Db.findFirst(sqlPara);
+	}
+
+	/**
+	 *
+	 * @param schoolCode
+	 * @param catalogId
+	 * @param isOverDay
+	 * @param beginTime
+	 * @param endTime
+	 * @param keyword
+	 * @param pageNumber
+	 * @param pageSize
+	 * @return
+	 */
+	public Record getBooksBorrowAmount(String schoolCode, int catalogId, int isOverDay, String beginTime, String endTime, String keyword){
+		CondPara condPara = new CondPara();
+		condPara.put("school_code", schoolCode);
+		condPara.put("catalog_id", catalogId);
+		condPara.put("is_over_day", isOverDay);
+		condPara.put("begin_time", beginTime);
+		condPara.put("end_time", endTime);
+		condPara.put("keyword", keyword);
+		SqlPara sqlPara = Db.getSqlPara("BookStorageItemBarCodeLogic.getBooksBorrowAmount", condPara);
+		return Db.findFirst(sqlPara);
+	}
+
+	/**
+	 * 通过条形码获取图书
+	 * @param schoolCode
+	 * @param barCode
+	 * @return
+	 */
+	public Record getBookInfoByBar(String schoolCode, String barCode) {
+		CondPara condPara = new CondPara();
+		condPara.put("school_code", schoolCode);
+		condPara.put("bar_code", barCode);
+		SqlPara sqlPara = Db.getSqlPara("BookStorageItemBarCodeLogic.getBookInfoByBar", condPara);
+		return Db.findFirst(sqlPara);
+	}
+
+	/**
+	 * 通过条形码获取图书列表
+	 * @param schoolCode
+	 * @param barCode
+	 * @param pageNumber
+	 * @param pageSize
+	 * @return
+	 */
+	public Page<Record> getBookBorrowList(String schoolCode, String barCode, int pageNumber, int pageSize) {
+		CondPara condPara = new CondPara();
+		condPara.put("school_code", schoolCode);
+		condPara.put("bar_code", barCode);
+		SqlPara sqlPara = Db.getSqlPara("BookStorageItemBarCodeLogic.getBookBorrowList", condPara);
+		return Db.paginate(pageNumber, pageSize, sqlPara);
+	}
 }

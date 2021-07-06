@@ -1,5 +1,6 @@
 package com.school.library.book;
 
+import com.alibaba.fastjson.JSONObject;
 import com.jfinal.aop.Inject;
 import com.jfinal.kit.Kv;
 import com.jfinal.kit.StrKit;
@@ -9,8 +10,10 @@ import com.jfinal.plugin.activerecord.Record;
 import com.jfinal.plugin.activerecord.SqlPara;
 
 import com.jfnice.ext.CondPara;
+import com.jfnice.ext.CurrentUser;
 import com.jfnice.model.Book;
 import com.jfnice.model.BorrowSetting;
+import com.school.library.bookstorageitembarcode.BookStorageItemBarCodeService;
 import com.school.library.borrowsetting.BorrowSettingLogic;
 import com.school.library.catalog.CatalogLogic;
 import com.school.library.kit.CommonKit;
@@ -31,6 +34,9 @@ public class BookLogic {
 
 	@Inject
 	private BorrowSettingLogic settingLogic;
+
+	@Inject
+	private BookStorageItemBarCodeService itemBarCodeService;
 
 
 
@@ -136,6 +142,114 @@ public class BookLogic {
 			}
 		}
 		return Kv.by("bookInfo",bookDetail).set("barlist",records);
+	}
+
+	/**
+	 * 查询在馆图书
+	 * @param catalogId
+	 * @param beginTime
+	 * @param endTime
+	 * @param keyword
+	 * @param pageNumber
+	 * @param pageSize
+	 * @return
+	 */
+	public Page<Record> getBooksIn(int catalogId, String beginTime, String endTime, String keyword, int pageNumber, int pageSize) {
+		Page<Record> items = this.itemBarCodeService.getBooksIn(CurrentUser.getSchoolCode(), catalogId, beginTime, endTime, keyword, pageNumber, pageSize);
+		return items;
+	}
+
+	/**
+	 * 查询在馆图书总数量
+	 * @param catalogId
+	 * @param beginTime
+	 * @param endTime
+	 * @param keyword
+	 * @return
+	 */
+	public String getBooksInCnt(int catalogId, String beginTime, String endTime, String keyword) {
+		Record record = this.itemBarCodeService.getBooksInCnt(CurrentUser.getSchoolCode(), catalogId, beginTime, endTime, keyword);
+		return record.getStr("cnt");
+	}
+
+	/**
+	 * 查询在馆图书总金额
+	 * @param catalogId
+	 * @param beginTime
+	 * @param endTime
+	 * @param keyword
+	 * @return
+	 */
+	public String getBooksInAmount(int catalogId, String beginTime, String endTime, String keyword) {
+		Record record = this.itemBarCodeService.getBooksInAmount(CurrentUser.getSchoolCode(), catalogId, beginTime, endTime, keyword);
+		return record.getStr("amount");
+	}
+
+	/**
+	 * 查询外借图书
+	 * @param catalogId
+	 * @param isOverDay
+	 * @param beginTime
+	 * @param endTime
+	 * @param keyword
+	 * @param pageNumber
+	 * @param pageSize
+	 * @return
+	 */
+	public Page<Record> getBooksBorrow(int catalogId, int isOverDay, String beginTime, String endTime, String keyword, int pageNumber, int pageSize) {
+		Page<Record> items = this.itemBarCodeService.getBooksBorrow(CurrentUser.getSchoolCode(), catalogId, isOverDay, beginTime, endTime, keyword, pageNumber, pageSize);
+		return items;
+	}
+
+	/**
+	 * 查询外借图书总数量
+	 * @param catalogId
+	 * @param isOverDay
+	 * @param beginTime
+	 * @param endTime
+	 * @param keyword
+	 * @return
+	 */
+	public String getBooksBorrowCnt(int catalogId, int isOverDay, String beginTime, String endTime, String keyword) {
+		Record record = this.itemBarCodeService.getBooksBorrowCnt(CurrentUser.getSchoolCode(), catalogId, isOverDay, beginTime, endTime, keyword);
+		return record.getStr("cnt");
+	}
+
+	/**
+	 * 查询外借图书总金额
+	 * @param catalogId
+	 * @param isOverDay
+	 * @param beginTime
+	 * @param endTime
+	 * @param keyword
+	 * @return
+	 */
+	public String getBooksBorrowAmount(int catalogId, int isOverDay, String beginTime, String endTime, String keyword) {
+		Record record = this.itemBarCodeService.getBooksBorrowAmount(CurrentUser.getSchoolCode(), catalogId, isOverDay, beginTime, endTime, keyword);
+		return record.getStr("amount");
+	}
+
+	/**
+	 * 通过条形码获取图书
+	 * @param barCode
+	 * @return
+	 */
+	public JSONObject getBookInfoByBar(String barCode, int pageNumber, int pageSize) {
+		JSONObject data = new JSONObject();
+		Record bookInfo = this.itemBarCodeService.getBookInfoByBar(CurrentUser.getSchoolCode(), barCode);
+		data.put("bar_code", bookInfo.getStr("bar_code"));
+		data.put("check_no", bookInfo.getStr("check_no"));
+		data.put("book_name", bookInfo.getStr("book_name"));
+		data.put("author", bookInfo.getStr("author"));
+		data.put("publisher", bookInfo.getStr("publisher"));
+		data.put("publish_date", bookInfo.getStr("publish_date"));
+		data.put("price", bookInfo.getStr("price"));
+		data.put("catalog_name", bookInfo.getStr("catalog_name"));
+		data.put("create_time", bookInfo.getStr("create_time"));
+		data.put("create_user_name", bookInfo.getStr("create_user_name"));
+		Page<Record> borrowList = this.itemBarCodeService.getBookBorrowList(CurrentUser.getSchoolCode(), barCode, pageNumber, pageSize);
+		data.put("list", borrowList);
+		return data;
 	}
 
 }
