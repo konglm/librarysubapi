@@ -159,6 +159,40 @@ public class BookDamagedLogic {
 		return BookDamaged.dao.paginate(pageNumber,pageSize,sqlPara);
 	}
 
+	/**
+	 * 破损总数
+	 * @param unitCode
+	 * @param keywords
+	 * @param repairType
+	 * @param bookStatus
+	 * @return
+	 */
+	public String damagedTotalCnt(String unitCode, String keywords,String repairType,String bookStatus){
+		Kv kv = Kv.by("school_code", unitCode)
+				.set("keywords",keywords)
+				.set("repair_type",repairType)
+				.set("book_status",bookStatus);
+		SqlPara sqlPara = Db.getSqlPara("BookDamagedLogic.damagedTotalCnt", kv);
+		return BookDamaged.dao.findFirst(sqlPara).getStr("total_cnt");
+	}
+
+	/**
+	 * 破损总金额
+	 * @param unitCode
+	 * @param keywords
+	 * @param repairType
+	 * @param bookStatus
+	 * @return
+	 */
+	public String damagedTotalAmount(String unitCode, String keywords,String repairType,String bookStatus){
+		Kv kv = Kv.by("school_code", unitCode)
+				.set("keywords",keywords)
+				.set("repair_type",repairType)
+				.set("book_status",bookStatus);
+		SqlPara sqlPara = Db.getSqlPara("BookDamagedLogic.damagedTotalAmount", kv);
+		return BookDamaged.dao.findFirst(sqlPara).getStr("total_amount");
+	}
+
 	public Record damagedDetail(Long id){
 		Kv kv = Kv.by("id", id);
 		SqlPara sqlPara = Db.getSqlPara("BookDamagedLogic.queryDetail", kv);
