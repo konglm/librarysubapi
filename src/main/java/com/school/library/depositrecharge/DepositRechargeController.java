@@ -1,6 +1,7 @@
 package com.school.library.depositrecharge;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.jfinal.aop.Before;
 import com.jfinal.aop.Inject;
@@ -170,8 +171,12 @@ public class DepositRechargeController extends JFniceBaseController {
 							@Para("end_time") String endTime,
 							@Para(value = "page_number", defaultValue = "1") int pageNumber,
 							@Para(value = "page_size", defaultValue = "10") int pageSize){
+		JSONObject data =  new JSONObject();
+		String totalAmount = logic.getTotalDepositAmount(keywords, startTime, endTime);
+		data.put("total_amount",  totalAmount);
 		Page<Record> page = logic.depositList(keywords, startTime, endTime, pageNumber, pageSize);
-		ok("查询成功",page);
+		data.put("list",  page);
+		ok("查询成功",data);
 	}
 
 }

@@ -1,6 +1,7 @@
 package com.school.library.borrowbook;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.jfinal.aop.Before;
 import com.jfinal.aop.Inject;
@@ -186,6 +187,22 @@ public class BorrowBookController extends JFniceBaseController {
 		}
 		logic.payBook(userType,userCode,barCodeList,schoolCode);
 		ok("操作成功");
+	}
+
+	/**
+	 * 押金扣除记录
+	 */
+	public void depositList(@Para("keywords") String keywords,
+							@Para("start_time") String startTime,
+							@Para("end_time") String endTime,
+							@Para(value = "page_number", defaultValue = "1") int pageNumber,
+							@Para(value = "page_size", defaultValue = "10") int pageSize){
+        JSONObject data =  new JSONObject();
+        String totalAmount = logic.getTotalDepositAmount(keywords, startTime, endTime);
+        data.put("total_amount",  totalAmount);
+        Page<Record> page = logic.depositList(keywords, startTime, endTime, pageNumber, pageSize);
+        data.put("list",  page);
+        ok("查询成功",data);
 	}
 
 }

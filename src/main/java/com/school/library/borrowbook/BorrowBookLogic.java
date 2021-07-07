@@ -478,4 +478,43 @@ public class BorrowBookLogic {
 		userInfo.update();
 		service.batchUpdate(borrowBooks);
 	}
+
+	/**
+	 * 押金扣除记录
+	 * @param keywords
+	 * @param startTime
+	 * @param endTime
+	 * @param pageNumber
+	 * @param pageSize
+	 * @return
+	 */
+	public Page<Record> depositList(String keywords, String startTime, String endTime, int pageNumber, int pageSize) {
+		Kv kv = Kv.by("keywords", keywords)
+				.set("start_time",startTime)
+				.set("end_time",endTime)
+				.set("school_code", CurrentUser.getSchoolCode());
+		SqlPara sqlPara = Db.getSqlPara("BorrowBookLogic.depositList", kv);
+		Page<Record> list = Db.paginate(pageNumber, pageSize, sqlPara);
+		for(Record record:list.getList()){
+			if(record.getStr("stu_code") != null){
+				record.set("user_type","stu");
+				record.set("user_type_text","学生");
+			}else{
+				record.set("user_type","teacher");
+				record.set("user_type_text","老师");
+			}
+		}
+		return list;
+	}
+
+	public String getTotalDepositAmount(String keywords, String startTime, String endTime) {
+		Kv kv = Kv.by("keywords", keywords)
+				.set("start_time",startTime)
+				.set("end_time",endTime)
+				.set("school_code", CurrentUser.getSchoolCode());
+		SqlPara sqlPara = Db.getSqlPara("BorrowBookLogic.getTotalDepositAmount", kv);
+		Record record = Db.findFirst(sqlPara);
+
+		return record.getStr("total_amount");
+	}
 }

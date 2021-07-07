@@ -8,6 +8,7 @@ import com.jfinal.plugin.activerecord.Page;
 import com.jfinal.plugin.activerecord.Record;
 import com.jfinal.plugin.activerecord.SqlPara;
 import com.jfnice.ext.CondPara;
+import com.jfnice.ext.CurrentUser;
 import com.jfnice.model.DepositRecharge;
 import com.school.library.kit.CommonKit;
 
@@ -37,7 +38,8 @@ public class DepositRechargeLogic {
 		String end_time = CommonKit.dealEndTime(endDate);
 		Kv kv = Kv.by("keywords", keywords)
 				.set("start_time",start_time)
-				.set("end_time",end_time);
+				.set("end_time",end_time)
+				.set("school_code", CurrentUser.getSchoolCode());
 		SqlPara sqlPara = Db.getSqlPara("DepositRechargeLogic.depositList", kv);
 		Page<Record> list = Db.paginate(pageNumber, pageSize, sqlPara);
 		for(Record record:list.getList()){
@@ -50,5 +52,18 @@ public class DepositRechargeLogic {
 			}
 		}
 		return list;
+	}
+
+	public String getTotalDepositAmount(String keywords, String startDate, String endDate){
+		String start_time = CommonKit.dealStartTime(startDate);
+		String end_time = CommonKit.dealEndTime(endDate);
+		Kv kv = Kv.by("keywords", keywords)
+				.set("start_time",start_time)
+				.set("end_time",end_time)
+				.set("school_code", CurrentUser.getSchoolCode());
+		SqlPara sqlPara = Db.getSqlPara("DepositRechargeLogic.getTotalDepositAmount", kv);
+		Record record = Db.findFirst(sqlPara);
+
+		return record.getStr("total_amount");
 	}
 }
