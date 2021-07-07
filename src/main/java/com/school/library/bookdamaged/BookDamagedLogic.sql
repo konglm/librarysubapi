@@ -15,6 +15,34 @@
         order by record_time DESC
     #end
 
+    #sql("damagedTotalCnt")
+        select count(1) total_cnt from book_damaged where del = 0
+        and unit_code = #para(school_code)
+        #if(keywords)
+        and charindex(#para(keywords),ISNULL(book_name, '')+ISNULL(author, '')+ISNULL(bar_code, ''))>0
+        #end
+        #if(book_status)
+        and book_status = #para(book_status)
+        #end
+        #if(repair_type)
+        and book_status = 2 and last_status = #para(repair_type)
+        #end
+    #end
+
+    #sql("damagedTotalAmount")
+        select sum(b.price) total_amount from book_bar_code b, book_damaged d where d.del = 0
+        and b.bar_code = d.bar_code and d.unit_code = #para(school_code)
+        #if(keywords)
+        and charindex(#para(keywords),ISNULL(d.book_name, '')+ISNULL(d.author, '')+ISNULL(d.bar_code, ''))>0
+        #end
+        #if(book_status)
+        and d.book_status = #para(book_status)
+        #end
+        #if(repair_type)
+        and d.book_status = 2 and d.last_status = #para(repair_type)
+        #end
+    #end
+
     #sql("queryDetail")
         select bd.book_status,bd.deductions,bd.explain,bd.recorder,
                bd.record_time,bd.last_status,bd.repairer,bd.repair_time,
