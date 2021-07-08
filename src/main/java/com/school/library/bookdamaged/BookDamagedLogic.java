@@ -267,4 +267,22 @@ public class BookDamagedLogic {
 
 	}
 
+	public void writeOffBook(String unitCode, BookDamaged bookDamaged){
+		BorrowSetting borrowSetting = settingLogic.queryIfNotNewBySchool(unitCode);
+		Short depositAuditFlag = borrowSetting.getDepositAuditFlag();
+
+		if (depositAuditFlag==0){
+			bookDamaged.setJudge(-1);
+		}else{
+			bookDamaged.setJudge(0);
+		}
+		bookDamaged.setBookStatus(6);
+		bookDamaged.setLastStatus(0);
+		bookDamaged.setRecorder(CurrentUser.getUserName());
+		bookDamaged.setRecorderCode(CurrentUser.getUserCode());
+		bookDamaged.setRecordTime(new Date());
+		bookDamaged.save();
+
+	}
+
 }

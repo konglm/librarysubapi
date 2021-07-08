@@ -249,4 +249,23 @@ public class BookDamagedController extends JFniceBaseController {
 		ok("审核成功");
 	}
 
+	@Before(TxPost.class)
+	public void  writeOffBook(@Para("unit_code") String unitCode,
+							  @Para(value = "bar_code") String barCode,
+							  @Para(value = "deductions") double deductions,
+							  @Para(value = "borrower_name")String borrowerName,
+							  @Para(value = "explain")String explain,
+							  @Para(value = "book_name")String bookName,
+							  @Para(value = "author")String author,
+							  @Para(value = "borrow_id") int borrowId){
+		boolean ispan = bookInventoryLogic.hasGoingInventory(CurrentUser.getSchoolCode());
+		if(ispan){
+			throw new ErrorMsg("学校正在盘点书籍,不可进行注销!");
+		}
+		BookDamaged bookDamaged = getModel(BookDamaged.class, "", true);
+		logic.writeOffBook(unitCode, bookDamaged);
+		ok("注销成功");
+
+	}
+
 }
