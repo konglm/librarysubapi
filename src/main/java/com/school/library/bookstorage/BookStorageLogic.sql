@@ -35,7 +35,7 @@
         select count(1) total_storage_cnt, sum(price) total_storage_amount
         from book_storage_item_bar_code
         where del = 0 and school_code = #para(school_code)
-        and status != 0
+        and status in (1,2,3,4,6)
     #end
 
     #sql("statisticsTotalDamage")

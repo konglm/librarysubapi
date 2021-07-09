@@ -212,11 +212,11 @@ public class BookController extends JFniceBaseController {
 		String keyword = getPara("keyword");
 		int pageNumber = getParaToInt("page_number", SysConstants.DEFAULT_PAGE_NUMBER);
 		int pageSize = getParaToInt("page_size", SysConstants.DEFAULT_PAGE_SIZE);
-		BookList bookList = new BookList();
-		bookList.setTotalCnt(this.logic.getBooksInCnt(catalogId, beginTime, endTime, keyword));
-		bookList.setTotalAmount(this.logic.getBooksInAmount(catalogId, beginTime, endTime, keyword));
-		bookList.setList(this.logic.getBooksIn(catalogId, beginTime, endTime, keyword, pageNumber, pageSize));
-		ok(bookList);
+		JSONObject data = new JSONObject();
+		data.put("total_cnt", this.logic.getBooksInCnt(catalogId, beginTime, endTime, keyword));
+		data.put("total_amount", this.logic.getBooksInAmount(catalogId, beginTime, endTime, keyword));
+		data.put("list", this.logic.getBooksIn(catalogId, beginTime, endTime, keyword, pageNumber, pageSize));
+		ok("查询书籍成功",data);
 
 	}
 
@@ -231,14 +231,17 @@ public class BookController extends JFniceBaseController {
 		String keyword = getPara("keyword");
 		int pageNumber = getParaToInt("page_number", SysConstants.DEFAULT_PAGE_NUMBER);
 		int pageSize = getParaToInt("page_size", SysConstants.DEFAULT_PAGE_SIZE);
-		BookList bookList = new BookList();
-		bookList.setTotalCnt(this.logic.getBooksBorrowCnt(catalogId, isOverDay, beginTime, endTime, keyword));
-		bookList.setTotalAmount(this.logic.getBooksBorrowAmount(catalogId, isOverDay, beginTime, endTime, keyword));
-		bookList.setList(this.logic.getBooksBorrow(catalogId, isOverDay, beginTime, endTime, keyword, pageNumber, pageSize));
-		ok(bookList);
+		JSONObject data = new JSONObject();
+		data.put("total_cnt", this.logic.getBooksBorrowCnt(catalogId, isOverDay, beginTime, endTime, keyword));
+		data.put("total_amount", this.logic.getBooksBorrowAmount(catalogId, isOverDay, beginTime, endTime, keyword));
+		data.put("list", this.logic.getBooksBorrow(catalogId, isOverDay, beginTime, endTime, keyword, pageNumber, pageSize));
+		ok("查询书籍成功",data);
 
 	}
 
+	/**
+	 * 查询图书详情
+	 */
 	public void getBookInfoByBar(){
 		String barCode = getPara("bar_code");
 		int pageNumber = getParaToInt("page_number", SysConstants.DEFAULT_PAGE_NUMBER);

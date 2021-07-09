@@ -190,6 +190,46 @@ public class BookStorageItemBarCodeService extends JFniceBaseService<BookStorage
 	}
 
 	/**
+	 * 通过入库事件获取入库数量
+	 * @param schoolCode
+	 * @param name
+	 * @param beginTime
+	 * @param endTime
+	 * @param keyword
+	 * @return
+	 */
+	public Record getItemByNameCnt(String schoolCode, String name, String beginTime, String endTime, String keyword){
+		CondPara condPara = new CondPara();
+		condPara.put("school_code", schoolCode);
+		condPara.put("name", name);
+		condPara.put("begin_time", beginTime);
+		condPara.put("end_time", endTime);
+		condPara.put("keyword", keyword);
+		SqlPara sqlPara = Db.getSqlPara("BookStorageItemBarCodeLogic.getItemByNameCnt", condPara);
+		return Db.findFirst(sqlPara);
+	}
+
+	/**
+	 * 通过入库事件获取入库金额
+	 * @param schoolCode
+	 * @param name
+	 * @param beginTime
+	 * @param endTime
+	 * @param keyword
+	 * @return
+	 */
+	public Record getItemByNameAmount(String schoolCode, String name, String beginTime, String endTime, String keyword){
+		CondPara condPara = new CondPara();
+		condPara.put("school_code", schoolCode);
+		condPara.put("name", name);
+		condPara.put("begin_time", beginTime);
+		condPara.put("end_time", endTime);
+		condPara.put("keyword", keyword);
+		SqlPara sqlPara = Db.getSqlPara("BookStorageItemBarCodeLogic.getItemByNameAmount", condPara);
+		return Db.findFirst(sqlPara);
+	}
+
+	/**
 	 * 查询在馆图书
 	 * @param schoolCode
 	 * @param catalogId

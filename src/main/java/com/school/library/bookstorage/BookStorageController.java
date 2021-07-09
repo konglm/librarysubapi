@@ -210,7 +210,11 @@ public class BookStorageController extends JFniceBaseController {
 		String keyword = getPara("keyword");
 		int pageNumber = getParaToInt("page_number", SysConstants.DEFAULT_PAGE_NUMBER);
 		int pageSize = getParaToInt("page_size", SysConstants.DEFAULT_PAGE_SIZE);
-		ok(this.logic.getItemByName(name, beginTime, endTime, keyword, pageNumber, pageSize));
+		JSONObject data = new JSONObject();
+		data.put("total_cnt", this.logic.getItemByNameCnt(name, beginTime, endTime, keyword));
+		data.put("total_amount", this.logic.getItemByNameAmount(name, beginTime, endTime, keyword));
+		data.put("list", this.logic.getItemByName(name, beginTime, endTime, keyword, pageNumber, pageSize));
+		ok("查询入库信息成功", data);
 
 	}
 

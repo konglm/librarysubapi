@@ -108,7 +108,7 @@ public class UserInfoController extends JFniceBaseController {
 	public void stopOrRecoverBorrow() {
 		String userType = getPara("user_type");
 		String userCode = getPara("user_code");
-		int canBorrow = getInt("canBorrow");
+		int canBorrow = getInt("can_borrow");
 		ok(this.logic.stopOrRecoverBorrow(CurrentUser.getSchoolCode(), userType, userCode, canBorrow));
 	}
 

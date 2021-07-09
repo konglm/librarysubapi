@@ -197,8 +197,24 @@ public class BookLogic {
 	 * @return
 	 */
 	public Page<Record> getBooksBorrow(int catalogId, int isOverDay, String beginTime, String endTime, String keyword, int pageNumber, int pageSize) {
-		Page<Record> items = this.itemBarCodeService.getBooksBorrow(CurrentUser.getSchoolCode(), catalogId, isOverDay, beginTime, endTime, keyword, pageNumber, pageSize);
-		return items;
+		Page<Record> records = this.itemBarCodeService.getBooksBorrow(CurrentUser.getSchoolCode(), catalogId, isOverDay, beginTime, endTime, keyword, pageNumber, pageSize);
+		BorrowSetting borrowSetting = settingLogic.queryIfNotNewBySchool(CurrentUser.getSchoolCode());
+		Integer borrowDays = borrowSetting.getBorrowDays();
+		for (Record record:records.getList()){
+			if ("".equals(record.getStr("stu_code"))) {
+				record.set("user_type", "teacher");
+			} else {
+				record.set("user_type", "stu");
+			}
+			if((record.get("over_days") != null) && (record.getInt("over_days") > 0)) {
+				record.set("is_over_day", 1);
+			} else {
+				record.set("is_over_day", 0);
+			}
+			long leftDays = borrowDays - CommonKit.differDays(record.getDate("borrow_time"), new Date());
+			record.set("left_days", leftDays);
+		}
+		return records;
 	}
 
 	/**
@@ -248,6 +264,15 @@ public class BookLogic {
 		data.put("create_time", bookInfo.getStr("create_time"));
 		data.put("create_user_name", bookInfo.getStr("create_user_name"));
 		Page<Record> borrowList = this.itemBarCodeService.getBookBorrowList(CurrentUser.getSchoolCode(), barCode, pageNumber, pageSize);
+		for (Record record:borrowList.getList()){
+			if ("".equals(record.getStr("return_time"))) {
+				long borrowDays = CommonKit.differDays(record.getDate("borrow_time"), new Date());
+				record.set("borrow_days", borrowDays);
+			} else {
+				long borrowDays = CommonKit.differDays(record.getDate("borrow_time"), record.getDate("return_time"));
+				record.set("borrow_days", borrowDays);
+			}
+		}
 		data.put("list", borrowList);
 		return data;
 	}

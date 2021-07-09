@@ -571,4 +571,30 @@ public class BookStorageLogic {
 		return items;
 	}
 
+	/**
+	 * 通过入库事件获取入库数量
+	 * @param name
+	 * @param beginTime
+	 * @param endTime
+	 * @param keyword
+	 * @return
+	 */
+	public String getItemByNameCnt(String name, String beginTime, String endTime, String keyword) {
+		Record record = this.itemBarCodeService.getItemByNameCnt(CurrentUser.getSchoolCode(), name, beginTime, endTime, keyword);
+		return record.getStr("cnt");
+	}
+
+	/**
+	 * 通过入库事件获取入库金额
+	 * @param name
+	 * @param beginTime
+	 * @param endTime
+	 * @param keyword
+	 * @return
+	 */
+	public String getItemByNameAmount(String name, String beginTime, String endTime, String keyword) {
+		Record record = this.itemBarCodeService.getItemByNameAmount(CurrentUser.getSchoolCode(), name, beginTime, endTime, keyword);
+		return record.getStr("cnt");
+	}
+
 }
