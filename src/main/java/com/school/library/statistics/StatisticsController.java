@@ -98,4 +98,28 @@ public class StatisticsController extends JFniceBaseController {
         ok(this.statisticsLogic.pageStatisticKeyWord(cycle, pageNumber, pageSize));
     }
 
+    /**
+     * 统计总数
+     */
+    @JsyPermissions(OpCodeEnum.INDEX)
+    public void statisticsTotal(){
+        ok(this.statisticsLogic.statisticsTotal());
+    }
+
+    /**
+     * 统计入库
+     */
+    @JsyPermissions(OpCodeEnum.INDEX)
+    public void statisticsStorage(){
+        ok(this.statisticsLogic.statisticsStorage());
+    }
+
+    /**
+     * 统计借书还书
+     */
+    @JsyPermissions(OpCodeEnum.INDEX)
+    public void statisticsBorrowReturn(){
+        ok(this.statisticsLogic.statisticsBorrowReturn());
+    }
+
 }

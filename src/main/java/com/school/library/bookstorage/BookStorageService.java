@@ -1,7 +1,9 @@
 package com.school.library.bookstorage;
 
+import com.jfinal.kit.Kv;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Page;
+import com.jfinal.plugin.activerecord.Record;
 import com.jfinal.plugin.activerecord.SqlPara;
 import com.jfnice.core.JFniceBaseService;
 import com.jfnice.ext.CondPara;
@@ -83,6 +85,54 @@ public class BookStorageService extends JFniceBaseService<BookStorage> {
 		condPara.put("status", status);
 		SqlPara sqlPara = Db.getSqlPara("BookStorageLogic.queryByStatus", condPara);
 		return BookStorage.dao.find(sqlPara);
+	}
+
+	/**
+	 * 获取入库总数
+	 * @param schoolCode
+	 * @return
+	 */
+	public Record statisticsTotalStorage(String schoolCode) {
+		Kv kv = Kv.by("school_code", schoolCode);
+		SqlPara sqlPara = Db.getSqlPara("BookStorageLogic.statisticsTotalStorage", kv);
+		Record record = Db.findFirst(sqlPara);
+		return record;
+	}
+
+	/**
+	 * 获取损毁总数
+	 * @param schoolCode
+	 * @return
+	 */
+	public Record statisticsTotalDamage(String schoolCode) {
+		Kv kv = Kv.by("school_code", schoolCode);
+		SqlPara sqlPara = Db.getSqlPara("BookStorageLogic.statisticsTotalDamage", kv);
+		Record record = Db.findFirst(sqlPara);
+		return record;
+	}
+
+	/**
+	 * 获取丢失总数
+	 * @param schoolCode
+	 * @return
+	 */
+	public Record statisticsTotalLose(String schoolCode) {
+		Kv kv = Kv.by("school_code", schoolCode);
+		SqlPara sqlPara = Db.getSqlPara("BookStorageLogic.statisticsTotalLose", kv);
+		Record record = Db.findFirst(sqlPara);
+		return record;
+	}
+
+	/**
+	 * 获取注销总数
+	 * @param schoolCode
+	 * @return
+	 */
+	public Record statisticsTotalWriteOff(String schoolCode) {
+		Kv kv = Kv.by("school_code", schoolCode);
+		SqlPara sqlPara = Db.getSqlPara("BookStorageLogic.statisticsTotalWriteOff", kv);
+		Record record = Db.findFirst(sqlPara);
+		return record;
 	}
 
 }

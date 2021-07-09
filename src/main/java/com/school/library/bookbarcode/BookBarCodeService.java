@@ -1,5 +1,6 @@
 package com.school.library.bookbarcode;
 
+import com.jfinal.kit.Kv;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Page;
 import com.jfinal.plugin.activerecord.Record;
@@ -163,6 +164,66 @@ public class BookBarCodeService extends JFniceBaseService<BookBarCode> {
 		condPara.put("update_time", updateTime);
 		SqlPara sqlPara = Db.getSqlPara("BookBarCodeLogic.storageBarCode", condPara);
 		return Db.update(sqlPara);
+	}
+
+	/**
+	 * 获取馆藏总数
+	 * @param schoolCode
+	 * @return
+	 */
+	public Record statisticsTotalCnt(String schoolCode) {
+		Kv kv = Kv.by("school_code", schoolCode);
+		SqlPara sqlPara = Db.getSqlPara("BookBarCodeLogic.statisticsTotalCnt", kv);
+		Record record = Db.findFirst(sqlPara);
+		return record;
+	}
+
+	/**
+	 * 获取馆藏图书金额
+	 * @param schoolCode
+	 * @return
+	 */
+	public Record statisticsTotalAmount(String schoolCode) {
+		Kv kv = Kv.by("school_code", schoolCode);
+		SqlPara sqlPara = Db.getSqlPara("BookBarCodeLogic.statisticsTotalAmount", kv);
+		Record record = Db.findFirst(sqlPara);
+		return record;
+	}
+
+	/**
+	 * 获取在馆数量
+	 * @param schoolCode
+	 * @return
+	 */
+	public Record statisticsTotalIn(String schoolCode) {
+		Kv kv = Kv.by("school_code", schoolCode);
+		SqlPara sqlPara = Db.getSqlPara("BookBarCodeLogic.statisticsTotalIn", kv);
+		Record record = Db.findFirst(sqlPara);
+		return record;
+	}
+
+	/**
+	 * 获取外借总数
+	 * @param schoolCode
+	 * @return
+	 */
+	public Record statisticsTotalOut(String schoolCode) {
+		Kv kv = Kv.by("school_code", schoolCode);
+		SqlPara sqlPara = Db.getSqlPara("BookBarCodeLogic.statisticsTotalOut", kv);
+		Record record = Db.findFirst(sqlPara);
+		return record;
+	}
+
+	/**
+	 * 获取维修总数
+	 * @param schoolCode
+	 * @return
+	 */
+	public Record statisticsTotalRepair(String schoolCode) {
+		Kv kv = Kv.by("school_code", schoolCode);
+		SqlPara sqlPara = Db.getSqlPara("BookBarCodeLogic.statisticsTotalRepair", kv);
+		Record record = Db.findFirst(sqlPara);
+		return record;
 	}
 
 }

@@ -1,6 +1,9 @@
 package com.school.library.borrowbook;
 
+import com.jfinal.kit.Kv;
 import com.jfinal.plugin.activerecord.Db;
+import com.jfinal.plugin.activerecord.Record;
+import com.jfinal.plugin.activerecord.SqlPara;
 import com.jfnice.core.JFniceBaseService;
 import com.jfnice.ext.ErrorMsg;
 import com.jfnice.model.BorrowBook;
@@ -47,6 +50,34 @@ public class BorrowBookService extends JFniceBaseService<BorrowBook> {
 		int[] arr = super.sort(map);
 		BorrowBookIdMap.me.clear();
 		return arr;
+	}
+
+	/**
+	 * 获取指定月份的借书数量
+	 * @param schoolCode
+	 * @param beginTime
+	 * @param endTime
+	 * @return
+	 */
+	public Record statisticsBorrowCnt(String schoolCode, String beginTime, String endTime) {
+		Kv kv = Kv.by("school_code", schoolCode).set("begin_time", beginTime).set("end_time", endTime);
+		SqlPara sqlPara = Db.getSqlPara("BorrowBookLogic.statisticsBorrowCnt", kv);
+		Record record = Db.findFirst(sqlPara);
+		return record;
+	}
+
+	/**
+	 * 获取指定月份的还书数量
+	 * @param schoolCode
+	 * @param beginTime
+	 * @param endTime
+	 * @return
+	 */
+	public Record statisticsReturnCnt(String schoolCode, String beginTime, String endTime) {
+		Kv kv = Kv.by("school_code", schoolCode).set("begin_time", beginTime).set("end_time", endTime);
+		SqlPara sqlPara = Db.getSqlPara("BorrowBookLogic.statisticsReturnCnt", kv);
+		Record record = Db.findFirst(sqlPara);
+		return record;
 	}
 
 }

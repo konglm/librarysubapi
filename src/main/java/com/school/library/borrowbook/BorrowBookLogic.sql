@@ -206,4 +206,28 @@
         and charindex(#para(keywords),ISNULL(sno, '')+ISNULL(borrower, ''))>0
         #end
     #end
+
+    #sql("statisticsBorrowCnt")
+        select count(1) borrow_cnt
+        from borrow_book
+        where del = 0 and school_code = #para(school_code)
+        #if(begin_time)
+            and borrow_time > #para(begin_time)
+        #end
+        #if(end_time)
+            and borrow_time < #para(end_time)
+        #end
+    #end
+
+    #sql("statisticsReturnCnt")
+        select count(1) return_cnt
+        from borrow_book
+        where del = 0 and school_code = #para(school_code)
+        #if(begin_time)
+            and return_time > #para(begin_time)
+        #end
+        #if(end_time)
+            and return_time < #para(end_time)
+        #end
+    #end
 #end

@@ -62,4 +62,41 @@
 	        and book_storage_id = #para(book_storage_id) and status = #para(confirm_status)
 	#end
 
+	#sql("statisticsTotalCnt")
+        select count(1) total_cnt
+        from book_bar_code
+        where school_code = #para(school_code)
+        and del = 0 and status = 1
+    #end
+
+    #sql("statisticsTotalAmount")
+        select sum(price) total_amount
+        from book_bar_code
+        where school_code = #para(school_code)
+        and del = 0 and status = 1
+    #end
+
+    #sql("statisticsTotalIn")
+        select count(1) total_cnt
+        from book_bar_code
+        where school_code = #para(school_code)
+        and del = 0 and status = 1 and bar_code
+        not in (select bar_code from borrow_book where del = 0 and school_code = #para(school_code) and book_status = 1 and return_status = 0)
+    #end
+
+    #sql("statisticsTotalOut")
+        select count(1) total_cnt
+        from book_bar_code
+        where school_code = #para(school_code)
+        and del = 0 and status = 1 and bar_code
+        in (select bar_code from borrow_book where del = 0 and school_code = #para(school_code) and book_status = 1 and return_status = 0)
+    #end
+
+    #sql("statisticsTotalRepair")
+        select count(1) total_cnt
+        from book_bar_code
+        where school_code = #para(school_code)
+        and del = 0 and status = 2
+    #end
+
 #end

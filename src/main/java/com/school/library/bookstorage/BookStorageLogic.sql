@@ -31,4 +31,33 @@
 	        where a.del = 0 and a.school_code = #para(school_code) and a.status = #para(status)
 	#end
 
+    #sql("statisticsTotalStorage")
+        select count(1) total_storage_cnt, sum(price) total_storage_amount
+        from book_storage_item_bar_code
+        where del = 0 and school_code = #para(school_code)
+        and status != 0
+    #end
+
+    #sql("statisticsTotalDamage")
+        select count(1) total_storage_cnt, sum(price) total_storage_amount
+        from book_storage_item_bar_code
+        where del = 0 and school_code = #para(school_code)
+        and status = 3
+    #end
+
+    #sql("statisticsTotalLose")
+        select count(1) total_storage_cnt, sum(price) total_storage_amount
+        from book_storage_item_bar_code
+        where del = 0 and school_code = #para(school_code)
+        and status = 4
+    #end
+
+    #sql("statisticsTotalWriteOff")
+        select count(1) total_storage_cnt, sum(price) total_storage_amount
+        from book_storage_item_bar_code
+        where del = 0 and school_code = #para(school_code)
+        and status = 6
+    #end
+
+
 #end

@@ -1,5 +1,6 @@
 package com.school.library.statistics;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.base.Strings;
 import com.jfinal.aop.Inject;
@@ -14,7 +15,9 @@ import com.school.api.map.ClsMap;
 import com.school.api.map.GrdMap;
 import com.school.library.bookbarcode.BookBarCodeService;
 import com.school.library.bookbarcode.BookBarCodeStatusEnum;
+import com.school.library.bookstorage.BookStorageService;
 import com.school.library.borrowbook.BorrowBookLogic;
+import com.school.library.borrowbook.BorrowBookService;
 import com.school.library.constants.SysConstants;
 import com.school.library.kit.CommonKit;
 import com.school.library.search.SearchService;
@@ -29,6 +32,7 @@ import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -46,6 +50,10 @@ public class StatisticsLogic {
     private BorrowBookLogic borrowBookLogic;
     @Inject
     private SearchService searchService;
+    @Inject
+    private BookStorageService storageService;
+    @Inject
+    private BorrowBookService borrowBookService;
 
     /**
      * 统计书本数量
@@ -253,6 +261,163 @@ public class StatisticsLogic {
         Page<Record> page = this.searchService.pageStatisticKeyWord(CurrentUser.getSchoolCode(), begintime, endtime,
                 pageNumber, pageSize);
         return page;
+    }
+
+    /**
+     * 统计总数
+     * @return
+     */
+    public JSONObject statisticsTotal(){
+        Record recordTotalCnt = this.bookBarCodeService.statisticsTotalCnt(CurrentUser.getSchoolCode());
+        Record recordTotalAmount = this.bookBarCodeService.statisticsTotalAmount(CurrentUser.getSchoolCode());
+        Record recordTotalIn = this.bookBarCodeService.statisticsTotalIn(CurrentUser.getSchoolCode());
+        Record recordTotalOut = this.bookBarCodeService.statisticsTotalOut(CurrentUser.getSchoolCode());
+        Record recordTotalRepair = this.bookBarCodeService.statisticsTotalRepair(CurrentUser.getSchoolCode());
+        JSONObject data = new JSONObject();
+        int totalCnt = recordTotalCnt.getInt("total_cnt");
+        data.put("total_cnt", totalCnt);
+        data.put("total_amount", recordTotalAmount.getStr("total_amount"));
+
+        int totalIn = recordTotalIn.getInt("total_in");
+        data.put("total_in", totalIn);
+        data.put("total_in_ratio", CommonKit.getRatio(totalIn, totalCnt));
+
+        int totalOut = recordTotalOut.getInt("total_out");
+        data.put("total_out", totalOut);
+        data.put("total_out_ratio", CommonKit.getRatio(totalOut, totalCnt));
+
+        int totalRepair = recordTotalRepair.getInt("total_repair");
+        data.put("total_repair", totalRepair);
+        data.put("total_repair_ratio", CommonKit.getRatio(totalRepair, totalCnt));
+
+        return data;
+    }
+
+    /**
+     * 统计库存
+     * @return
+     */
+    public JSONObject statisticsStorage(){
+        Record recordTotalStorage = this.storageService.statisticsTotalStorage(CurrentUser.getSchoolCode());
+        Record recordTotalDamage = this.storageService.statisticsTotalDamage(CurrentUser.getSchoolCode());
+        Record recordTotalLose = this.storageService.statisticsTotalLose(CurrentUser.getSchoolCode());
+        Record recordTotalWriteOff = this.storageService.statisticsTotalWriteOff(CurrentUser.getSchoolCode());
+        JSONObject data = new JSONObject();
+        data.put("total_storage_cnt", recordTotalStorage.getStr("total_storage_cnt"));
+        data.put("total_damage_cnt", recordTotalDamage.getStr("total_damage_cnt"));
+        data.put("total_lose_cnt", recordTotalLose.getStr("total_lose_cnt"));
+        data.put("total_write_off_cnt", recordTotalWriteOff.getStr("total_write_off_cnt"));
+        data.put("total_storage_amount", recordTotalStorage.getStr("total_storage_amount"));
+        data.put("total_damage_amount", recordTotalDamage.getStr("total_damage_amount"));
+        data.put("total_lose_amount", recordTotalLose.getStr("total_lose_amount"));
+        data.put("total_write_off_amount", recordTotalWriteOff.getStr("total_write_off_amount"));
+        return data;
+    }
+
+    /**
+     * 统计借书还书
+     * @return
+     */
+    public JSONObject statisticsBorrowReturn(){
+        JSONArray monthList = new JSONArray();
+        Calendar cal = Calendar.getInstance();
+        SimpleDateFormat sdfYear = new SimpleDateFormat("yyyy");
+        SimpleDateFormat sdfMonth = new SimpleDateFormat("MM");
+
+        cal.add(Calendar.MONTH, 0); //当月
+        int dateYear = Integer.parseInt(sdfYear.format(cal.getTime()));
+        int dateMonth = Integer.parseInt(sdfMonth.format(cal.getTime()));
+        Record recordBorrow = this.borrowBookService.statisticsBorrowCnt(CurrentUser.getSchoolCode()
+                , CommonKit.dealStartTime(CommonKit.getBeginTime(dateYear,dateMonth))
+                , CommonKit.dealEndTime(CommonKit.getEndTime(dateYear,dateMonth)));
+        Record recordReturn = this.borrowBookService.statisticsReturnCnt(CurrentUser.getSchoolCode()
+                , CommonKit.dealStartTime(CommonKit.getBeginTime(dateYear,dateMonth))
+                , CommonKit.dealEndTime(CommonKit.getEndTime(dateYear,dateMonth)));
+        JSONObject data = new JSONObject();
+        data.put("month", dateMonth);
+        data.put("borrow_cnt", recordBorrow.getStr("borrow_cnt"));
+        data.put("return_cnt", recordReturn.getStr("return_cnt"));
+        monthList.add(data);
+
+        cal.add(Calendar.MONTH, -1); //上一月
+        int dateYear1 = Integer.parseInt(sdfYear.format(cal.getTime()));
+        int dateMonth1 = Integer.parseInt(sdfMonth.format(cal.getTime()));
+        Record recordBorrow1 = this.borrowBookService.statisticsBorrowCnt(CurrentUser.getSchoolCode()
+                , CommonKit.dealStartTime(CommonKit.getBeginTime(dateYear1,dateMonth1))
+                , CommonKit.dealEndTime(CommonKit.getEndTime(dateYear1,dateMonth1)));
+        Record recordReturn1 = this.borrowBookService.statisticsReturnCnt(CurrentUser.getSchoolCode()
+                , CommonKit.dealStartTime(CommonKit.getBeginTime(dateYear1,dateMonth1))
+                , CommonKit.dealEndTime(CommonKit.getEndTime(dateYear1,dateMonth1)));
+        JSONObject data1 = new JSONObject();
+        data1.put("month", dateMonth1);
+        data1.put("borrow_cnt", recordBorrow1.getStr("borrow_cnt"));
+        data1.put("return_cnt", recordReturn1.getStr("return_cnt"));
+        monthList.add(data1);
+
+        cal.add(Calendar.MONTH, -2); //上两月
+        int dateYear2 = Integer.parseInt(sdfYear.format(cal.getTime()));
+        int dateMonth2 = Integer.parseInt(sdfMonth.format(cal.getTime()));
+        Record recordBorrow2 = this.borrowBookService.statisticsBorrowCnt(CurrentUser.getSchoolCode()
+                , CommonKit.dealStartTime(CommonKit.getBeginTime(dateYear2,dateMonth2))
+                , CommonKit.dealEndTime(CommonKit.getEndTime(dateYear2,dateMonth2)));
+        Record recordReturn2 = this.borrowBookService.statisticsReturnCnt(CurrentUser.getSchoolCode()
+                , CommonKit.dealStartTime(CommonKit.getBeginTime(dateYear2,dateMonth2))
+                , CommonKit.dealEndTime(CommonKit.getEndTime(dateYear2,dateMonth2)));
+        JSONObject data2 = new JSONObject();
+        data2.put("month", dateMonth2);
+        data2.put("borrow_cnt", recordBorrow2.getStr("borrow_cnt"));
+        data2.put("return_cnt", recordReturn2.getStr("return_cnt"));
+        monthList.add(data2);
+
+        cal.add(Calendar.MONTH, -3); //上三月
+        int dateYear3 = Integer.parseInt(sdfYear.format(cal.getTime()));
+        int dateMonth3 = Integer.parseInt(sdfMonth.format(cal.getTime()));
+        Record recordBorrow3 = this.borrowBookService.statisticsBorrowCnt(CurrentUser.getSchoolCode()
+                , CommonKit.dealStartTime(CommonKit.getBeginTime(dateYear3,dateMonth3))
+                , CommonKit.dealEndTime(CommonKit.getEndTime(dateYear3,dateMonth3)));
+        Record recordReturn3 = this.borrowBookService.statisticsReturnCnt(CurrentUser.getSchoolCode()
+                , CommonKit.dealStartTime(CommonKit.getBeginTime(dateYear3,dateMonth3))
+                , CommonKit.dealEndTime(CommonKit.getEndTime(dateYear3,dateMonth3)));
+        JSONObject data3 = new JSONObject();
+        data3.put("month", dateMonth3);
+        data3.put("borrow_cnt", recordBorrow3.getStr("borrow_cnt"));
+        data3.put("return_cnt", recordReturn3.getStr("return_cnt"));
+        monthList.add(data3);
+
+        cal.add(Calendar.MONTH, -4); //上四月
+        int dateYear4 = Integer.parseInt(sdfYear.format(cal.getTime()));
+        int dateMonth4 = Integer.parseInt(sdfMonth.format(cal.getTime()));
+        Record recordBorrow4 = this.borrowBookService.statisticsBorrowCnt(CurrentUser.getSchoolCode()
+                , CommonKit.dealStartTime(CommonKit.getBeginTime(dateYear4,dateMonth4))
+                , CommonKit.dealEndTime(CommonKit.getEndTime(dateYear4,dateMonth4)));
+        Record recordReturn4 = this.borrowBookService.statisticsReturnCnt(CurrentUser.getSchoolCode()
+                , CommonKit.dealStartTime(CommonKit.getBeginTime(dateYear4,dateMonth4))
+                , CommonKit.dealEndTime(CommonKit.getEndTime(dateYear4,dateMonth4)));
+        JSONObject data4 = new JSONObject();
+        data4.put("month", dateMonth4);
+        data4.put("borrow_cnt", recordBorrow4.getStr("borrow_cnt"));
+        data4.put("return_cnt", recordReturn4.getStr("return_cnt"));
+        monthList.add(data4);
+
+        cal.add(Calendar.MONTH, -5); //上五月
+        int dateYear5 = Integer.parseInt(sdfYear.format(cal.getTime()));
+        int dateMonth5 = Integer.parseInt(sdfMonth.format(cal.getTime()));
+        Record recordBorrow5= this.borrowBookService.statisticsBorrowCnt(CurrentUser.getSchoolCode()
+                , CommonKit.dealStartTime(CommonKit.getBeginTime(dateYear5,dateMonth5))
+                , CommonKit.dealEndTime(CommonKit.getEndTime(dateYear5,dateMonth5)));
+        Record recordReturn5 = this.borrowBookService.statisticsReturnCnt(CurrentUser.getSchoolCode()
+                , CommonKit.dealStartTime(CommonKit.getBeginTime(dateYear5,dateMonth5))
+                , CommonKit.dealEndTime(CommonKit.getEndTime(dateYear5,dateMonth5)));
+        JSONObject data5 = new JSONObject();
+        data5.put("month", dateMonth5);
+        data5.put("borrow_cnt", recordBorrow5.getStr("borrow_cnt"));
+        data5.put("return_cnt", recordReturn5.getStr("return_cnt"));
+        monthList.add(data5);
+
+        JSONObject dataResult = new JSONObject();
+        dataResult.put("list", monthList);
+
+        return dataResult;
     }
 
 }

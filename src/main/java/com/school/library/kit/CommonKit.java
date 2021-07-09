@@ -4,10 +4,16 @@ import com.jfinal.kit.StrKit;
 import org.apache.commons.codec.digest.DigestUtils;
 
 import java.math.BigDecimal;
+import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.YearMonth;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 
 /**
  * @Description 公共工具类
@@ -151,6 +157,53 @@ public class CommonKit {
             return sdf.parse(dateStr);
         }
         return null;
+    }
+
+    /**
+     * 获取指定年月的开始日期
+     * @param year
+     * @param month
+     * @return
+     */
+    public static String getBeginTime(int year, int month) {
+        YearMonth yearMonth = YearMonth.of(year, month);
+        LocalDate localDate = yearMonth.atDay(1);
+        LocalDateTime startOfDay = localDate.atStartOfDay();
+        ZonedDateTime zonedDateTime = startOfDay.atZone(ZoneId.of("Asia/Shanghai"));
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        return sdf.format(Date.from(zonedDateTime.toInstant()));
+    }
+
+    /**
+     * 获取指定年月的结束日期
+     * @param year
+     * @param month
+     * @return
+     */
+    public static String getEndTime(int year, int month) {
+        YearMonth yearMonth = YearMonth.of(year, month);
+        LocalDate endOfMonth = yearMonth.atEndOfMonth();
+        LocalDateTime localDateTime = endOfMonth.atTime(23, 59, 59, 999);
+        ZonedDateTime zonedDateTime = localDateTime.atZone(ZoneId.of("Asia/Shanghai"));
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        return sdf.format(Date.from(zonedDateTime.toInstant()));
+    }
+
+    /**
+     * 计算百分比
+     * @param numerator
+     * @param denominator
+     * @return
+     */
+    public static String getRatio(int numerator, int denominator) {
+        // 创建一个数值格式化对象
+        NumberFormat numberFormat = NumberFormat.getInstance();
+        // 设置精确到小数点后2位
+        numberFormat.setMaximumFractionDigits(2);
+        String result = numberFormat.format((float)  numerator/ (float)denominator* 100);//所占百分比
+        return result;
     }
 
 }
