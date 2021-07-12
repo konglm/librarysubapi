@@ -279,7 +279,7 @@
 
     #sql("getBookBorrowList")
         select a.book_storage_id, a.book_storage_item_id, a.bar_code, b.book_name, b.author, d.borrower, isnull(d.dpt_name,'') dpt_name
-        , isnull(d.grd_name,'') grd_name, isnull(d.cls_name,'') cls_name, d.borrow_time, isnull(d.return_time,''), d.over_days, a.book_id, d.return_status
+        , isnull(d.grd_name,'') grd_name, isnull(d.cls_name,'') cls_name, d.borrow_time, isnull(d.return_time,'') return_time, d.over_days, a.book_id, d.return_status
         from book_storage_item b, book_storage c, book_storage_item_bar_code a, borrow_book d
         where a.del = 0 and b.del = 0 and c.del = 0 and d.del = 0
         and a.book_storage_item_id = b.id and a.book_storage_id = c.id and a.bar_code = d.bar_code

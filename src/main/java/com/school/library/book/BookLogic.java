@@ -471,16 +471,29 @@ public class BookLogic {
 	public JSONObject getBookInfoByBar(String barCode, int pageNumber, int pageSize) {
 		JSONObject data = new JSONObject();
 		Record bookInfo = this.itemBarCodeService.getBookInfoByBar(CurrentUser.getSchoolCode(), barCode);
-		data.put("bar_code", bookInfo.getStr("bar_code"));
-		data.put("check_no", bookInfo.getStr("check_no"));
-		data.put("book_name", bookInfo.getStr("book_name"));
-		data.put("author", bookInfo.getStr("author"));
-		data.put("publisher", bookInfo.getStr("publisher"));
-		data.put("publish_date", bookInfo.getStr("publish_date"));
-		data.put("price", bookInfo.getStr("price"));
-		data.put("catalog_name", bookInfo.getStr("catalog_name"));
-		data.put("create_time", bookInfo.getStr("create_time"));
-		data.put("create_user_name", bookInfo.getStr("create_user_name"));
+		if(bookInfo != null) {
+			data.put("bar_code", bookInfo.getStr("bar_code"));
+			data.put("check_no", bookInfo.getStr("check_no"));
+			data.put("book_name", bookInfo.getStr("book_name"));
+			data.put("author", bookInfo.getStr("author"));
+			data.put("publisher", bookInfo.getStr("publisher"));
+			data.put("publish_date", bookInfo.getStr("publish_date"));
+			data.put("price", bookInfo.getStr("price"));
+			data.put("catalog_name", bookInfo.getStr("catalog_name"));
+			data.put("create_time", bookInfo.getStr("create_time"));
+			data.put("create_user_name", bookInfo.getStr("create_user_name"));
+		} else {
+			data.put("bar_code", "");
+			data.put("check_no", "");
+			data.put("book_name", "");
+			data.put("author","");
+			data.put("publisher", "");
+			data.put("publish_date", "");
+			data.put("price", "");
+			data.put("catalog_name", "");
+			data.put("create_time", "");
+			data.put("create_user_name", "");
+		}
 		Page<Record> borrowList = this.itemBarCodeService.getBookBorrowList(CurrentUser.getSchoolCode(), barCode, pageNumber, pageSize);
 		for (Record record:borrowList.getList()){
 			if ("".equals(record.getStr("return_time"))) {
