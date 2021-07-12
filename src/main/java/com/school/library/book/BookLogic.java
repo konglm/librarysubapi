@@ -310,7 +310,13 @@ public class BookLogic {
 				record.set("is_over_day", 0);
 			}
 			long leftDays = borrowDays - CommonKit.differDays(record.getDate("borrow_time"), new Date());
-			record.set("left_days", leftDays);
+			if(leftDays < 0) {
+				record.set("is_over_day", 1);
+				record.set("over_days", Math.abs(leftDays));
+				record.set("left_days", 0);
+			} else {
+				record.set("left_days", leftDays);
+			}
 		}
 		return records;
 	}
