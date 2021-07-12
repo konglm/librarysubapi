@@ -12,17 +12,23 @@ import com.jfinal.plugin.activerecord.SqlPara;
 import com.jfnice.ext.CondPara;
 import com.jfnice.ext.CurrentUser;
 import com.jfnice.model.Book;
+import com.jfnice.model.BorrowBook;
 import com.jfnice.model.BorrowSetting;
 import com.school.library.bookstorageitembarcode.BookStorageItemBarCodeService;
 import com.school.library.borrowsetting.BorrowSettingLogic;
 import com.school.library.catalog.CatalogLogic;
 import com.school.library.kit.CommonKit;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.VerticalAlignment;
+import org.apache.poi.xssf.streaming.SXSSFCell;
+import org.apache.poi.xssf.streaming.SXSSFRow;
+import org.apache.poi.xssf.streaming.SXSSFSheet;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 public class BookLogic {
 
@@ -159,6 +165,95 @@ public class BookLogic {
 		return items;
 	}
 
+	public SXSSFWorkbook creteExcelBooksIn(int catalogId, String beginTime, String endTime, String keyword) {
+
+		JSONObject json = new JSONObject();
+		String tableTitle = "在馆图书";
+		Map<String, String> headMap = new LinkedHashMap<>();
+		headMap.put("条形码", "bar_code");
+		headMap.put("书本名", "book_name");
+		headMap.put("作者", "author");
+		headMap.put("金额", "price");
+		headMap.put("目录名称", "catalog_name");
+		headMap.put("索书号", "check_no");
+		headMap.put("入库日期", "create_time");
+		headMap.put("入库人", "create_user_name");
+		headMap.put("借阅次数", "borrow_cnt");
+
+		SXSSFWorkbook wb = new SXSSFWorkbook();
+		SXSSFSheet sheet = wb.createSheet("sheet1");
+		SXSSFRow row = sheet.createRow(0);
+		SXSSFCell cell;
+		String key;
+
+		CellStyle cellStyle = wb.createCellStyle();
+		Font cellFont = wb.createFont();
+		cellFont.setFontName("宋体");
+		cellFont.setFontHeightInPoints((short)10);
+		cellStyle.setFont(cellFont);
+		cellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+
+		int rowIndex = 0;
+		//第一行
+		cell = row.createCell(rowIndex++);
+		cell.setCellStyle(cellStyle);
+		cell.setCellValue(tableTitle);
+
+		//第二行
+		row = sheet.createRow(rowIndex++);
+		//设置表头
+		//列名key值
+		List<String> exportableKeyList = new ArrayList<String>();
+		//第一列
+		int firstCellIndex = 0;
+		cell = row.createCell(firstCellIndex++);
+		cell.setCellStyle(cellStyle);
+		cell.setCellValue("序号");
+		exportableKeyList.add("seq");
+		//设置表头
+		int h = 0;
+		for (Map.Entry<String, String > entry: headMap.entrySet() ) {
+
+			sheet.setDefaultColumnStyle(h + firstCellIndex, cellStyle);
+			cell = row.createCell(h + firstCellIndex);
+			cell.setCellStyle(cellStyle);
+			cell.setCellValue(entry.getKey());
+			exportableKeyList.add(entry.getValue());
+			h++;
+		}
+
+		int pageNumber = 1;
+		int pageSize = 500;
+		Page<Record> page= this.itemBarCodeService.getBooksIn(CurrentUser.getSchoolCode(), catalogId, beginTime, endTime, keyword, pageNumber, pageSize);
+		int totalRow = page.getTotalRow();
+		int seqIndex = 1;
+		while(page.getTotalPage() >= pageNumber){
+			List<Record> list = page.getList();
+			if(null!= list && !list.isEmpty()){
+				for(int i = 0, len = list.size(); i < len; i++){
+					Record r = list.get(i);
+					row = sheet.createRow(rowIndex++);
+					for ( int j = 0, size = exportableKeyList.size(); j < size; j++ ) {
+						cell = row.createCell(j);
+						cell.setCellStyle(cellStyle);
+						key = exportableKeyList.get(j);
+						switch ( key ) {
+							case "seq":
+								cell.setCellValue(seqIndex++);
+								break;
+							default:
+								cell.setCellValue(r.getStr(key));
+						}
+					}
+
+				}
+			}
+			pageNumber = pageNumber + 1;
+			page = this.itemBarCodeService.getBooksIn(CurrentUser.getSchoolCode(), catalogId, beginTime, endTime, keyword, pageNumber, pageSize);
+		}
+		return wb;
+	}
+
 	/**
 	 * 查询在馆图书总数量
 	 * @param catalogId
@@ -215,6 +310,114 @@ public class BookLogic {
 			record.set("left_days", leftDays);
 		}
 		return records;
+	}
+
+	public SXSSFWorkbook creteExcelBooksBorrow(int catalogId, int isOverDay, String beginTime, String endTime, String keyword) {
+
+		JSONObject json = new JSONObject();
+		String tableTitle = "在馆图书";
+		Map<String, String> headMap = new LinkedHashMap<>();
+		headMap.put("条形码", "bar_code");
+		headMap.put("书本名", "book_name");
+		headMap.put("作者", "author");
+		headMap.put("借阅人", "borrower");
+		headMap.put("身份", "user_type");
+		headMap.put("部门", "dpt_name");
+		headMap.put("年级", "grd_name");
+		headMap.put("班级", "cls_name");
+		headMap.put("借阅日期", "borrow_time");
+		headMap.put("剩余借阅天数", "left_days");
+		headMap.put("是否超期", "is_over_day");
+		headMap.put("超期天数", "over_days");
+
+		SXSSFWorkbook wb = new SXSSFWorkbook();
+		SXSSFSheet sheet = wb.createSheet("sheet1");
+		SXSSFRow row = sheet.createRow(0);
+		SXSSFCell cell;
+		String key;
+
+		CellStyle cellStyle = wb.createCellStyle();
+		Font cellFont = wb.createFont();
+		cellFont.setFontName("宋体");
+		cellFont.setFontHeightInPoints((short)10);
+		cellStyle.setFont(cellFont);
+		cellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+
+		int rowIndex = 0;
+		//第一行
+		cell = row.createCell(rowIndex++);
+		cell.setCellStyle(cellStyle);
+		cell.setCellValue(tableTitle);
+
+		//第二行
+		row = sheet.createRow(rowIndex++);
+		//设置表头
+		//列名key值
+		List<String> exportableKeyList = new ArrayList<String>();
+		//第一列
+		int firstCellIndex = 0;
+		cell = row.createCell(firstCellIndex++);
+		cell.setCellStyle(cellStyle);
+		cell.setCellValue("序号");
+		exportableKeyList.add("seq");
+		//设置表头
+		int h = 0;
+		for (Map.Entry<String, String > entry: headMap.entrySet() ) {
+
+			sheet.setDefaultColumnStyle(h + firstCellIndex, cellStyle);
+			cell = row.createCell(h + firstCellIndex);
+			cell.setCellStyle(cellStyle);
+			cell.setCellValue(entry.getKey());
+			exportableKeyList.add(entry.getValue());
+			h++;
+		}
+
+		int pageNumber = 1;
+		int pageSize = 500;
+		Page<Record> page= this.itemBarCodeService.getBooksBorrow(CurrentUser.getSchoolCode(), catalogId, isOverDay, beginTime, endTime, keyword, pageNumber, pageSize);
+		BorrowSetting borrowSetting = settingLogic.queryIfNotNewBySchool(CurrentUser.getSchoolCode());
+		Integer borrowDays = borrowSetting.getBorrowDays();
+		for (Record record:page.getList()){
+			if ("".equals(record.getStr("stu_code"))) {
+				record.set("user_type", "教师");
+			} else {
+				record.set("user_type", "学生");
+			}
+			if((record.get("over_days") != null) && (record.getInt("over_days") > 0)) {
+				record.set("is_over_day", "是");
+			} else {
+				record.set("is_over_day", "否");
+			}
+			long leftDays = borrowDays - CommonKit.differDays(record.getDate("borrow_time"), new Date());
+			record.set("left_days", leftDays);
+		}
+		int totalRow = page.getTotalRow();
+		int seqIndex = 1;
+		while(page.getTotalPage() >= pageNumber){
+			List<Record> list = page.getList();
+			if(null!= list && !list.isEmpty()){
+				for(int i = 0, len = list.size(); i < len; i++){
+					Record r = list.get(i);
+					row = sheet.createRow(rowIndex++);
+					for ( int j = 0, size = exportableKeyList.size(); j < size; j++ ) {
+						cell = row.createCell(j);
+						cell.setCellStyle(cellStyle);
+						key = exportableKeyList.get(j);
+						switch ( key ) {
+							case "seq":
+								cell.setCellValue(seqIndex++);
+								break;
+							default:
+								cell.setCellValue(r.getStr(key));
+						}
+					}
+
+				}
+			}
+			pageNumber = pageNumber + 1;
+			page = this.itemBarCodeService.getBooksBorrow(CurrentUser.getSchoolCode(), catalogId, isOverDay, beginTime, endTime, keyword, pageNumber, pageSize);
+		}
+		return wb;
 	}
 
 	/**

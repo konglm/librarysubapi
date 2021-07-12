@@ -14,6 +14,7 @@ import com.jfinal.plugin.activerecord.Record;
 import com.jfinal.plugin.activerecord.tx.Tx;
 import com.jfnice.enums.OpCodeEnum;
 import com.jfnice.ext.ErrorMsg;
+import com.jfnice.ext.ExcelExport;
 import com.jfnice.model.BookBarCode;
 import com.jfnice.model.Catalog;
 import com.school.api.gx.PtApi;
@@ -31,6 +32,7 @@ import com.school.library.constants.SysConstants;
 import com.school.library.kit.CommonKit;
 import com.school.library.search.SearchLogic;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -221,6 +223,20 @@ public class BookController extends JFniceBaseController {
 	}
 
 	/**
+	 * 导出在馆图书
+	 */
+	@JsyPermissions(OpCodeEnum.INDEX)
+	public void excelBooksIn(){
+		int catalogId = getInt("catalog_id");
+		String beginTime = getPara("begin_time");
+		String endTime = getPara("end_time");
+		String keyword = getPara("keyword");
+		SXSSFWorkbook wb = this.logic.creteExcelBooksIn(catalogId, beginTime, endTime, keyword);
+		render(new ExcelExport(wb, "在馆图书"));
+
+	}
+
+	/**
 	 * 查询外借图书
 	 */
 	public void getBooksBorrow(){
@@ -236,6 +252,21 @@ public class BookController extends JFniceBaseController {
 		data.put("total_amount", this.logic.getBooksBorrowAmount(catalogId, isOverDay, beginTime, endTime, keyword));
 		data.put("list", this.logic.getBooksBorrow(catalogId, isOverDay, beginTime, endTime, keyword, pageNumber, pageSize));
 		ok("查询书籍成功",data);
+
+	}
+
+	/**
+	 * 导出外借图书
+	 */
+	@JsyPermissions(OpCodeEnum.INDEX)
+	public void excelBooksBorrow(){
+		int catalogId = getInt("catalog_id");
+		int isOverDay= getInt("is_over_day");
+		String beginTime = getPara("begin_time");
+		String endTime = getPara("end_time");
+		String keyword = getPara("keyword");
+		SXSSFWorkbook wb = this.logic.creteExcelBooksBorrow(catalogId, isOverDay, beginTime, endTime, keyword);
+		render(new ExcelExport(wb, "外借图书"));
 
 	}
 
