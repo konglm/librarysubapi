@@ -294,7 +294,10 @@ public class BookLogic {
 	public Page<Record> getBooksBorrow(int catalogId, int isOverDay, String beginTime, String endTime, String keyword, int pageNumber, int pageSize) {
 		Page<Record> records = this.itemBarCodeService.getBooksBorrow(CurrentUser.getSchoolCode(), catalogId, isOverDay, beginTime, endTime, keyword, pageNumber, pageSize);
 		BorrowSetting borrowSetting = settingLogic.queryIfNotNewBySchool(CurrentUser.getSchoolCode());
-		Integer borrowDays = borrowSetting.getBorrowDays();
+		Integer borrowDays = 0;
+		if(borrowSetting != null) {
+			borrowDays = borrowSetting.getBorrowDays();
+		}
 		for (Record record:records.getList()){
 			if ("".equals(record.getStr("stu_code"))) {
 				record.set("user_type", "teacher");

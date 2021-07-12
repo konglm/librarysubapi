@@ -133,9 +133,9 @@
 	#sql("getBooksIn")
         select a.book_storage_id, a.book_storage_item_id, a.bar_code, b.book_name, b.author, b.publisher, b.price, c.name
         , c.create_time, c.create_user_code, c.create_user_name, b.catalog_name, count(d.bar_code) borrow_cnt, a.book_id
-        from book_storage_item b, book_storage c, book_storage_item_bar_code a, borrow_book d
-        where a.del = 0 and b.del = 0 and c.del = 0 and d.del = 0
-        and a.book_storage_item_id = b.id and a.book_storage_id = c.id and a.bar_code = d.bar_code
+        from book_storage_item b, book_storage c, book_storage_item_bar_code a left join borrow_book d on d.del = 0  and a.bar_code = d.bar_code
+        where a.del = 0 and b.del = 0 and c.del = 0
+        and a.book_storage_item_id = b.id and a.book_storage_id = c.id
         and a.school_code = #para(school_code) and c.status = 1 and a.bar_code not in (select bar_code from borrow_book where return_status = 0 and del = 0)
         #if(catalog_id)
           and b.catalog_id = #para(catalog_id)
@@ -212,15 +212,13 @@
         #if(end_time)
           AND CONVERT(varchar,c.create_time,23) <= #para(end_time)
         #end
-        #if(is_over_day = 1)
+        #if(is_over_day == 1)
           AND d.over_days > 0
         #end
         #if(keyword)
           and (a.bar_code like ('%' + #para(keyword) + '%') or b.book_name like ('%' + #para(keyword) + '%')
           or b.author like ('%' + #para(keyword) + '%'))
         #end
-        group by a.book_storage_id, a.book_storage_item_id, a.bar_code, b.book_name, b.author, b.publisher, b.price, c.name
-                , c.create_time, c.create_user_code, c.create_user_name, b.catalog_name
     #end
 
     #sql("getBooksBorrowCnt")
@@ -238,7 +236,7 @@
         #if(end_time)
           AND CONVERT(varchar,c.create_time,23) <= #para(end_time)
         #end
-        #if(is_over_day = 1)
+        #if(is_over_day == 1)
           AND d.over_days > 0
         #end
         #if(keyword)
@@ -262,7 +260,7 @@
         #if(end_time)
           AND CONVERT(varchar,c.create_time,23) <= #para(end_time)
         #end
-        #if(is_over_day = 1)
+        #if(is_over_day == 1)
           AND d.over_days > 0
         #end
         #if(keyword)

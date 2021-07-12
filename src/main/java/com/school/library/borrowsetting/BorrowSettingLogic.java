@@ -50,7 +50,7 @@ public class BorrowSettingLogic {
 	 */
 	public BorrowSetting queryIfNotNewBySchool(String schoolCode){
 		//查询学校记录
-		BorrowSetting setting = this.service.queryBySchool(CurrentUser.getSchoolCode(), SysConstants.SCHOOL_RECORD_SOURCE);
+		BorrowSetting setting = this.service.queryBySchool(schoolCode, SysConstants.SCHOOL_RECORD_SOURCE);
 		//学校记录为空
 		if(null == setting){
 			//批量插入的记录
