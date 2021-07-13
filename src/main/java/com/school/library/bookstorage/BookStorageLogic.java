@@ -676,7 +676,7 @@ public class BookStorageLogic {
 	 */
 	public String getItemByNameCnt(String name, String beginTime, String endTime, String keyword) {
 		Record record = this.itemBarCodeService.getItemByNameCnt(CurrentUser.getSchoolCode(), name, beginTime, endTime, keyword);
-		return record.getStr("cnt");
+		return record.getStr("total_cnt");
 	}
 
 	/**
@@ -689,7 +689,7 @@ public class BookStorageLogic {
 	 */
 	public String getItemByNameAmount(String name, String beginTime, String endTime, String keyword) {
 		Record record = this.itemBarCodeService.getItemByNameAmount(CurrentUser.getSchoolCode(), name, beginTime, endTime, keyword);
-		return record.getStr("cnt");
+		return record.getStr("total_amount");
 	}
 
 }
