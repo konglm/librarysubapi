@@ -278,15 +278,15 @@ public class StatisticsLogic {
         data.put("total_cnt", totalCnt);
         data.put("total_amount", recordTotalAmount.getStr("total_amount"));
 
-        int totalIn = recordTotalIn.getInt("total_in");
+        int totalIn = recordTotalIn.getInt("total_cnt");
         data.put("total_in", totalIn);
         data.put("total_in_ratio", CommonKit.getRatio(totalIn, totalCnt));
 
-        int totalOut = recordTotalOut.getInt("total_out");
+        int totalOut = recordTotalOut.getInt("total_cnt");
         data.put("total_out", totalOut);
         data.put("total_out_ratio", CommonKit.getRatio(totalOut, totalCnt));
 
-        int totalRepair = recordTotalRepair.getInt("total_repair");
+        int totalRepair = recordTotalRepair.getInt("total_cnt");
         data.put("total_repair", totalRepair);
         data.put("total_repair_ratio", CommonKit.getRatio(totalRepair, totalCnt));
 
@@ -354,7 +354,7 @@ public class StatisticsLogic {
         data1.put("return_cnt", recordReturn1.getStr("return_cnt"));
         monthList.add(data1);
 
-        cal.add(Calendar.MONTH, -2); //上两月
+        cal.add(Calendar.MONTH, -1); //上两月
         int dateYear2 = Integer.parseInt(sdfYear.format(cal.getTime()));
         int dateMonth2 = Integer.parseInt(sdfMonth.format(cal.getTime()));
         Record recordBorrow2 = this.borrowBookService.statisticsBorrowCnt(CurrentUser.getSchoolCode()
@@ -369,7 +369,7 @@ public class StatisticsLogic {
         data2.put("return_cnt", recordReturn2.getStr("return_cnt"));
         monthList.add(data2);
 
-        cal.add(Calendar.MONTH, -3); //上三月
+        cal.add(Calendar.MONTH, -1); //上三月
         int dateYear3 = Integer.parseInt(sdfYear.format(cal.getTime()));
         int dateMonth3 = Integer.parseInt(sdfMonth.format(cal.getTime()));
         Record recordBorrow3 = this.borrowBookService.statisticsBorrowCnt(CurrentUser.getSchoolCode()
@@ -384,7 +384,7 @@ public class StatisticsLogic {
         data3.put("return_cnt", recordReturn3.getStr("return_cnt"));
         monthList.add(data3);
 
-        cal.add(Calendar.MONTH, -4); //上四月
+        cal.add(Calendar.MONTH, -1); //上四月
         int dateYear4 = Integer.parseInt(sdfYear.format(cal.getTime()));
         int dateMonth4 = Integer.parseInt(sdfMonth.format(cal.getTime()));
         Record recordBorrow4 = this.borrowBookService.statisticsBorrowCnt(CurrentUser.getSchoolCode()
@@ -399,7 +399,7 @@ public class StatisticsLogic {
         data4.put("return_cnt", recordReturn4.getStr("return_cnt"));
         monthList.add(data4);
 
-        cal.add(Calendar.MONTH, -5); //上五月
+        cal.add(Calendar.MONTH, -1); //上五月
         int dateYear5 = Integer.parseInt(sdfYear.format(cal.getTime()));
         int dateMonth5 = Integer.parseInt(sdfMonth.format(cal.getTime()));
         Record recordBorrow5= this.borrowBookService.statisticsBorrowCnt(CurrentUser.getSchoolCode()
