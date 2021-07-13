@@ -70,7 +70,7 @@
     #end
 
     #sql("statisticsTotalAmount")
-        select sum(price) total_amount
+        select isnull(sum(price),0) total_amount
         from book_bar_code
         where school_code = #para(school_code)
         and del = 0 and status = 1

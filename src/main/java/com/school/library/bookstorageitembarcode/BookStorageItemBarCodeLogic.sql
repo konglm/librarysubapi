@@ -111,7 +111,7 @@
     #end
 
     #sql("getItemByNameAmount")
-        select sum(b.price) total_amount
+        select isnull(sum(b.price),0) total_amount
         from book_storage_item_bar_code a, book_storage_item b, book_storage c
         where a.del = 0 and b.del = 0 and c.del = 0 and a.book_storage_item_id = b.id and a.book_storage_id = c.id
         and a.school_code = #para(school_code)
