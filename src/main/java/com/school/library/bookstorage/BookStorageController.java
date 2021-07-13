@@ -11,6 +11,7 @@ import com.jfinal.kit.JsonKit;
 import com.jfinal.plugin.activerecord.Page;
 import com.jfnice.admin.dict.DictKit;
 import com.jfnice.enums.OpCodeEnum;
+import com.jfnice.ext.ExcelExport;
 import com.jfnice.model.BookStorageItem;
 import com.jfnice.annotation.JsyPermissions;
 import com.jfnice.core.JFniceBaseController;
@@ -21,6 +22,7 @@ import com.school.library.constants.DictConstants;
 import com.school.library.constants.SysConstants;
 import com.school.library.kit.CommonKit;
 import com.school.library.kit.JsyAddDelEdit;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 
 import java.text.ParseException;
 
@@ -215,6 +217,20 @@ public class BookStorageController extends JFniceBaseController {
 		data.put("total_amount", this.logic.getItemByNameAmount(name, beginTime, endTime, keyword));
 		data.put("list", this.logic.getItemByName(name, beginTime, endTime, keyword, pageNumber, pageSize));
 		ok("查询入库信息成功", data);
+
+	}
+
+	/**
+	 * 导出入库明细
+	 */
+	@JsyPermissions(OpCodeEnum.INDEX)
+	public void excelItemByName(){
+		String name = getPara("name");
+		String beginTime = getPara("begin_time");
+		String endTime = getPara("end_time");
+		String keyword = getPara("keyword");
+		SXSSFWorkbook wb = this.logic.createExcelItemByName(name, beginTime, endTime, keyword);
+		render(new ExcelExport(wb, "入库明细"));
 
 	}
 

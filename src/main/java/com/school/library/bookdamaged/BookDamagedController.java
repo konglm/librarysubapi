@@ -16,6 +16,7 @@ import com.jfnice.enums.OpCodeEnum;
 import com.jfnice.ext.CondPara;
 import com.jfnice.ext.CurrentUser;
 import com.jfnice.ext.ErrorMsg;
+import com.jfnice.ext.ExcelExport;
 import com.jfnice.interceptor.TxPost;
 import com.jfnice.model.BookBarCode;
 import com.jfnice.model.BookDamaged;
@@ -29,6 +30,7 @@ import com.school.library.borrowbook.BorrowBookService;
 import com.school.library.kit.CommonKit;
 import com.school.library.kit.JsyAddDelEdit;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 
 import java.util.Date;
 import java.util.Map;
@@ -170,6 +172,15 @@ public class BookDamagedController extends JFniceBaseController {
 		Page<BookDamaged> bookDamagedPage = logic.damagedList(unitCode, pageNumber, pageSize,keywords,repairType,bookStatus);
 		data.put("list", bookDamagedPage);
 		ok("查询成功",data);
+	}
+
+	@JsyPermissions(OpCodeEnum.INDEX)
+	public void excelDamagedList(@Para("unit_code") String unitCode,
+								 @Para("repair_type") String repairType,
+								 @Para("book_status") String bookStatus,
+								 @Para("keywords") String keywords){
+		SXSSFWorkbook wb = this.logic.createExcelDamagedList(unitCode, keywords,repairType,bookStatus);
+		render(new ExcelExport(wb, "问题图书"));
 	}
 
 	/**

@@ -165,14 +165,14 @@ public class BookLogic {
 		return items;
 	}
 
-	public SXSSFWorkbook creteExcelBooksIn(int catalogId, String beginTime, String endTime, String keyword) {
+	public SXSSFWorkbook createExcelBooksIn(int catalogId, String beginTime, String endTime, String keyword) {
 
 		JSONObject json = new JSONObject();
 		String tableTitle = "在馆图书";
 		Map<String, String> headMap = new LinkedHashMap<>();
-		headMap.put("条形码", "bar_code");
-		headMap.put("书本名", "book_name");
-		headMap.put("作者", "author");
+		headMap.put("编号", "bar_code");
+		headMap.put("书名", "book_name");
+		headMap.put("著者", "author");
 		headMap.put("金额", "price");
 		headMap.put("目录名称", "catalog_name");
 		headMap.put("索书号", "check_no");
@@ -321,14 +321,14 @@ public class BookLogic {
 		return records;
 	}
 
-	public SXSSFWorkbook creteExcelBooksBorrow(int catalogId, int isOverDay, String beginTime, String endTime, String keyword) {
+	public SXSSFWorkbook createExcelBooksBorrow(int catalogId, int isOverDay, String beginTime, String endTime, String keyword) {
 
 		JSONObject json = new JSONObject();
 		String tableTitle = "在馆图书";
 		Map<String, String> headMap = new LinkedHashMap<>();
-		headMap.put("条形码", "bar_code");
-		headMap.put("书本名", "book_name");
-		headMap.put("作者", "author");
+		headMap.put("编号", "bar_code");
+		headMap.put("书名", "book_name");
+		headMap.put("著者", "author");
 		headMap.put("借阅人", "borrower");
 		headMap.put("身份", "user_type");
 		headMap.put("部门", "dpt_name");

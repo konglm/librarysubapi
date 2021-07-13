@@ -35,6 +35,13 @@ import com.school.library.constants.DictConstants;
 import com.school.library.constants.RedisConstants;
 import com.school.library.kit.CommonKit;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.VerticalAlignment;
+import org.apache.poi.xssf.streaming.SXSSFCell;
+import org.apache.poi.xssf.streaming.SXSSFRow;
+import org.apache.poi.xssf.streaming.SXSSFSheet;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 
 import java.util.*;
 
@@ -559,7 +566,7 @@ public class BookStorageLogic {
 	/**
 	 * 通过入库事件获取入库明细
 	 * @param name
-	 * @param startTime
+	 * @param beginTime
 	 * @param endTime
 	 * @param keyword
 	 * @param pageNumber
@@ -569,6 +576,94 @@ public class BookStorageLogic {
 	public Page<Record> getItemByName(String name, String beginTime, String endTime, String keyword, int pageNumber, int pageSize){
 		Page<Record> items = this.itemBarCodeService.getItemByName(CurrentUser.getSchoolCode(), name, beginTime, endTime, keyword, pageNumber, pageSize);
 		return items;
+	}
+
+	public SXSSFWorkbook createExcelItemByName(String name, String beginTime, String endTime, String keyword) {
+
+		JSONObject json = new JSONObject();
+		String tableTitle = "入库明细";
+		Map<String, String> headMap = new LinkedHashMap<>();
+		headMap.put("编号", "bar_code");
+		headMap.put("书名", "book_name");
+		headMap.put("著者", "author");
+		headMap.put("出版社", "publisher");
+		headMap.put("图书金额", "price");
+		headMap.put("入库事件", "name");
+		headMap.put("入库日期", "create_time");
+		headMap.put("入库人", "create_user_name");
+
+		SXSSFWorkbook wb = new SXSSFWorkbook();
+		SXSSFSheet sheet = wb.createSheet("sheet1");
+		SXSSFRow row = sheet.createRow(0);
+		SXSSFCell cell;
+		String key;
+
+		CellStyle cellStyle = wb.createCellStyle();
+		Font cellFont = wb.createFont();
+		cellFont.setFontName("宋体");
+		cellFont.setFontHeightInPoints((short)10);
+		cellStyle.setFont(cellFont);
+		cellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+
+		int rowIndex = 0;
+		//第一行
+		cell = row.createCell(rowIndex++);
+		cell.setCellStyle(cellStyle);
+		cell.setCellValue(tableTitle);
+
+		//第二行
+		row = sheet.createRow(rowIndex++);
+		//设置表头
+		//列名key值
+		List<String> exportableKeyList = new ArrayList<String>();
+		//第一列
+		int firstCellIndex = 0;
+		cell = row.createCell(firstCellIndex++);
+		cell.setCellStyle(cellStyle);
+		cell.setCellValue("序号");
+		exportableKeyList.add("seq");
+		//设置表头
+		int h = 0;
+		for (Map.Entry<String, String > entry: headMap.entrySet() ) {
+
+			sheet.setDefaultColumnStyle(h + firstCellIndex, cellStyle);
+			cell = row.createCell(h + firstCellIndex);
+			cell.setCellStyle(cellStyle);
+			cell.setCellValue(entry.getKey());
+			exportableKeyList.add(entry.getValue());
+			h++;
+		}
+
+		int pageNumber = 1;
+		int pageSize = 500;
+		Page<Record> page= this.itemBarCodeService.getItemByName(CurrentUser.getSchoolCode(), name, beginTime, endTime, keyword, pageNumber, pageSize);
+		int totalRow = page.getTotalRow();
+		int seqIndex = 1;
+		while(page.getTotalPage() >= pageNumber){
+			List<Record> list = page.getList();
+			if(null!= list && !list.isEmpty()){
+				for(int i = 0, len = list.size(); i < len; i++){
+					Record r = list.get(i);
+					row = sheet.createRow(rowIndex++);
+					for ( int j = 0, size = exportableKeyList.size(); j < size; j++ ) {
+						cell = row.createCell(j);
+						cell.setCellStyle(cellStyle);
+						key = exportableKeyList.get(j);
+						switch ( key ) {
+							case "seq":
+								cell.setCellValue(seqIndex++);
+								break;
+							default:
+								cell.setCellValue(r.getStr(key));
+						}
+					}
+
+				}
+			}
+			pageNumber = pageNumber + 1;
+			page = this.itemBarCodeService.getItemByName(CurrentUser.getSchoolCode(), name, beginTime, endTime, keyword, pageNumber, pageSize);
+		}
+		return wb;
 	}
 
 	/**

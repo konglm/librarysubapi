@@ -1,5 +1,6 @@
 package com.school.library.bookdamaged;
 
+import com.alibaba.fastjson.JSONObject;
 import com.jfinal.aop.Before;
 import com.jfinal.aop.Inject;
 import com.jfinal.core.paragetter.Para;
@@ -20,9 +21,15 @@ import com.school.library.borrowbook.BorrowBookService;
 import com.school.library.borrowsetting.BorrowSettingLogic;
 import com.school.library.kit.CommonKit;
 import com.school.library.userinfo.UserInfoLogic;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.VerticalAlignment;
+import org.apache.poi.xssf.streaming.SXSSFCell;
+import org.apache.poi.xssf.streaming.SXSSFRow;
+import org.apache.poi.xssf.streaming.SXSSFSheet;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 public class BookDamagedLogic {
 
@@ -157,6 +164,110 @@ public class BookDamagedLogic {
 				.set("book_status",bookStatus);
 		SqlPara sqlPara = Db.getSqlPara("BookDamagedLogic.queryBysch", kv);
 		return BookDamaged.dao.paginate(pageNumber,pageSize,sqlPara);
+	}
+
+	public SXSSFWorkbook createExcelDamagedList(String unitCode,String keywords,String repairType,String bookStatus) {
+
+		JSONObject json = new JSONObject();
+		String tableTitle = "问题图书";
+		Map<String, String> headMap = new LinkedHashMap<>();
+		headMap.put("编号", "bar_code");
+		headMap.put("书名", "book_name");
+		headMap.put("著者", "author");
+		headMap.put("图书情况", "book_status");
+		headMap.put("记录人", "recorder");
+		headMap.put("记录日期", "record_time");
+		headMap.put("维修状态", "last_status");
+		headMap.put("维修人", "repairer");
+		headMap.put("维修时间", "repair_time");
+
+		SXSSFWorkbook wb = new SXSSFWorkbook();
+		SXSSFSheet sheet = wb.createSheet("sheet1");
+		SXSSFRow row = sheet.createRow(0);
+		SXSSFCell cell;
+		String key;
+
+		CellStyle cellStyle = wb.createCellStyle();
+		Font cellFont = wb.createFont();
+		cellFont.setFontName("宋体");
+		cellFont.setFontHeightInPoints((short)10);
+		cellStyle.setFont(cellFont);
+		cellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+
+		int rowIndex = 0;
+		//第一行
+		cell = row.createCell(rowIndex++);
+		cell.setCellStyle(cellStyle);
+		cell.setCellValue(tableTitle);
+
+		//第二行
+		row = sheet.createRow(rowIndex++);
+		//设置表头
+		//列名key值
+		List<String> exportableKeyList = new ArrayList<String>();
+		//第一列
+		int firstCellIndex = 0;
+		cell = row.createCell(firstCellIndex++);
+		cell.setCellStyle(cellStyle);
+		cell.setCellValue("序号");
+		exportableKeyList.add("seq");
+		//设置表头
+		int h = 0;
+		for (Map.Entry<String, String > entry: headMap.entrySet() ) {
+
+			sheet.setDefaultColumnStyle(h + firstCellIndex, cellStyle);
+			cell = row.createCell(h + firstCellIndex);
+			cell.setCellStyle(cellStyle);
+			cell.setCellValue(entry.getKey());
+			exportableKeyList.add(entry.getValue());
+			h++;
+		}
+
+		int pageNumber = 1;
+		int pageSize = 500;
+		Page<BookDamaged> page= this.damagedList(unitCode, pageNumber, pageSize,keywords,repairType,bookStatus);
+		for (BookDamaged record:page.getList()){
+			if ("2".equals(record.getStr("book_status"))) {
+				record.set("book_status", "破损");
+				if("1".equals(record.getStr("last_status"))) {
+					record.set("last_status", "已维修");
+				} else {
+					record.set("last_status", "未维修");
+				}
+			} else if ("3".equals(record.getStr("book_status"))) {
+				record.set("book_status", "损毁");
+			} else {
+				record.set("book_status", "丢失");
+				record.set("last_status", "");
+			}
+		}
+		int totalRow = page.getTotalRow();
+		int seqIndex = 1;
+		while(page.getTotalPage() >= pageNumber){
+			List<BookDamaged> list = page.getList();
+			if(null!= list && !list.isEmpty()){
+				for(int i = 0, len = list.size(); i < len; i++){
+					BookDamaged r = list.get(i);
+					row = sheet.createRow(rowIndex++);
+					for ( int j = 0, size = exportableKeyList.size(); j < size; j++ ) {
+						cell = row.createCell(j);
+						cell.setCellStyle(cellStyle);
+						key = exportableKeyList.get(j);
+						switch ( key ) {
+							case "seq":
+								cell.setCellValue(seqIndex++);
+								break;
+							default:
+								cell.setCellValue(r.getStr(key));
+						}
+					}
+
+				}
+			}
+			pageNumber = pageNumber + 1;
+			page = this.damagedList(unitCode, pageNumber, pageSize,keywords,repairType,bookStatus);
+		}
+		return wb;
 	}
 
 	/**

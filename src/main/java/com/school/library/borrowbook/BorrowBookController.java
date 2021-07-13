@@ -13,6 +13,7 @@ import com.jfinal.plugin.activerecord.tx.Tx;
 import com.jfnice.enums.OpCodeEnum;
 import com.jfnice.ext.CurrentUser;
 import com.jfnice.ext.ErrorMsg;
+import com.jfnice.ext.ExcelExport;
 import com.jfnice.model.Book;
 import com.jfnice.model.BorrowSetting;
 import com.school.api.gx.PtApi;
@@ -25,6 +26,7 @@ import com.school.library.book.BookService;
 import com.school.library.bookinventory.BookInventoryLogic;
 import com.school.library.borrowsetting.BorrowSettingLogic;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -203,6 +205,20 @@ public class BorrowBookController extends JFniceBaseController {
         Page<Record> page = logic.depositList(keywords, startTime, endTime, pageNumber, pageSize);
         data.put("list",  page);
         ok("查询成功",data);
+	}
+
+	/**
+	 * 押金扣除记录
+	 * @param keywords
+	 * @param startTime
+	 * @param endTime
+	 */
+	@JsyPermissions(OpCodeEnum.INDEX)
+	public void excelDepositList(@Para("keywords") String keywords,
+								 @Para("start_time") String startTime,
+								 @Para("end_time") String endTime){
+		SXSSFWorkbook wb = this.logic.createExcelDepositList(keywords,startTime,endTime);
+		render(new ExcelExport(wb, "押金扣除记录"));
 	}
 
 }

@@ -231,7 +231,7 @@ public class BookController extends JFniceBaseController {
 		String beginTime = getPara("begin_time");
 		String endTime = getPara("end_time");
 		String keyword = getPara("keyword");
-		SXSSFWorkbook wb = this.logic.creteExcelBooksIn(catalogId, beginTime, endTime, keyword);
+		SXSSFWorkbook wb = this.logic.createExcelBooksIn(catalogId, beginTime, endTime, keyword);
 		render(new ExcelExport(wb, "在馆图书"));
 
 	}
@@ -265,7 +265,7 @@ public class BookController extends JFniceBaseController {
 		String beginTime = getPara("begin_time");
 		String endTime = getPara("end_time");
 		String keyword = getPara("keyword");
-		SXSSFWorkbook wb = this.logic.creteExcelBooksBorrow(catalogId, isOverDay, beginTime, endTime, keyword);
+		SXSSFWorkbook wb = this.logic.createExcelBooksBorrow(catalogId, isOverDay, beginTime, endTime, keyword);
 		render(new ExcelExport(wb, "外借图书"));
 
 	}
