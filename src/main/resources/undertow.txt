@@ -1,7 +1,7 @@
 # 配置 undertow
 undertow.devMode=false
-undertow.host=192.168.0.204
-undertow.port=8786
+undertow.host=localhost
+undertow.port=8086
 undertow.contextPath=/schlibsubapi
 
 # 打成 fatjar 部署的项目开启下面的配置
