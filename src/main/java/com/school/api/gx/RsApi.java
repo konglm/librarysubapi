@@ -42,6 +42,7 @@ public class RsApi {
             put("platform_code", CurrentUser.getPlatformCode());
             put("app_code", CurrentUser.getAppCode());
             put("unit_code", schCode);
+            put("sch_code", schCode);
             put("index_code", CurrentUser.getIndexCode());
             put("access_token", CurrentUser.getAccessToken());
             put("is_finish", isFinish);
