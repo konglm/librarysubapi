@@ -69,7 +69,7 @@
         insert into user_info_his
         select del, create_time, create_user_code, create_user_name, update_time, update_user_code, school_code, grd_code
         , grd_name, cls_code, cls_name, stu_code, sno, stu_name, dpt_code, dpt_name, user_code, user_name, sex, card_no
-        , mobile, deposit, img_url, version, user_type
+        , mobile, deposit, img_url, version, user_type, can_borrow
         from user_info where del = 0 and school_code = #para(schoolCode) and grd_code in (#(grdCodes))
     #end
     #sql("delHisBorrowBook")
