@@ -41,7 +41,7 @@ public class RsApi {
         Map<String, Object> paraMap = new HashMap<String, Object>() {{
             put("platform_code", CurrentUser.getPlatformCode());
             put("app_code", CurrentUser.getAppCode());
-            put("unit_code", schCode);
+            put("unit_code", CurrentUser.getSchoolCode());
             put("sch_code", schCode);
             put("index_code", CurrentUser.getIndexCode());
             put("access_token", CurrentUser.getAccessToken());
