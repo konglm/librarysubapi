@@ -4,6 +4,7 @@ import com.Start;
 import com.alibaba.druid.filter.stat.StatFilter;
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallFilter;
+import com.alibaba.fastjson.parser.ParserConfig;
 import com.jfinal.config.*;
 import com.jfinal.kit.JsonKit;
 import com.jfinal.kit.PathKit;
@@ -75,6 +76,9 @@ public class JFniceMainConfig extends JFinalConfig {
 
 //        me.setJsonFactory(MixedJsonFactory.me());
         me.setJsonFactory(new JsyJsonFactory()); // 转json字符时将驼峰转换成下划线
+
+        //fastjson增加safeMode
+        ParserConfig.getGlobalInstance().setSafeMode(true);
 
         me.setDevMode(p.getBoolean("devMode", false));
     }
