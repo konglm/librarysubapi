@@ -1,19 +1,23 @@
 package com.school.api.map;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.TypeReference;
-import com.jfinal.kit.JsonKit;
 import com.jfnice.commons.CacheName;
-import com.jfnice.j2cache.J2CacheShareKit;
+import com.jfnice.ext.CurrentUser;
+import com.jfnice.cache.JsyCacheKit;
 import com.school.api.jsy.JsyApi;
 import com.school.api.model.SysMajor;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Optional;
 
 public class SysMajorMap {
 
     public static final SysMajorMap me = new SysMajorMap();
-    private Object key = getClass().getSimpleName();
+    /**
+     * 缓存时间
+     */
+    public long time = 2 * 60 * 60;
 
     public List<SysMajor> getList() {
         List<SysMajor> list = JsyApi.getSysMajorList();
@@ -24,18 +28,16 @@ public class SysMajorMap {
     }
 
     public LinkedHashMap<String, SysMajor> getMap() {
-        if (J2CacheShareKit.get(CacheName.JSY_SYS_MAJOR, key) == null) {
-            List<SysMajor> list = getList();
-            if (list != null) {
-                Map<String, SysMajor> map = new LinkedHashMap<>();
-                for (SysMajor obj : list) {
-                    map.put(obj.getMajorcode(), obj);
-                }
-                J2CacheShareKit.put(CacheName.JSY_SYS_MAJOR, key, JsonKit.toJson(map));
+        String key = Optional.ofNullable(CurrentUser.getAccessToken()).orElse("");
+        LinkedHashMap<String, SysMajor> map = JsyCacheKit.get(CacheName.JSY_SYS_MAJOR, key);
+        if (map == null) {
+            map = new LinkedHashMap<>();
+            for (SysMajor obj : getList()) {
+                map.put(obj.getMajorcode(), obj);
             }
+            JsyCacheKit.put(CacheName.JSY_SYS_MAJOR, key, map, time);
         }
-        return JSON.parseObject(J2CacheShareKit.get(CacheName.JSY_SYS_MAJOR, key), new TypeReference<LinkedHashMap<String, SysMajor>>() {
-        });
+        return map;
     }
 
     public SysMajor get(String code) {
@@ -49,13 +51,12 @@ public class SysMajorMap {
         return null;
     }
 
-
     public List<SysMajor> toArray() {
         return new ArrayList<>(Optional.ofNullable(getMap()).orElse(new LinkedHashMap<>()).values());
     }
 
     public void clear() {
-        J2CacheShareKit.remove(CacheName.JSY_SYS_MAJOR, key);
+        JsyCacheKit.removeAll(CacheName.JSY_SYS_MAJOR);
     }
 
 }

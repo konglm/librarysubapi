@@ -8,7 +8,7 @@ import com.jfnice.commons.CacheName;
 import com.jfnice.ext.Column;
 import com.jfnice.ext.CurrentUser;
 import com.jfnice.ext.ErrorMsg;
-import com.jfnice.j2cache.J2CacheKit;
+import com.jfnice.cache.JsyCacheKit;
 import com.jfnice.model.Setting;
 
 import java.util.*;
@@ -18,20 +18,20 @@ public class SettingService {
     private static final String SEPARATOR = "#";
 
     public Map<String, String> getDefaultKeyTitleMap(String access) {
-        Map<String, String> fieldTitleMap = Start.JFniceDevMode ? null : J2CacheKit.get(CacheName.DEFAULT_KEY_TITLE, access);
+        Map<String, String> fieldTitleMap = Start.JFniceDevMode ? null : JsyCacheKit.get(CacheName.DEFAULT_KEY_TITLE, access);
         if (fieldTitleMap == null) {
             fieldTitleMap = new LinkedHashMap<String, String>();
             Setting setting = getDefaultSetting(access);
             for (Column column : setting.getColumnList()) {
                 fieldTitleMap.put(column.getKey(), column.getTitle());
             }
-            J2CacheKit.put(CacheName.DEFAULT_KEY_TITLE, access, fieldTitleMap);
+            JsyCacheKit.put(CacheName.DEFAULT_KEY_TITLE, access, fieldTitleMap);
         }
         return fieldTitleMap;
     }
 
     public Map<String, String> getDefaultFieldTitleMap(String access) {
-        Map<String, String> fieldTitleMap = Start.JFniceDevMode ? null : J2CacheKit.get(CacheName.DEFAULT_FIELD_TITLE, access);
+        Map<String, String> fieldTitleMap = Start.JFniceDevMode ? null : JsyCacheKit.get(CacheName.DEFAULT_FIELD_TITLE, access);
         if (fieldTitleMap == null) {
             fieldTitleMap = new LinkedHashMap<String, String>();
             Setting setting = getDefaultSetting(access);
@@ -40,14 +40,14 @@ public class SettingService {
                     fieldTitleMap.put(column.getKey(), column.getTitle());
                 }
             }
-            J2CacheKit.put(CacheName.DEFAULT_FIELD_TITLE, access, fieldTitleMap);
+            JsyCacheKit.put(CacheName.DEFAULT_FIELD_TITLE, access, fieldTitleMap);
         }
         return fieldTitleMap;
     }
 
     public Setting getCurrentSetting(String access) {
         String key = access + SEPARATOR + CurrentUser.getUserCode();
-        Setting setting = Start.JFniceDevMode ? null : J2CacheKit.get(CacheName.SETTING, key);
+        Setting setting = Start.JFniceDevMode ? null : JsyCacheKit.get(CacheName.SETTING, key);
         if (setting == null) {
             setting = Setting.dao.findByIds(access, CurrentUser.getUserCode());
             if (setting == null) {
@@ -74,7 +74,7 @@ public class SettingService {
                 }
                 setting.setColumnList(columnList);
                 setting.setColumns(JsonKit.toJson(columnList));
-                J2CacheKit.put(CacheName.SETTING, key, setting);
+                JsyCacheKit.put(CacheName.SETTING, key, setting);
             }
         }
         return setting;
@@ -82,17 +82,17 @@ public class SettingService {
 
     public Setting getDefaultSetting(String access) {
         String key = access + SEPARATOR + 0L;
-        Setting setting = Start.JFniceDevMode ? null : J2CacheKit.get(CacheName.SETTING, key);
+        Setting setting = Start.JFniceDevMode ? null : JsyCacheKit.get(CacheName.SETTING, key);
         if (setting == null) {
             setting = Setting.dao.findByIds(access, 0L);
-            J2CacheKit.put(CacheName.SETTING, key, setting);
+            JsyCacheKit.put(CacheName.SETTING, key, setting);
         }
         return setting;
     }
 
     public void clearCache(String access, long userId) {
         String key = access + SEPARATOR + userId;
-        J2CacheKit.remove(CacheName.SETTING, key);
+        JsyCacheKit.remove(CacheName.SETTING, key);
         if (userId == 0L) {
             Setting defaultSetting = getDefaultSetting(access);
             Set<String> keySet = new HashSet<String>();
@@ -121,9 +121,9 @@ public class SettingService {
             }
 
             Db.batchUpdate(updateSettingList, updateSettingList.size());
-            J2CacheKit.removeAll(CacheName.SETTING);
-            J2CacheKit.remove(CacheName.DEFAULT_KEY_TITLE, access);
-            J2CacheKit.remove(CacheName.DEFAULT_FIELD_TITLE, access);
+            JsyCacheKit.removeAll(CacheName.SETTING);
+            JsyCacheKit.remove(CacheName.DEFAULT_KEY_TITLE, access);
+            JsyCacheKit.remove(CacheName.DEFAULT_FIELD_TITLE, access);
         }
     }
 
@@ -133,9 +133,9 @@ public class SettingService {
 
     public void deleteAllByAccess(String access) {
         Db.update(Db.getSql("Setting.deleteAllByAccess"), access);
-        J2CacheKit.removeAll(CacheName.SETTING);
-        J2CacheKit.remove(CacheName.DEFAULT_KEY_TITLE, access);
-        J2CacheKit.remove(CacheName.DEFAULT_FIELD_TITLE, access);
+        JsyCacheKit.removeAll(CacheName.SETTING);
+        JsyCacheKit.remove(CacheName.DEFAULT_KEY_TITLE, access);
+        JsyCacheKit.remove(CacheName.DEFAULT_FIELD_TITLE, access);
     }
 
     public Setting saveOrUpdate(Setting setting) {

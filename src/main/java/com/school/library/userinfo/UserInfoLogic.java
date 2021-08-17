@@ -16,7 +16,7 @@ import com.jfnice.enums.FinishEnum;
 import com.jfnice.ext.CondPara;
 import com.jfnice.ext.CurrentUser;
 import com.jfnice.ext.ErrorMsg;
-import com.jfnice.j2cache.J2CacheKit;
+import com.jfnice.cache.JsyCacheKit;
 import com.jfnice.model.*;
 import com.school.api.gx.RsApi;
 import com.school.api.model.Cls;
@@ -77,11 +77,11 @@ public class UserInfoLogic {
 	public void synchronizeStuInfo(){
 		//从redis取值，判断是否有人同时在同步
 		String redisKey = RedisConstants.SYNCHRONIZE_STU_KEY_PREFIX + CurrentUser.getSchoolCode();
-		Integer syncStuFlag = J2CacheKit.get(CacheName.DEFAULT_SUB_NAME, redisKey);
+		Integer syncStuFlag = JsyCacheKit.get(CacheName.DEFAULT_SUB_NAME, redisKey);
 		if(null!= syncStuFlag && syncStuFlag.intValue() >= 1){
 			throw new ErrorMsg("其他账号正在进行同步操作，不能同时进行同步");
 		}
-		J2CacheKit.put(CacheName.DEFAULT_SUB_NAME, redisKey, 1, RedisConstants.TIME_TO_LIVE_SECONDS);
+		JsyCacheKit.put(CacheName.DEFAULT_SUB_NAME, redisKey, 1, RedisConstants.TIME_TO_LIVE_SECONDS);
 		try{
 			//查询人事学生数据
 			//1.查出所有班级
@@ -211,7 +211,7 @@ public class UserInfoLogic {
 			e.printStackTrace();
 			throw new ErrorMsg("同步出错，请稍后重试");
 		}finally {
-			J2CacheKit.put(CacheName.DEFAULT_SUB_NAME, redisKey, 0, RedisConstants.TIME_TO_LIVE_SECONDS);
+			JsyCacheKit.put(CacheName.DEFAULT_SUB_NAME, redisKey, 0, RedisConstants.TIME_TO_LIVE_SECONDS);
 		}
 	}
 
@@ -221,11 +221,11 @@ public class UserInfoLogic {
 	public void synchronizeTeacherInfo(){
 		//从redis取值，判断是否有人同时在同步
 		String redisKey = RedisConstants.SYNCHRONIZE_TEACHER_KEY_PREFIX + CurrentUser.getSchoolCode();
-		Integer syncStuFlag = J2CacheKit.get(CacheName.DEFAULT_SUB_NAME, redisKey);
+		Integer syncStuFlag = JsyCacheKit.get(CacheName.DEFAULT_SUB_NAME, redisKey);
 		if(null!= syncStuFlag && syncStuFlag.intValue() >= 1){
 			throw new ErrorMsg("其他账号正在进行同步操作，不能同时进行同步");
 		}
-		J2CacheKit.put(CacheName.DEFAULT_SUB_NAME, redisKey, 1, RedisConstants.TIME_TO_LIVE_SECONDS);
+		JsyCacheKit.put(CacheName.DEFAULT_SUB_NAME, redisKey, 1, RedisConstants.TIME_TO_LIVE_SECONDS);
 		try{
 			//1.查出所有部门
 			List<Dpt> dptList = RsApi.getDptList();
@@ -337,7 +337,7 @@ public class UserInfoLogic {
 			e.printStackTrace();
 			throw new ErrorMsg("同步出错，请稍后重试");
 		}finally {
-			J2CacheKit.put(CacheName.DEFAULT_SUB_NAME, redisKey, 0, RedisConstants.TIME_TO_LIVE_SECONDS);
+			JsyCacheKit.put(CacheName.DEFAULT_SUB_NAME, redisKey, 0, RedisConstants.TIME_TO_LIVE_SECONDS);
 		}
 	}
 

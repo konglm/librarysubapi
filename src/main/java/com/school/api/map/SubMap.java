@@ -1,15 +1,15 @@
 package com.school.api.map;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.TypeReference;
-import com.jfinal.kit.JsonKit;
 import com.jfnice.commons.CacheName;
 import com.jfnice.ext.CurrentUser;
-import com.jfnice.j2cache.J2CacheShareKit;
+import com.jfnice.cache.JsyCacheKit;
 import com.school.api.gx.RsApi;
 import com.school.api.model.Sub;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * 学校科目缓存
@@ -17,22 +17,26 @@ import java.util.*;
 public class SubMap {
 
     public static final SubMap me = new SubMap();
+    /**
+     * 缓存时间
+     */
+    public long time = 2 * 60 * 60;
 
     private List<Sub> getList() {
         return Optional.ofNullable(RsApi.getSubList()).orElse(new ArrayList<>());
     }
 
     public LinkedHashMap<String, Sub> getMap() {
-        String schCode = CurrentUser.getSchoolCode();
-        if (J2CacheShareKit.get(CacheName.SCH_SUB_MAP, schCode) == null) {
-            Map<String, Sub> map = new LinkedHashMap<>();
-            for (Sub sub : getList()) {
-                map.put(sub.getSubCode(), sub);
+        String key = CurrentUser.getSchoolCode() + ":" + CurrentUser.getAccessToken();
+        LinkedHashMap<String, Sub> map = JsyCacheKit.get(CacheName.SCH_SUB_MAP, key);
+        if (map == null) {
+            map = new LinkedHashMap<>();
+            for (Sub obj : getList()) {
+                map.put(obj.getSubCode(), obj);
             }
-            J2CacheShareKit.put(CacheName.SCH_SUB_MAP, schCode, JsonKit.toJson(map));
+            JsyCacheKit.put(CacheName.SCH_SUB_MAP, key, map, time);
         }
-        return JSON.parseObject(J2CacheShareKit.get(CacheName.SCH_SUB_MAP, schCode), new TypeReference<LinkedHashMap<String, Sub>>() {
-        });
+        return map;
     }
 
     public Sub get(String code) {
@@ -51,11 +55,7 @@ public class SubMap {
     }
 
     public void clear() {
-        J2CacheShareKit.remove(CacheName.SCH_SUB_MAP, CurrentUser.getSchoolCode());
-    }
-
-    public void clearAll() {
-        J2CacheShareKit.removeAll(CacheName.SCH_SUB_MAP);
+        JsyCacheKit.removeAll(CacheName.SCH_SUB_MAP);
     }
 
 }

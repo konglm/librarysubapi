@@ -7,15 +7,6 @@ ehcache.xml:
     java.io.tmpdir/XXX/ehcache
     	修改XXX为项目名
 
-j2cache.properties
-	修改Redis的主机地址和密码
-	jgroups.channel.name = XXX
-        redis.channel = XXX
-    		修改XXX为项目名
-
-j2cache-share.properties
-	修改Redis的主机地址和密码
-
 log4j.properties:
     log4j.appender.file.File=${catalina.home}/logs/XXX.log
 	 	修改XXX为项目名

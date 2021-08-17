@@ -1,21 +1,25 @@
 package com.school.api.map;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.TypeReference;
-import com.jfinal.kit.JsonKit;
 import com.jfnice.commons.CacheName;
 import com.jfnice.enums.AreaTypeEnum;
-import com.jfnice.j2cache.J2CacheShareKit;
+import com.jfnice.ext.CurrentUser;
+import com.jfnice.cache.JsyCacheKit;
 import com.school.api.jsy.JsyApi;
 import com.school.api.model.SysArea;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Optional;
 
 public class SysAreaMap {
 
     public static final SysAreaMap me = new SysAreaMap();
-    private Object key = getClass().getSimpleName();
+    /**
+     * 缓存时间
+     */
+    public long time = 2 * 60 * 60;
 
     public List<SysArea> getList() {
         List<SysArea> list = JsyApi.getSysAreaList(AreaTypeEnum.ALL_AREA.getK(), null);
@@ -26,18 +30,16 @@ public class SysAreaMap {
     }
 
     public LinkedHashMap<String, SysArea> getMap() {
-        if (J2CacheShareKit.get(CacheName.JSY_SYS_PER, key) == null) {
-            List<SysArea> list = getList();
-            if (list != null) {
-                Map<String, SysArea> map = new LinkedHashMap<>();
-                for (SysArea obj : list) {
-                    map.put(obj.getAreaCode(), obj);
-                }
-                J2CacheShareKit.put(CacheName.JSY_SYS_PER, key, JsonKit.toJson(map));
+        String key = Optional.ofNullable(CurrentUser.getAccessToken()).orElse("");
+        LinkedHashMap<String, SysArea> map = JsyCacheKit.get(CacheName.JSY_SYS_AREA, key);
+        if (map == null) {
+            map = new LinkedHashMap<>();
+            for (SysArea obj : getList()) {
+                map.put(obj.getAreaCode(), obj);
             }
+            JsyCacheKit.put(CacheName.JSY_SYS_AREA, key, map, time);
         }
-        return JSON.parseObject(J2CacheShareKit.get(CacheName.JSY_SYS_PER, key), new TypeReference<LinkedHashMap<String, SysArea>>() {
-        });
+        return map;
     }
 
     public SysArea get(String code) {
@@ -58,7 +60,7 @@ public class SysAreaMap {
      * @return 去除0之后的code
      */
     public String exZeroCode(String code) {
-        if(StringUtils.isEmpty(code))
+        if (StringUtils.isEmpty(code))
             return code;
         int initLen = code.length(); // 串的初始长度
         int finalLen = initLen; // 串的最终长度
@@ -78,7 +80,7 @@ public class SysAreaMap {
     }
 
     public void clear() {
-        J2CacheShareKit.remove(CacheName.JSY_SYS_PER, key);
+        JsyCacheKit.removeAll(CacheName.JSY_SYS_AREA);
     }
 
 }

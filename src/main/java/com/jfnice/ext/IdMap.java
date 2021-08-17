@@ -6,7 +6,7 @@ import com.jfinal.kit.StrKit;
 import com.jfinal.plugin.activerecord.Model;
 import com.jfnice.commons.CacheName;
 import com.jfnice.core.JFniceBaseService;
-import com.jfnice.j2cache.J2CacheKit;
+import com.jfnice.cache.JsyCacheKit;
 import com.jfnice.kit.CopyKit;
 
 import java.lang.reflect.ParameterizedType;
@@ -112,8 +112,8 @@ public class IdMap<M extends Model<M>, S extends JFniceBaseService<M>> {
 
     public void clear() {
         String key = getClass().getName();
-        J2CacheKit.remove(CacheName.ALL_ID_MAP, key);
-        J2CacheKit.remove(CacheName.NORMAL_ID_MAP, key);
+        JsyCacheKit.remove(CacheName.ALL_ID_MAP, key);
+        JsyCacheKit.remove(CacheName.NORMAL_ID_MAP, key);
     }
 
     protected Map<Object, M> getAllDataMap() {
@@ -138,7 +138,7 @@ public class IdMap<M extends Model<M>, S extends JFniceBaseService<M>> {
 
     private Map<Object, M> getMap(boolean showAllDataFlag) {
         String key = getClass().getName();
-        if (J2CacheKit.get(CacheName.ALL_ID_MAP, key) == null) {
+        if (JsyCacheKit.get(CacheName.ALL_ID_MAP, key) == null) {
             Map<Object, M> allDataIdMap = new LinkedHashMap<Object, M>();
             Map<Object, M> normalDataIdMap = new LinkedHashMap<Object, M>();
             List<M> mList = queryList();
@@ -150,10 +150,10 @@ public class IdMap<M extends Model<M>, S extends JFniceBaseService<M>> {
                     allDataIdMap.put(m.get(srv.getPrimaryKey()), m);
                 }
             }
-            J2CacheKit.put(CacheName.ALL_ID_MAP, key, allDataIdMap);
-            J2CacheKit.put(CacheName.NORMAL_ID_MAP, key, normalDataIdMap);
+            JsyCacheKit.put(CacheName.ALL_ID_MAP, key, allDataIdMap);
+            JsyCacheKit.put(CacheName.NORMAL_ID_MAP, key, normalDataIdMap);
         }
-        return showAllDataFlag ? J2CacheKit.get(CacheName.ALL_ID_MAP, key) : J2CacheKit.get(CacheName.NORMAL_ID_MAP, key);
+        return showAllDataFlag ? JsyCacheKit.get(CacheName.ALL_ID_MAP, key) : JsyCacheKit.get(CacheName.NORMAL_ID_MAP, key);
     }
 
 }

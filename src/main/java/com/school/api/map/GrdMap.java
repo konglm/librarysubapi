@@ -1,16 +1,16 @@
 package com.school.api.map;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.TypeReference;
-import com.jfinal.kit.JsonKit;
 import com.jfnice.commons.CacheName;
 import com.jfnice.enums.FinishEnum;
 import com.jfnice.ext.CurrentUser;
-import com.jfnice.j2cache.J2CacheShareKit;
+import com.jfnice.cache.JsyCacheKit;
 import com.school.api.gx.RsApi;
 import com.school.api.model.Grd;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * 学校年级缓存
@@ -18,22 +18,26 @@ import java.util.*;
 public class GrdMap {
 
     public static final GrdMap me = new GrdMap();
+    /**
+     * 缓存时间
+     */
+    public long time = 2 * 60 * 60;
 
     private List<Grd> getList() {
         return Optional.ofNullable(RsApi.getGrdList(FinishEnum.ALL.getK())).orElse(new ArrayList<>());
     }
 
     public LinkedHashMap<String, Grd> getMap() {
-        String schCode = CurrentUser.getSchoolCode();
-        if (J2CacheShareKit.get(CacheName.SCH_GRD_MAP, schCode) == null) {
-            Map<String, Grd> map = new LinkedHashMap<>();
-            for (Grd grd : getList()) {
-                map.put(grd.getGrdCode(), grd);
+        String key = CurrentUser.getSchoolCode() + ":" + CurrentUser.getAccessToken();
+        LinkedHashMap<String, Grd> map = JsyCacheKit.get(CacheName.SCH_GRD_MAP, key);
+        if (map == null) {
+            map = new LinkedHashMap<>();
+            for (Grd obj : getList()) {
+                map.put(obj.getGrdCode(), obj);
             }
-            J2CacheShareKit.put(CacheName.SCH_GRD_MAP, schCode, JsonKit.toJson(map));
+            JsyCacheKit.put(CacheName.SCH_GRD_MAP, key, map, time);
         }
-        return JSON.parseObject(J2CacheShareKit.get(CacheName.SCH_GRD_MAP, schCode), new TypeReference<LinkedHashMap<String, Grd>>() {
-        });
+        return map;
     }
 
     public Grd get(String code) {
@@ -59,11 +63,7 @@ public class GrdMap {
     }
 
     public void clear() {
-        J2CacheShareKit.remove(CacheName.SCH_GRD_MAP, CurrentUser.getSchoolCode());
-    }
-
-    public void clearAll() {
-        J2CacheShareKit.removeAll(CacheName.SCH_GRD_MAP);
+        JsyCacheKit.removeAll(CacheName.SCH_GRD_MAP);
     }
 
 }

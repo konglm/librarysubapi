@@ -1,19 +1,23 @@
 package com.school.api.map;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.TypeReference;
-import com.jfinal.kit.JsonKit;
 import com.jfnice.commons.CacheName;
-import com.jfnice.j2cache.J2CacheShareKit;
+import com.jfnice.ext.CurrentUser;
+import com.jfnice.cache.JsyCacheKit;
 import com.school.api.jsy.JsyApi;
 import com.school.api.model.SysPer;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Optional;
 
 public class SysPerMap {
 
     public static final SysPerMap me = new SysPerMap();
-    private Object key = getClass().getSimpleName();
+    /**
+     * 缓存时间
+     */
+    public long time = 2 * 60 * 60;
 
     public List<SysPer> getList() {
         List<SysPer> list = JsyApi.getSysPerList();
@@ -24,18 +28,16 @@ public class SysPerMap {
     }
 
     public LinkedHashMap<String, SysPer> getMap() {
-        if (J2CacheShareKit.get(CacheName.JSY_SYS_PER, key) == null) {
-            List<SysPer> list = getList();
-            if (list != null) {
-                Map<String, SysPer> map = new LinkedHashMap<>();
-                for (SysPer obj : list) {
-                    map.put(obj.getPercode(), obj);
-                }
-                J2CacheShareKit.put(CacheName.JSY_SYS_PER, key, JsonKit.toJson(map));
+        String key = Optional.ofNullable(CurrentUser.getAccessToken()).orElse("");
+        LinkedHashMap<String, SysPer> map = JsyCacheKit.get(CacheName.JSY_SYS_PER, key);
+        if (map == null) {
+            map = new LinkedHashMap<>();
+            for (SysPer obj : getList()) {
+                map.put(obj.getPercode(), obj);
             }
+            JsyCacheKit.put(CacheName.JSY_SYS_PER, key, map, time);
         }
-        return JSON.parseObject(J2CacheShareKit.get(CacheName.JSY_SYS_PER, key), new TypeReference<LinkedHashMap<String, SysPer>>() {
-        });
+        return map;
     }
 
     public SysPer get(String code) {
@@ -61,7 +63,7 @@ public class SysPerMap {
     }
 
     public void clear() {
-        J2CacheShareKit.remove(CacheName.JSY_SYS_PER, key);
+        JsyCacheKit.removeAll(CacheName.JSY_SYS_PER);
     }
 
 }

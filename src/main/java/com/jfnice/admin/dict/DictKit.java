@@ -3,7 +3,7 @@ package com.jfnice.admin.dict;
 import com.jfinal.aop.Aop;
 import com.jfinal.kit.JsonKit;
 import com.jfnice.commons.CacheName;
-import com.jfnice.j2cache.J2CacheKit;
+import com.jfnice.cache.JsyCacheKit;
 import com.jfnice.model.Dict;
 
 import java.util.*;
@@ -175,24 +175,24 @@ public class DictKit {
             tagKeyDictMap.get(dict.getTag()).put(dict.getK(), dict);
             tagValDictMap.get(dict.getTag()).put(dict.getV(), dict);
         }
-        J2CacheKit.put(CacheName.DICT, CACHE_KEY_DICT_TAG_KEY, tagKeyDictMap, LIVE_TIME);
-        J2CacheKit.put(CacheName.DICT, CACHE_KEY_DICT_TAG_VAL, tagValDictMap, LIVE_TIME);
+        JsyCacheKit.put(CacheName.DICT, CACHE_KEY_DICT_TAG_KEY, tagKeyDictMap, LIVE_TIME);
+        JsyCacheKit.put(CacheName.DICT, CACHE_KEY_DICT_TAG_VAL, tagValDictMap, LIVE_TIME);
     }
 
     private static Map<String, LinkedHashMap<String, Dict>> getTagKeyDictMap() {
-        Map<String, LinkedHashMap<String, Dict>> tagKeyDictMap = J2CacheKit.get(CacheName.DICT, CACHE_KEY_DICT_TAG_KEY);
+        Map<String, LinkedHashMap<String, Dict>> tagKeyDictMap = JsyCacheKit.get(CacheName.DICT, CACHE_KEY_DICT_TAG_KEY);
         if (tagKeyDictMap == null) {
             reloadData();
-            return J2CacheKit.get(CacheName.DICT, CACHE_KEY_DICT_TAG_KEY);
+            return JsyCacheKit.get(CacheName.DICT, CACHE_KEY_DICT_TAG_KEY);
         }
         return tagKeyDictMap;
     }
 
     private static Map<String, LinkedHashMap<String, Dict>> getTagValDictMap() {
-        Map<String, LinkedHashMap<String, Dict>> tagKeyDictMap = J2CacheKit.get(CacheName.DICT, CACHE_KEY_DICT_TAG_VAL);
+        Map<String, LinkedHashMap<String, Dict>> tagKeyDictMap = JsyCacheKit.get(CacheName.DICT, CACHE_KEY_DICT_TAG_VAL);
         if (tagKeyDictMap == null) {
             reloadData();
-            return J2CacheKit.get(CacheName.DICT, CACHE_KEY_DICT_TAG_VAL);
+            return JsyCacheKit.get(CacheName.DICT, CACHE_KEY_DICT_TAG_VAL);
         }
         return tagKeyDictMap;
     }
@@ -201,7 +201,7 @@ public class DictKit {
      * 清除缓存
      */
     public static void clear() {
-        J2CacheKit.removeAll(CacheName.DICT);
+        JsyCacheKit.removeAll(CacheName.DICT);
     }
 
 }

@@ -12,7 +12,7 @@ import com.jfnice.enums.OpCodeEnum;
 import com.jfnice.ext.CondPara;
 import com.jfnice.ext.CurrentUser;
 import com.jfnice.ext.ErrorMsg;
-import com.jfnice.j2cache.J2CacheKit;
+import com.jfnice.cache.JsyCacheKit;
 import com.jfnice.model.BookInventory;
 import com.jfnice.model.BookInventoryItem;
 import com.jfnice.model.BookStorage;
@@ -78,7 +78,7 @@ public class BookInventoryLogic {
 	public boolean hasGoingInventory(String schoolCode){
 		//查询redis有无正在盘点的任务
 		String redisKey = RedisConstants.BOOK_INVENTORY_KEY_PREFIX + CurrentUser.getSchoolCode();
-		Integer redisFlag = J2CacheKit.get(CacheName.DEFAULT_SUB_NAME, redisKey);
+		Integer redisFlag = JsyCacheKit.get(CacheName.DEFAULT_SUB_NAME, redisKey);
 		if(null != redisFlag && redisFlag >= 1){
 			return true;
 		}
@@ -97,7 +97,7 @@ public class BookInventoryLogic {
 	public void add(){
 		//查询redis、数据库有无正在入库的任务
 		String storageRedisKey = RedisConstants.BOOK_STORAGE_KEY_PREFIX + CurrentUser.getSchoolCode();
-		Integer storageRedisFlag = J2CacheKit.get(CacheName.DEFAULT_SUB_NAME, storageRedisKey);
+		Integer storageRedisFlag = JsyCacheKit.get(CacheName.DEFAULT_SUB_NAME, storageRedisKey);
 		if(null != storageRedisFlag && storageRedisFlag >= 1){
 			throw new ErrorMsg("存在尚未结束的入库任务，不能新建盘点任务");
 		}
@@ -114,7 +114,7 @@ public class BookInventoryLogic {
 		String redisKey = RedisConstants.BOOK_INVENTORY_KEY_PREFIX + CurrentUser.getSchoolCode();
 		try{
 			//设置redis值
-			J2CacheKit.put(CacheName.DEFAULT_SUB_NAME, redisKey, 1, RedisConstants.TIME_TO_LIVE_SECONDS);
+			JsyCacheKit.put(CacheName.DEFAULT_SUB_NAME, redisKey, 1, RedisConstants.TIME_TO_LIVE_SECONDS);
 			StringBuilder nameBuild = new StringBuilder();
 			nameBuild.append(DateKit.toStr(new Date(), "yyyy年MM月dd日")).append("图书盘点");
 			BookInventory inventory = new BookInventory();
@@ -144,7 +144,7 @@ public class BookInventoryLogic {
 		}catch(Exception e){
 			e.printStackTrace();
 		}finally{
-			J2CacheKit.put(CacheName.DEFAULT_SUB_NAME, redisKey, 0, RedisConstants.TIME_TO_LIVE_SECONDS);
+			JsyCacheKit.put(CacheName.DEFAULT_SUB_NAME, redisKey, 0, RedisConstants.TIME_TO_LIVE_SECONDS);
 		}
 	}
 

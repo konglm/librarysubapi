@@ -2,7 +2,7 @@ package com.jfnice.qiniu;
 
 import com.jfinal.core.JFinal;
 import com.jfinal.kit.PropKit;
-import com.jfnice.j2cache.J2CacheKit;
+import com.jfnice.cache.JsyCacheKit;
 
 public class QnApi {
 
@@ -27,10 +27,10 @@ public class QnApi {
             return JFinal.me().getContextPath() + fileKey;
         }
 
-        String link = J2CacheKit.get(cacheName, fileKey);
+        String link = JsyCacheKit.get(cacheName, fileKey);
         if (link == null) {
             link = Api.getLink(PRIVATE_BUCKET_DOMAIN + fileKey);
-            J2CacheKit.put(cacheName, fileKey, link, PRIVATE_ACCESS_TIME_OUT - 10);
+            JsyCacheKit.put(cacheName, fileKey, link, PRIVATE_ACCESS_TIME_OUT - 10);
         }
         return link;
     }

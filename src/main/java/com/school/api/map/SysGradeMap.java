@@ -1,37 +1,39 @@
 package com.school.api.map;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.TypeReference;
-import com.jfinal.kit.JsonKit;
 import com.jfnice.commons.CacheName;
-import com.jfnice.j2cache.J2CacheShareKit;
+import com.jfnice.ext.CurrentUser;
+import com.jfnice.cache.JsyCacheKit;
 import com.school.api.jsy.JsyApi;
 import com.school.api.model.SysGrade;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Optional;
 
 public class SysGradeMap {
 
     public static final SysGradeMap me = new SysGradeMap();
-    private Object key = getClass().getSimpleName();
+    /**
+     * 缓存时间
+     */
+    public long time = 2 * 60 * 60;
 
     public List<SysGrade> getList() {
         return JsyApi.getSysGradeList();
     }
 
     public LinkedHashMap<String, SysGrade> getMap() {
-        if (J2CacheShareKit.get(CacheName.JSY_SYS_GRADE, key) == null) {
-            List<SysGrade> list = getList();
-            if (list != null) {
-                Map<String, SysGrade> map = new LinkedHashMap<>();
-                for (SysGrade obj : list) {
-                    map.put(obj.getSysgrdcode(), obj);
-                }
-                J2CacheShareKit.put(CacheName.JSY_SYS_GRADE, key, JsonKit.toJson(map));
+        String key = Optional.ofNullable(CurrentUser.getAccessToken()).orElse("");
+        LinkedHashMap<String, SysGrade> map = JsyCacheKit.get(CacheName.JSY_SYS_GRADE, key);
+        if (map == null) {
+            map = new LinkedHashMap<>();
+            for (SysGrade obj : getList()) {
+                map.put(obj.getSysgrdcode(), obj);
             }
+            JsyCacheKit.put(CacheName.JSY_SYS_GRADE, key, map, time);
         }
-        return JSON.parseObject(J2CacheShareKit.get(CacheName.JSY_SYS_GRADE, key), new TypeReference<LinkedHashMap<String, SysGrade>>() {
-        });
+        return map;
     }
 
     public SysGrade get(String code) {
@@ -45,12 +47,11 @@ public class SysGradeMap {
         return null;
     }
 
-
     public List<SysGrade> toArray() {
         return new ArrayList<>(Optional.ofNullable(getMap()).orElse(new LinkedHashMap<>()).values());
     }
 
     public void clear() {
-        J2CacheShareKit.remove(CacheName.JSY_SYS_GRADE, key);
+        JsyCacheKit.removeAll(CacheName.JSY_SYS_GRADE);
     }
 }

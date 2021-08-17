@@ -10,7 +10,7 @@ import com.jfnice.commons.CacheName;
 import com.jfnice.ext.CondPara;
 import com.jfnice.ext.CurrentUser;
 import com.jfnice.ext.ErrorMsg;
-import com.jfnice.j2cache.J2CacheKit;
+import com.jfnice.cache.JsyCacheKit;
 import com.jfnice.model.BorrowSetting;
 import com.school.library.constants.RedisConstants;
 import com.school.library.constants.SysConstants;
@@ -60,14 +60,14 @@ public class BorrowSettingLogic {
 			boolean insertSysSetting = false;
 			//查询系统默认redis值
 			String sysKey = RedisConstants.SYS_BORROW_SETTING_KEY;
-			String isSysSetting = J2CacheKit.get(CacheName.DEFAULT_SUB_NAME, sysKey);
+			String isSysSetting = JsyCacheKit.get(CacheName.DEFAULT_SUB_NAME, sysKey);
 			//查询学校redis值
 			String key = RedisConstants.BORROW_SETTING_KEY_PREFIX + CurrentUser.getSchoolCode();
-			String isSetting = J2CacheKit.get(CacheName.DEFAULT_SUB_NAME, key);
+			String isSetting = JsyCacheKit.get(CacheName.DEFAULT_SUB_NAME, key);
 			try {
 				//1.系统默认记录为空，则增加一条系统默认记录
 				if(null == sysSetting && (StrKit.isBlank(isSysSetting) || "0".equals(isSysSetting) )){
-					J2CacheKit.put(CacheName.DEFAULT_SUB_NAME, sysKey, "1", RedisConstants.TIME_TO_LIVE_SECONDS);
+					JsyCacheKit.put(CacheName.DEFAULT_SUB_NAME, sysKey, "1", RedisConstants.TIME_TO_LIVE_SECONDS);
 					//增加一条系统默认记录
 					insertSysSetting = true;
 					sysSetting = BorrowSettingKit.generateDefault();
@@ -75,7 +75,7 @@ public class BorrowSettingLogic {
 
 				//2.增加一条学校记录
 				if((StrKit.isBlank(isSetting)  || "0".equals(isSetting))){
-					J2CacheKit.put(CacheName.DEFAULT_SUB_NAME, key, "1", RedisConstants.TIME_TO_LIVE_SECONDS);
+					JsyCacheKit.put(CacheName.DEFAULT_SUB_NAME, key, "1", RedisConstants.TIME_TO_LIVE_SECONDS);
 					//将系统默认记录复制一条到学校记录
 					setting = new BorrowSetting();
 					setting._setAttrs(sysSetting);
@@ -103,8 +103,8 @@ public class BorrowSettingLogic {
 					return true;
 				});
 			}catch (Exception e){
-				J2CacheKit.put(CacheName.DEFAULT_SUB_NAME, sysKey, "0", RedisConstants.TIME_TO_LIVE_SECONDS);
-				J2CacheKit.put(CacheName.DEFAULT_SUB_NAME, key, "0", RedisConstants.TIME_TO_LIVE_SECONDS);
+				JsyCacheKit.put(CacheName.DEFAULT_SUB_NAME, sysKey, "0", RedisConstants.TIME_TO_LIVE_SECONDS);
+				JsyCacheKit.put(CacheName.DEFAULT_SUB_NAME, key, "0", RedisConstants.TIME_TO_LIVE_SECONDS);
 				e.printStackTrace();
 			}
 

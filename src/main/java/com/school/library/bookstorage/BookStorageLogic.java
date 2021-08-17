@@ -17,7 +17,7 @@ import com.jfnice.enums.OpCodeEnum;
 import com.jfnice.ext.CondPara;
 import com.jfnice.ext.CurrentUser;
 import com.jfnice.ext.ErrorMsg;
-import com.jfnice.j2cache.J2CacheKit;
+import com.jfnice.cache.JsyCacheKit;
 import com.jfnice.model.*;
 import com.school.api.gx.PtApi;
 import com.school.library.book.BookService;
@@ -107,8 +107,8 @@ public class BookStorageLogic {
 		nameBuild.append(dateStr);
 		//redis计数，生成入库次数
 		String key = RedisConstants.BOOK_STORAGE_COUNT_KEY_PREFIX + CurrentUser.getSchoolCode() + "_" + dateStr;
-		Integer count = J2CacheKit.get(CacheName.DEFAULT_SUB_NAME, key);
-		J2CacheKit.put(CacheName.DEFAULT_SUB_NAME, key, null == count ? 1 : (count + 1), RedisConstants.TIME_TO_LIVE_SECONDS);
+		Integer count = JsyCacheKit.get(CacheName.DEFAULT_SUB_NAME, key);
+		JsyCacheKit.put(CacheName.DEFAULT_SUB_NAME, key, null == count ? 1 : (count + 1), RedisConstants.TIME_TO_LIVE_SECONDS);
 		if(null != count){
 			nameBuild.append("（").append(count).append("）");
 		}

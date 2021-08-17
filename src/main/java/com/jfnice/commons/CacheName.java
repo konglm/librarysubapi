@@ -62,27 +62,53 @@ public class CacheName {
     public static final String SCH_USER_ORG_MAP = "SchBase:UserOrgMap";
 
 
-    // 3.4: 系统学期
+    /**
+     * 系统学期 缓存名称
+     */
     public static final String JSY_SYS_TERM = "JsyBase:TermMap";
-    // 3.5: 系统学段
+    /**
+     * 系统学段 缓存名称
+     */
     public static final String JSY_SYS_PER = "JsyBase:PerMap";
-    // 3.6: 系统分册
+    /**
+     * 系统分册 缓存名称
+     */
     public static final String JSY_SYS_FASC = "JsyBase:FascMap";
-    // 3.7: 系统教版
+    /**
+     * 系统教版 缓存名称
+     */
     public static final String JSY_SYS_MATER = "JsyBase:MaterMap";
-    // 3.8: 系统科目
+    /**
+     * 系统科目 缓存名称
+     */
     public static final String JSY_SYS_SUB = "JsyBase:SubMap";
-    // 3.11: 系统年级
+    /**
+     * 系统年级 缓存名称
+     */
     public static final String JSY_SYS_GRADE = "JsyBase:GradeMap";
-    // 3.12: 系统学科
+    /**
+     * 系统学科 缓存名称
+     */
     public static final String JSY_SYS_ART = "JsyBase:ArtMap";
-    // 3.13: 系统学院
+    /**
+     * 系统学院 缓存名称
+     */
     public static final String JSY_SYS_COLL = "JsyBase:CollMap";
-    // 3.14: 系统专业
+    /**
+     * 系统专业 缓存名称
+     */
     public static final String JSY_SYS_MAJOR = "JsyBase:MajorMap";
-    // 3.15: 系统设备类型
+    /**
+     * 系统设备类型 缓存名称
+     */
     public static final String JSY_SYS_MCTYPE = "JsyBase:McTypeMap";
-    // 3.16: 栏目对应表
+    /**
+     * 栏目对应表 缓存名称
+     */
     public static final String JSY_SYS_ITEM = "JsyBase:ItemMap";
+    /**
+     * 系统区域缓存名称
+     */
+    public static final String JSY_SYS_AREA = "JsyBase:AreaMap";
 
 }

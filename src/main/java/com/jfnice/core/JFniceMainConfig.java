@@ -14,12 +14,15 @@ import com.jfinal.plugin.activerecord.ActiveRecordPlugin;
 import com.jfinal.plugin.activerecord.dialect.SqlServerDialect;
 import com.jfinal.plugin.cron4j.Cron4jPlugin;
 import com.jfinal.plugin.druid.DruidPlugin;
+import com.jfinal.plugin.ehcache.EhCachePlugin;
+import com.jfinal.plugin.redis.RedisPlugin;
 import com.jfinal.template.Engine;
 import com.jfinal.template.ext.directive.NowDirective;
 import com.jfnice.admin.AdminRoutes;
 import com.jfnice.admin.asset.AssetService;
 import com.jfnice.admin.asset.AssetTask;
 import com.jfnice.admin.dict.DictKit;
+import com.jfnice.cache.JsyCache;
 import com.jfnice.ext.CurrentUser;
 import com.jfnice.ext.JsyJsonFactory;
 import com.jfnice.ext.SqlTplAuto;
@@ -27,7 +30,6 @@ import com.jfnice.ext.StaticRoute;
 import com.jfnice.handler.DruidStatViewExtendHandler;
 import com.jfnice.handler.ShiroHandler;
 import com.jfnice.handler.XssRequestExtendHandler;
-import com.jfnice.j2cache.J2CachePlugin;
 import com.jfnice.kit.UrlKit;
 import com.jfnice.model._MappingKit;
 import com.school.demo.DemoRoutes;
@@ -139,7 +141,17 @@ public class JFniceMainConfig extends JFinalConfig {
         cp.addTask("30 2 * * *", new AssetTask()); // 定期清理资源任务
         me.add(cp);
 
-        me.add(new J2CachePlugin());
+        if (JsyCache.isRedis()) {
+            RedisPlugin newsRedis = new RedisPlugin("redis",
+                    p.get("redis.hosts"),
+                    p.getInt("redis.port", 6379),
+                    p.getInt("redis.timeout", 2000),
+                    p.get("redis.password"),
+                    p.getInt("redis.database", 0));
+            me.add(newsRedis);
+        } else if (JsyCache.isEhCache()) {
+            me.add(new EhCachePlugin());
+        }
     }
 
     /**

@@ -12,7 +12,7 @@ import com.jfinal.plugin.activerecord.SqlPara;
 import com.jfnice.commons.CacheName;
 import com.jfnice.ext.CurrentUser;
 import com.jfnice.ext.ErrorMsg;
-import com.jfnice.j2cache.J2CacheKit;
+import com.jfnice.cache.JsyCacheKit;
 import com.jfnice.model.Book;
 import com.jfnice.model.Catalog;
 import com.school.library.book.BookService;
@@ -53,22 +53,22 @@ public class CatalogLogic {
 
 			//查询系统默认redis值
 			String sysKey = RedisConstants.SYS_CATALOG_SETTING_KEY;
-			String isSysSetting = J2CacheKit.get(CacheName.DEFAULT_SUB_NAME, sysKey);
+			String isSysSetting = JsyCacheKit.get(CacheName.DEFAULT_SUB_NAME, sysKey);
 			//查询学校redis值
 			String key = RedisConstants.CATALOG_SETTING_KEY_PREFIX + CurrentUser.getSchoolCode();
-			String isSetting = J2CacheKit.get(CacheName.DEFAULT_SUB_NAME, key);
-//			J2CacheKit.put(CacheName.DEFAULT_SUB_NAME, sysKey, "0", RedisConstants.TIME_TO_LIVE_SECONDS);
-//			J2CacheKit.put(CacheName.DEFAULT_SUB_NAME, key, "0", RedisConstants.TIME_TO_LIVE_SECONDS);
+			String isSetting = JsyCacheKit.get(CacheName.DEFAULT_SUB_NAME, key);
+//			JsyCacheKit.put(CacheName.DEFAULT_SUB_NAME, sysKey, "0", RedisConstants.TIME_TO_LIVE_SECONDS);
+//			JsyCacheKit.put(CacheName.DEFAULT_SUB_NAME, key, "0", RedisConstants.TIME_TO_LIVE_SECONDS);
 			try {
 				//1.系统默认记录为空，则增加系统默认记录
 				if((null == sysList || sysList.isEmpty()) && (StrKit.isBlank(isSysSetting) || "0".equals(isSysSetting) )){
-					J2CacheKit.put(CacheName.DEFAULT_SUB_NAME, sysKey, "1", RedisConstants.TIME_TO_LIVE_SECONDS);
+					JsyCacheKit.put(CacheName.DEFAULT_SUB_NAME, sysKey, "1", RedisConstants.TIME_TO_LIVE_SECONDS);
 					this.generateDefaultCatalog(SysConstants.SYS_RECORD_SOURCE);
 				}
 
 				//2.增加学校记录
 				if((StrKit.isBlank(isSetting)  || "0".equals(isSetting))){
-					J2CacheKit.put(CacheName.DEFAULT_SUB_NAME, key, "1", RedisConstants.TIME_TO_LIVE_SECONDS);
+					JsyCacheKit.put(CacheName.DEFAULT_SUB_NAME, key, "1", RedisConstants.TIME_TO_LIVE_SECONDS);
 					this.generateDefaultCatalog(SysConstants.SCHOOL_RECORD_SOURCE);
 				}
 
@@ -76,8 +76,8 @@ public class CatalogLogic {
 				catalogList = this.service.queryBySchool(CurrentUser.getSchoolCode(), SysConstants.SCHOOL_RECORD_SOURCE);
 
 			}catch (Exception e){
-				J2CacheKit.put(CacheName.DEFAULT_SUB_NAME, sysKey, "0", RedisConstants.TIME_TO_LIVE_SECONDS);
-				J2CacheKit.put(CacheName.DEFAULT_SUB_NAME, key, "0", RedisConstants.TIME_TO_LIVE_SECONDS);
+				JsyCacheKit.put(CacheName.DEFAULT_SUB_NAME, sysKey, "0", RedisConstants.TIME_TO_LIVE_SECONDS);
+				JsyCacheKit.put(CacheName.DEFAULT_SUB_NAME, key, "0", RedisConstants.TIME_TO_LIVE_SECONDS);
 				e.printStackTrace();
 			}
 

@@ -10,7 +10,7 @@ import com.jfnice.commons.Config;
 import com.jfnice.enums.OpCodeEnum;
 import com.jfnice.ext.CurrentUser;
 import com.jfnice.ext.ErrorMsg;
-import com.jfnice.j2cache.J2CacheKit;
+import com.jfnice.cache.JsyCacheKit;
 import com.jfnice.utils.ThreadLocalUtil;
 import com.school.api.model.Login;
 import com.school.api.model.LoginUser;
@@ -54,7 +54,7 @@ public class PtApi {
     public static void touristLogin() {
         String loginName = PropKit.get("touristLoginName").trim();
         String password = HashKit.md5(publicService.getEncryptPrefix() + PropKit.get("touristPassword").trim());
-        Login login = J2CacheKit.get("touristLoginUser", loginName);
+        Login login = JsyCacheKit.get("touristLoginUser", loginName);
         LoginUser loginUser = new LoginUser();
         boolean refreshLogin = login == null || login.getAccessToken() == null;
         if (!refreshLogin) {
@@ -66,7 +66,7 @@ public class PtApi {
         }
         if (refreshLogin) {
             login = PtApi.login(Config.PLATFORM_CODE, "", loginName, password);
-            J2CacheKit.put("touristLoginUser", loginName, login);
+            JsyCacheKit.put("touristLoginUser", loginName, login);
             loginUser = getCurrentUserInfo(login.getAccessToken(), Config.PLATFORM_CODE, "", "", "");
         }
         loginUser.setAccessToken(login.getAccessToken());

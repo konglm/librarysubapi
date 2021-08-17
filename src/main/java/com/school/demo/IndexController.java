@@ -36,7 +36,6 @@ public class IndexController extends JFniceBaseController {
         System.out.println(JsonKit.toJson(DptMap.me.toArray()));
         System.out.println(JsonKit.toJson(GrdMap.me.toArray()));
         System.out.println(JsonKit.toJson(PerMap.me.toArray()));
-        System.out.println(JsonKit.toJson(StuMap.me.getSchStuList()));
         System.out.println(JsonKit.toJson(SubArtMap.me.toArray()));
         System.out.println(JsonKit.toJson(SubMap.me.toArray()));
         ok("index");

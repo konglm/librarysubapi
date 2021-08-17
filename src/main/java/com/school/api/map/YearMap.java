@@ -1,14 +1,15 @@
 package com.school.api.map;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.TypeReference;
-import com.jfinal.kit.JsonKit;
 import com.jfnice.commons.CacheName;
-import com.jfnice.j2cache.J2CacheShareKit;
+import com.jfnice.ext.CurrentUser;
+import com.jfnice.cache.JsyCacheKit;
 import com.school.api.gx.RsApi;
 import com.school.api.model.Year;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * 学年缓存
@@ -16,7 +17,10 @@ import java.util.*;
 public class YearMap {
 
     public static final YearMap me = new YearMap();
-    private Object key = getClass().getSimpleName();
+    /**
+     * 缓存时间
+     */
+    public long time = 2 * 60 * 60;
 
     private List<Year> getList() {
         List<Year> list = RsApi.getYearList();
@@ -24,16 +28,16 @@ public class YearMap {
     }
 
     public LinkedHashMap<String, Year> getMap() {
-        if (J2CacheShareKit.get(CacheName.SCH_YEAR_MAP, key) == null) {
-            List<Year> list = getList();
-            Map<String, Year> map = new LinkedHashMap<>();
-            for (Year obj : list) {
+        String key = Optional.ofNullable(CurrentUser.getAccessToken()).orElse("");
+        LinkedHashMap<String, Year> map = JsyCacheKit.get(CacheName.SCH_YEAR_MAP, key);
+        if (map == null) {
+            map = new LinkedHashMap<>();
+            for (Year obj : getList()) {
                 map.put(obj.getYearCode(), obj);
             }
-            J2CacheShareKit.put(CacheName.SCH_YEAR_MAP, key, JsonKit.toJson(map));
+            JsyCacheKit.put(CacheName.SCH_YEAR_MAP, key, map, time);
         }
-        return JSON.parseObject(J2CacheShareKit.get(CacheName.SCH_YEAR_MAP, key), new TypeReference<LinkedHashMap<String, Year>>() {
-        });
+        return map;
     }
 
     public Year get(String code) {
@@ -52,6 +56,6 @@ public class YearMap {
     }
 
     public void clear() {
-        J2CacheShareKit.remove(CacheName.SCH_YEAR_MAP, key);
+        JsyCacheKit.removeAll(CacheName.SCH_YEAR_MAP);
     }
 }

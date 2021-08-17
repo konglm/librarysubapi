@@ -1,19 +1,23 @@
 package com.school.api.map;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.TypeReference;
-import com.jfinal.kit.JsonKit;
 import com.jfnice.commons.CacheName;
-import com.jfnice.j2cache.J2CacheShareKit;
+import com.jfnice.ext.CurrentUser;
+import com.jfnice.cache.JsyCacheKit;
 import com.school.api.jsy.JsyApi;
 import com.school.api.model.SysFasc;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Optional;
 
 public class SysFascMap {
 
     public static final SysFascMap me = new SysFascMap();
-    private Object key = getClass().getSimpleName();
+    /**
+     * 缓存时间
+     */
+    public long time = 2 * 60 * 60;
 
     public List<SysFasc> getList() {
         List<SysFasc> list = JsyApi.getSysFascList();
@@ -24,18 +28,16 @@ public class SysFascMap {
     }
 
     public LinkedHashMap<String, SysFasc> getMap() {
-        if (J2CacheShareKit.get(CacheName.JSY_SYS_FASC, key) == null) {
-            List<SysFasc> list = getList();
-            if (list != null) {
-                Map<String, SysFasc> map = new LinkedHashMap<>();
-                for (SysFasc obj : list) {
-                    map.put(obj.getFasccode(), obj);
-                }
-                J2CacheShareKit.put(CacheName.JSY_SYS_FASC, key, JsonKit.toJson(map));
+        String key = Optional.ofNullable(CurrentUser.getAccessToken()).orElse("");
+        LinkedHashMap<String, SysFasc> map = JsyCacheKit.get(CacheName.JSY_SYS_FASC, key);
+        if (map == null) {
+            map = new LinkedHashMap<>();
+            for (SysFasc obj : getList()) {
+                map.put(obj.getFasccode(), obj);
             }
+            JsyCacheKit.put(CacheName.JSY_SYS_FASC, key, map, time);
         }
-        return JSON.parseObject(J2CacheShareKit.get(CacheName.JSY_SYS_FASC, key), new TypeReference<LinkedHashMap<String, SysFasc>>() {
-        });
+        return map;
     }
 
     public SysFasc get(String code) {
@@ -49,13 +51,12 @@ public class SysFascMap {
         return null;
     }
 
-
     public List<SysFasc> toArray() {
         return new ArrayList<>(Optional.ofNullable(getMap()).orElse(new LinkedHashMap<>()).values());
     }
 
     public void clear() {
-        J2CacheShareKit.remove(CacheName.JSY_SYS_FASC, key);
+        JsyCacheKit.removeAll(CacheName.JSY_SYS_FASC);
     }
 
 }

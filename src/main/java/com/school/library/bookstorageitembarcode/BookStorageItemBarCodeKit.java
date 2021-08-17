@@ -4,7 +4,7 @@ package com.school.library.bookstorageitembarcode;
 import com.alibaba.fastjson.JSONObject;
 import com.jfinal.ext.kit.DateKit;
 import com.jfnice.commons.CacheName;
-import com.jfnice.j2cache.J2CacheKit;
+import com.jfnice.cache.JsyCacheKit;
 import com.school.library.constants.RedisConstants;
 
 import java.util.Date;
@@ -28,7 +28,7 @@ public class BookStorageItemBarCodeKit {
         StringBuilder codeBuild = new StringBuilder();
         synchronized(lock){
             String redisKey = RedisConstants.BAR_CODE_SEQ_KEY_PREFIX + schoolCode;
-            Integer seq = J2CacheKit.get(CacheName.DEFAULT_SUB_NAME, redisKey);
+            Integer seq = JsyCacheKit.get(CacheName.DEFAULT_SUB_NAME, redisKey);
             int i = 0;
             while(i < count){
                 seq = seq == null ? 1 : (seq + 1) ;
@@ -39,7 +39,7 @@ public class BookStorageItemBarCodeKit {
                 i++;
             }
 
-            J2CacheKit.put(CacheName.DEFAULT_SUB_NAME, redisKey, seq, RedisConstants.TIME_TO_LIVE_SECONDS);
+            JsyCacheKit.put(CacheName.DEFAULT_SUB_NAME, redisKey, seq, RedisConstants.TIME_TO_LIVE_SECONDS);
         }
         return barCodes;
     }
@@ -54,7 +54,7 @@ public class BookStorageItemBarCodeKit {
      */
     public static String generateCheckNo(String schoolCode, String catalogNo, String bookOrder){
         String key = RedisConstants.CHECK_NO_COUNT_KEY_PREFIX + schoolCode;
-        JSONObject catJson = J2CacheKit.get(CacheName.DEFAULT_SUB_NAME, key);
+        JSONObject catJson = JsyCacheKit.get(CacheName.DEFAULT_SUB_NAME, key);
         JSONObject json = null;
         Integer count = null;
         if(null != catJson){
@@ -77,7 +77,7 @@ public class BookStorageItemBarCodeKit {
         json.put(bookOrder, count);
         catJson.put(catalogNo, json);
 
-        J2CacheKit.put(CacheName.DEFAULT_SUB_NAME, key, catJson);
+        JsyCacheKit.put(CacheName.DEFAULT_SUB_NAME, key, catJson);
         return catalogNo + "/" + count;
     }
 

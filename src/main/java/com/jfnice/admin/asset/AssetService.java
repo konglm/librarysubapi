@@ -9,7 +9,7 @@ import com.jfnice.commons.CacheName;
 import com.jfnice.core.JFniceBaseService;
 import com.jfnice.ext.CurrentUser;
 import com.jfnice.ext.ErrorMsg;
-import com.jfnice.j2cache.J2CacheKit;
+import com.jfnice.cache.JsyCacheKit;
 import com.jfnice.model.Asset;
 import com.jfnice.qiniu.QnApi;
 import com.jfnice.qiniu.QnUtil;
@@ -104,8 +104,8 @@ public class AssetService extends JFniceBaseService<Asset> {
 
             //由于外层事务可能发生回滚，导致save_time和saved数值不确定，需清除后再缓存
             asset.remove("save_time", "saved");
-            J2CacheKit.put(CacheName.ASSET, asset.getId(), asset);
-            J2CacheKit.put(CacheName.ASSET, asset.getUrl(), asset);
+            JsyCacheKit.put(CacheName.ASSET, asset.getId(), asset);
+            JsyCacheKit.put(CacheName.ASSET, asset.getUrl(), asset);
             return asset.getUrl();
         } catch (InterruptedException e) {
             return null;
@@ -158,10 +158,10 @@ public class AssetService extends JFniceBaseService<Asset> {
     public void delete(String url) {
         Db.update(Db.getSql("Asset.deleteByUrl"), url);
         FileKit.delete(new File(BASE_UPLOAD_PATH + url));
-        Asset asset = J2CacheKit.get(CacheName.ASSET, url);
+        Asset asset = JsyCacheKit.get(CacheName.ASSET, url);
         if (asset != null) {
-            J2CacheKit.remove(CacheName.ASSET, asset.getId());
-            J2CacheKit.remove(CacheName.ASSET, asset.getUrl());
+            JsyCacheKit.remove(CacheName.ASSET, asset.getId());
+            JsyCacheKit.remove(CacheName.ASSET, asset.getUrl());
         }
     }
 
@@ -169,14 +169,14 @@ public class AssetService extends JFniceBaseService<Asset> {
      * 根据id获取asset
      */
     public Asset getAssetById(String id) {
-        Asset asset = J2CacheKit.get(CacheName.ASSET, id);
+        Asset asset = JsyCacheKit.get(CacheName.ASSET, id);
         if (asset == null) {
             asset = queryById(id);
             if (asset == null) {
                 throw new ErrorMsg("文件异常，请重新上传！");
             }
-            J2CacheKit.put(CacheName.ASSET, asset.getId(), asset);
-            J2CacheKit.put(CacheName.ASSET, asset.getUrl(), asset);
+            JsyCacheKit.put(CacheName.ASSET, asset.getId(), asset);
+            JsyCacheKit.put(CacheName.ASSET, asset.getUrl(), asset);
         }
         return asset;
     }
@@ -185,15 +185,15 @@ public class AssetService extends JFniceBaseService<Asset> {
      * 根据url获取asset
      */
     public Asset getAssetByUrl(String url) {
-        Asset asset = J2CacheKit.get(CacheName.ASSET, url);
+        Asset asset = JsyCacheKit.get(CacheName.ASSET, url);
         if (asset == null) {
             asset = queryByUrl(url);
             if (asset == null) {
                 throw new ErrorMsg("文件异常，请重新上传！");
             }
 
-            J2CacheKit.put(CacheName.ASSET, asset.getId(), asset);
-            J2CacheKit.put(CacheName.ASSET, asset.getUrl(), asset);
+            JsyCacheKit.put(CacheName.ASSET, asset.getId(), asset);
+            JsyCacheKit.put(CacheName.ASSET, asset.getUrl(), asset);
         }
         return asset;
     }
@@ -229,8 +229,8 @@ public class AssetService extends JFniceBaseService<Asset> {
             }
 
             validateFileExt(asset);
-            J2CacheKit.put(CacheName.ASSET, asset.getId(), asset);
-            J2CacheKit.put(CacheName.ASSET, asset.getUrl(), asset);
+            JsyCacheKit.put(CacheName.ASSET, asset.getId(), asset);
+            JsyCacheKit.put(CacheName.ASSET, asset.getUrl(), asset);
         }
     }
 
@@ -241,7 +241,7 @@ public class AssetService extends JFniceBaseService<Asset> {
             delete(asset.getUrl());
         }
         Db.update(Db.getSql("Asset.clear"));
-        J2CacheKit.removeAll(CacheName.ASSET);
+        JsyCacheKit.removeAll(CacheName.ASSET);
     }
 
 }

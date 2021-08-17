@@ -1,19 +1,23 @@
 package com.school.api.map;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.TypeReference;
-import com.jfinal.kit.JsonKit;
 import com.jfnice.commons.CacheName;
-import com.jfnice.j2cache.J2CacheShareKit;
+import com.jfnice.ext.CurrentUser;
+import com.jfnice.cache.JsyCacheKit;
 import com.school.api.jsy.JsyApi;
 import com.school.api.model.SysMcType;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Optional;
 
 public class SysMcTypeMap {
 
     public static final SysMcTypeMap me = new SysMcTypeMap();
-    private Object key = getClass().getSimpleName();
+    /**
+     * 缓存时间
+     */
+    public long time = 2 * 60 * 60;
 
     public List<SysMcType> getList() {
         List<SysMcType> list = JsyApi.getSysMcTypeList(-1);
@@ -24,18 +28,16 @@ public class SysMcTypeMap {
     }
 
     public LinkedHashMap<String, SysMcType> getMap() {
-        if (J2CacheShareKit.get(CacheName.JSY_SYS_MCTYPE, key) == null) {
-            List<SysMcType> list = getList();
-            if (list != null) {
-                Map<String, SysMcType> map = new LinkedHashMap<>();
-                for (SysMcType obj : list) {
-                    map.put(obj.getMchtpcode(), obj);
-                }
-                J2CacheShareKit.put(CacheName.JSY_SYS_MCTYPE, key, JsonKit.toJson(map));
+        String key = Optional.ofNullable(CurrentUser.getAccessToken()).orElse("");
+        LinkedHashMap<String, SysMcType> map = JsyCacheKit.get(CacheName.JSY_SYS_MCTYPE, key);
+        if (map == null) {
+            map = new LinkedHashMap<>();
+            for (SysMcType obj : getList()) {
+                map.put(obj.getMchtpcode(), obj);
             }
+            JsyCacheKit.put(CacheName.JSY_SYS_MCTYPE, key, map, time);
         }
-        return JSON.parseObject(J2CacheShareKit.get(CacheName.JSY_SYS_MCTYPE, key), new TypeReference<LinkedHashMap<String, SysMcType>>() {
-        });
+        return map;
     }
 
     public SysMcType get(String code) {
@@ -54,7 +56,7 @@ public class SysMcTypeMap {
     }
 
     public void clear() {
-        J2CacheShareKit.remove(CacheName.JSY_SYS_MCTYPE, key);
+        JsyCacheKit.removeAll(CacheName.JSY_SYS_MCTYPE);
     }
 
 }
