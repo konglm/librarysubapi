@@ -81,7 +81,7 @@
         from book_bar_code
         where school_code = #para(school_code)
         and del = 0 and status = 1 and bar_code
-        not in (select bar_code from borrow_book where del = 0 and school_code = #para(school_code) and book_status = 1 and return_status = 0)
+        not in (select bar_code from borrow_book where del = 0 and school_code = #para(school_code) and return_status = 0)
     #end
 
     #sql("statisticsTotalOut")
@@ -89,7 +89,7 @@
         from book_bar_code
         where school_code = #para(school_code)
         and del = 0 and status = 1 and bar_code
-        in (select bar_code from borrow_book where del = 0 and school_code = #para(school_code) and book_status = 1 and return_status = 0)
+        in (select bar_code from borrow_book where del = 0 and school_code = #para(school_code) and return_status = 0)
     #end
 
     #sql("statisticsTotalRepair")
