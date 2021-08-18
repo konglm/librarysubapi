@@ -62,7 +62,11 @@ public class DepositReturnController extends JFniceBaseController {
 		String totalAmount = logic.getTotalDepositAmount(keywords, startTime, endTime);
 		data.put("total_amount",  totalAmount);
 		Page<Record> page = logic.depositList(keywords, startTime, endTime, pageNumber, pageSize);
-		data.put("list",  page);
+		data.put("page_number", page.getPageNumber());
+		data.put("page_size", page.getPageSize());
+		data.put("total_page", page.getTotalPage());
+		data.put("total_row", page.getTotalRow());
+		data.put("list", page.getList());
 		ok("查询成功",data);
 	}
 

@@ -169,8 +169,12 @@ public class BookDamagedController extends JFniceBaseController {
 		data.put("total_cnt", totalCnt);
 		String totalAmount = logic.damagedTotalAmount(unitCode, keywords, repairType, bookStatus);
 		data.put("total_amount", totalAmount);
-		Page<BookDamaged> bookDamagedPage = logic.damagedList(unitCode, pageNumber, pageSize,keywords,repairType,bookStatus);
-		data.put("list", bookDamagedPage);
+		Page<BookDamaged> page = logic.damagedList(unitCode, pageNumber, pageSize,keywords,repairType,bookStatus);
+		data.put("page_number", page.getPageNumber());
+		data.put("page_size", page.getPageSize());
+		data.put("total_page", page.getTotalPage());
+		data.put("total_row", page.getTotalRow());
+		data.put("list", page.getList());
 		ok("查询成功",data);
 	}
 

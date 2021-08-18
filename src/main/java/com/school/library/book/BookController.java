@@ -217,7 +217,12 @@ public class BookController extends JFniceBaseController {
 		JSONObject data = new JSONObject();
 		data.put("total_cnt", this.logic.getBooksInCnt(catalogId, beginTime, endTime, keyword));
 		data.put("total_amount", this.logic.getBooksInAmount(catalogId, beginTime, endTime, keyword));
-		data.put("list", this.logic.getBooksIn(catalogId, beginTime, endTime, keyword, pageNumber, pageSize));
+		Page<Record> page = this.logic.getBooksIn(catalogId, beginTime, endTime, keyword, pageNumber, pageSize);
+		data.put("page_number", page.getPageNumber());
+		data.put("page_size", page.getPageSize());
+		data.put("total_page", page.getTotalPage());
+		data.put("total_row", page.getTotalRow());
+		data.put("list", page.getList());
 		ok("查询书籍成功",data);
 
 	}
@@ -250,7 +255,12 @@ public class BookController extends JFniceBaseController {
 		JSONObject data = new JSONObject();
 		data.put("total_cnt", this.logic.getBooksBorrowCnt(catalogId, isOverDay, beginTime, endTime, keyword));
 		data.put("total_amount", this.logic.getBooksBorrowAmount(catalogId, isOverDay, beginTime, endTime, keyword));
-		data.put("list", this.logic.getBooksBorrow(catalogId, isOverDay, beginTime, endTime, keyword, pageNumber, pageSize));
+		Page<Record> page = this.logic.getBooksBorrow(catalogId, isOverDay, beginTime, endTime, keyword, pageNumber, pageSize);
+		data.put("page_number", page.getPageNumber());
+		data.put("page_size", page.getPageSize());
+		data.put("total_page", page.getTotalPage());
+		data.put("total_row", page.getTotalRow());
+		data.put("list", page.getList());
 		ok("查询书籍成功",data);
 
 	}

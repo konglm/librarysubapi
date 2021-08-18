@@ -9,9 +9,11 @@ import com.jfinal.core.paragetter.Para;
 import com.jfinal.ext.kit.DateKit;
 import com.jfinal.kit.JsonKit;
 import com.jfinal.plugin.activerecord.Page;
+import com.jfinal.plugin.activerecord.Record;
 import com.jfnice.admin.dict.DictKit;
 import com.jfnice.enums.OpCodeEnum;
 import com.jfnice.ext.ExcelExport;
+import com.jfnice.model.BookDamaged;
 import com.jfnice.model.BookStorageItem;
 import com.jfnice.annotation.JsyPermissions;
 import com.jfnice.core.JFniceBaseController;
@@ -215,7 +217,12 @@ public class BookStorageController extends JFniceBaseController {
 		JSONObject data = new JSONObject();
 		data.put("total_cnt", this.logic.getItemByNameCnt(name, beginTime, endTime, keyword));
 		data.put("total_amount", this.logic.getItemByNameAmount(name, beginTime, endTime, keyword));
-		data.put("list", this.logic.getItemByName(name, beginTime, endTime, keyword, pageNumber, pageSize));
+		Page<Record> page = this.logic.getItemByName(name, beginTime, endTime, keyword, pageNumber, pageSize);
+		data.put("page_number", page.getPageNumber());
+		data.put("page_size", page.getPageSize());
+		data.put("total_page", page.getTotalPage());
+		data.put("total_row", page.getTotalRow());
+		data.put("list", page.getList());
 		ok("查询入库信息成功", data);
 
 	}
