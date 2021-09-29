@@ -236,6 +236,24 @@ public class StatisticsLogic {
     }
 
     /**
+     * 统计w未借阅图书
+     * @param begintime
+     * @param endtime
+     * @param pageNumber
+     * @param pageSize
+     * @return
+     */
+    public Page<Record> statisticsBorrowZeroByBook(String begintime, String endtime, int pageNumber, int pageSize){
+        Page<Record> page = this.borrowBookLogic.statisticsBorrowZeroByBook(begintime, endtime, pageNumber, pageSize);
+        page.getList().forEach(r -> {
+            r.set("begintime", begintime);
+            r.set("endtime", endtime);
+            r.set("publish_date", DateKit.toStr(r.getDate("publish_date"), "yyyy-MM"));
+        });
+        return page;
+    }
+
+    /**
      * 统计检索次数
      * @param cycle 统计周期
      * @param pageNumber

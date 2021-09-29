@@ -126,6 +126,22 @@
         ) t order by borrow_count desc
     #end
 
+    #sql("statisticsBorrowZeroByBook")
+            select catalog_no, book_name, author, publisher, publish_date from book b where
+            del = 0 and school_code  = #para(school_code) and
+            catalog_no + '_' + book_name + '_' + author + '_' + publisher + '_' + CONVERT(varchar(100), publish_date, 23)
+            not in (
+                select a.catalog_no + '_' + a.book_name + '_' + a.author + '_' + a.publisher + '_' + CONVERT(varchar(100), a.publish_date, 23) from borrow_book a
+                where a.del = 0 and a.school_code  = #para(school_code)
+                    #if(begintime)
+                      AND CONVERT(varchar,a.borrow_time,23) >= #para(begintime)
+                    #end
+                    #if(endtime)
+                      AND CONVERT(varchar,a.borrow_time,23) <= #para(endtime)
+                    #end
+            ) order by id desc
+        #end
+
     #sql("PayBookByBarCode")
         SELECT  bb.*
         FROM borrow_book bb
