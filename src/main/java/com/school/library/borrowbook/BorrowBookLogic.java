@@ -303,11 +303,11 @@ public class BorrowBookLogic {
 		return page;
 	}
 
-	public Page<Record> statisticsBorrowZeroByBook(String begintime, String endtime, int pageNumber, int pageSize){
+	public Page<Record> statisticsBorrowZeroByCatalogNo(String begintime, String endtime, int pageNumber, int pageSize){
 		Kv kv = Kv.by("school_code", CurrentUser.getSchoolCode());
 		kv.set("begintime", begintime);
 		kv.set("endtime", endtime);
-		SqlPara sqlPara = Db.getSqlPara("BorrowBookLogic.statisticsBorrowZeroByBook", kv);
+		SqlPara sqlPara = Db.getSqlPara("BorrowBookLogic.statisticsBorrowZeroByCatalogNo", kv);
 		Page<Record> page = Db.paginate(pageNumber, pageSize, sqlPara);
 		return page;
 	}

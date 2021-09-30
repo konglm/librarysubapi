@@ -99,15 +99,15 @@ public class StatisticsController extends JFniceBaseController {
     }
 
     /**
-     * 统计未借阅图书
+     * 统计未借阅类型
      */
     @JsyPermissions(OpCodeEnum.INDEX)
-    public void statisticsBorrowZeroByBook(){
+    public void statisticsBorrowZeroByCatalogNo(){
         String begintime = getPara("begintime");
         String endtime = getPara("endtime");
         Integer pageNumber = getParaToInt("page_number", 1);
         Integer pageSize = getParaToInt("page_size", 15);
-        ok(this.statisticsLogic.statisticsBorrowZeroByBook(begintime, endtime, pageNumber, pageSize));
+        ok(this.statisticsLogic.statisticsBorrowZeroByCatalogNo(begintime, endtime, pageNumber, pageSize));
     }
 
     /**

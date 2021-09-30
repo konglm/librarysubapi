@@ -236,19 +236,18 @@ public class StatisticsLogic {
     }
 
     /**
-     * 统计w未借阅图书
+     * 统计未借阅类型
      * @param begintime
      * @param endtime
      * @param pageNumber
      * @param pageSize
      * @return
      */
-    public Page<Record> statisticsBorrowZeroByBook(String begintime, String endtime, int pageNumber, int pageSize){
-        Page<Record> page = this.borrowBookLogic.statisticsBorrowZeroByBook(begintime, endtime, pageNumber, pageSize);
+    public Page<Record> statisticsBorrowZeroByCatalogNo(String begintime, String endtime, int pageNumber, int pageSize){
+        Page<Record> page = this.borrowBookLogic.statisticsBorrowZeroByCatalogNo(begintime, endtime, pageNumber, pageSize);
         page.getList().forEach(r -> {
             r.set("begintime", begintime);
             r.set("endtime", endtime);
-            r.set("publish_date", DateKit.toStr(r.getDate("publish_date"), "yyyy-MM"));
         });
         return page;
     }
