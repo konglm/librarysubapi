@@ -55,6 +55,11 @@
 	    update book_bar_code set del = 1 where school_code = #para(school_code) and bar_code = #para(bar_code)
 	#end
 
+	#sql("writeoffByBarcode")
+        update book_bar_code set status = 2, del_reason = #para(del_reason)
+        where school_code = #para(school_code) and bar_code = #para(bar_code)
+    #end
+
     #sql("storageBarCode")
 	    update book_bar_code set status = #para(storage_status), update_user_code = #para(update_user_code),
 	        update_time = #para(update_time)
@@ -97,6 +102,27 @@
         from book_bar_code
         where school_code = #para(school_code)
         and del = 0 and status = 2
+    #end
+
+    #sql("statisticsTotalDamage")
+        select count(1) total_damage_cnt, isnull(sum(price),0) total_damage_amount
+        from book_bar_code
+        where del = 0 and school_code = #para(school_code)
+        and status = 3
+    #end
+
+    #sql("statisticsTotalLose")
+        select count(1) total_lose_cnt, isnull(sum(price),0) total_lose_amount
+        from book_bar_code
+        where del = 0 and school_code = #para(school_code)
+        and status = 4
+    #end
+
+    #sql("statisticsTotalWriteOff")
+        select count(1) total_write_off_cnt, isnull(sum(price),0) total_write_off_amount
+        from book_bar_code
+        where del = 0 and school_code = #para(school_code)
+        and status = 6
     #end
 
 #end

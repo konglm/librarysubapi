@@ -205,6 +205,18 @@ public class BookController extends JFniceBaseController {
 	}
 
 	/**
+	 * 注销图书
+	 */
+	@JsyPermissions(OpCodeEnum.DELETE)
+	@Before(TxPost.class)
+	public void writeoffByBarcode(@Para("unit_code") String unitCode,
+								  @Para(value = "bar_code") String barCode,
+								  @Para(value = "del_reason") String delReason){
+		bookBarCodeLogic.writeoffByBarcode(barCode,unitCode,delReason);
+		ok("删除成功");
+	}
+
+	/**
 	 * 查询在馆图书
 	 */
 	public void getBooksIn(){

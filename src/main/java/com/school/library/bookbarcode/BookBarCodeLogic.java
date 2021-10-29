@@ -63,4 +63,13 @@ public class BookBarCodeLogic {
 		Db.update(barSql);
 	}
 
+	/**
+	 * 注销图书
+	 */
+	public void writeoffByBarcode(String barCode,String unitCode, String delReason){
+		Kv kv = Kv.by("bar_code", barCode).set("school_code", unitCode).set("del_reason", delReason);
+		SqlPara barSql = Db.getSqlPara("BookBarCodeLogic.writeoffByBarcode", kv);
+		Db.update(barSql);
+	}
+
 }

@@ -106,7 +106,7 @@ public class BookStorageService extends JFniceBaseService<BookStorage> {
 	 */
 	public Record statisticsTotalDamage(String schoolCode) {
 		Kv kv = Kv.by("school_code", schoolCode);
-		SqlPara sqlPara = Db.getSqlPara("BookStorageLogic.statisticsTotalDamage", kv);
+		SqlPara sqlPara = Db.getSqlPara("BookBarCodeLogic.statisticsTotalDamage", kv);
 		Record record = Db.findFirst(sqlPara);
 		return record;
 	}
@@ -118,19 +118,19 @@ public class BookStorageService extends JFniceBaseService<BookStorage> {
 	 */
 	public Record statisticsTotalLose(String schoolCode) {
 		Kv kv = Kv.by("school_code", schoolCode);
-		SqlPara sqlPara = Db.getSqlPara("BookStorageLogic.statisticsTotalLose", kv);
+		SqlPara sqlPara = Db.getSqlPara("BookBarCodeLogic.statisticsTotalLose", kv);
 		Record record = Db.findFirst(sqlPara);
 		return record;
 	}
 
 	/**
-	 * 获取注销总数
+	 * 获取注销总数+
 	 * @param schoolCode
 	 * @return
 	 */
 	public Record statisticsTotalWriteOff(String schoolCode) {
 		Kv kv = Kv.by("school_code", schoolCode);
-		SqlPara sqlPara = Db.getSqlPara("BookStorageLogic.statisticsTotalWriteOff", kv);
+		SqlPara sqlPara = Db.getSqlPara("BookBarCodeLogic.statisticsTotalWriteOff", kv);
 		Record record = Db.findFirst(sqlPara);
 		return record;
 	}

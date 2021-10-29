@@ -35,29 +35,7 @@
         select count(1) total_storage_cnt, isnull(sum(price),0) total_storage_amount
         from book_storage_item_bar_code
         where del = 0 and school_code = #para(school_code)
-        and status in (1,2,3,4,6)
+        and status = 5
     #end
-
-    #sql("statisticsTotalDamage")
-        select count(1) total_damage_cnt, isnull(sum(price),0) total_damage_amount
-        from book_storage_item_bar_code
-        where del = 0 and school_code = #para(school_code)
-        and status = 3
-    #end
-
-    #sql("statisticsTotalLose")
-        select count(1) total_lose_cnt, isnull(sum(price),0) total_lose_amount
-        from book_storage_item_bar_code
-        where del = 0 and school_code = #para(school_code)
-        and status = 4
-    #end
-
-    #sql("statisticsTotalWriteOff")
-        select count(1) total_write_off_cnt, isnull(sum(price),0) total_write_off_amount
-        from book_storage_item_bar_code
-        where del = 0 and school_code = #para(school_code)
-        and status = 6
-    #end
-
 
 #end
