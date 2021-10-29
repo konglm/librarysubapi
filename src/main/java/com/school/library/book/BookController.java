@@ -213,7 +213,7 @@ public class BookController extends JFniceBaseController {
 								  @Para(value = "bar_code") String barCode,
 								  @Para(value = "del_reason") String delReason){
 		bookBarCodeLogic.writeoffByBarcode(barCode,unitCode,delReason);
-		ok("删除成功");
+		ok("注销成功");
 	}
 
 	/**

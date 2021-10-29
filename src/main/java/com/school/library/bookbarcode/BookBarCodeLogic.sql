@@ -56,7 +56,7 @@
 	#end
 
 	#sql("writeoffByBarcode")
-        update book_bar_code set status = 2, del_reason = #para(del_reason)
+        update book_bar_code set status = 6, del_reason = #para(del_reason)
         where school_code = #para(school_code) and bar_code = #para(bar_code)
     #end
 
