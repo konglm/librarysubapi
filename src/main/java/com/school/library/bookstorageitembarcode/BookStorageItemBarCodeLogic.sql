@@ -131,13 +131,13 @@
     #end
 
 	#sql("getBooksIn")
-        select a.book_storage_id, a.book_storage_item_id, a.bar_code, b.book_name, b.author, b.publisher, b.price, c.name
+        select a.book_storage_id, a.book_storage_item_id, a.bar_code, a.check_no, b.book_name, b.author, b.publisher, b.price, c.name
         , c.create_time, c.create_user_code, c.create_user_name, b.catalog_name, count(d.bar_code) borrow_cnt, a.book_id
         from book_storage_item b, book_storage c, book_storage_item_bar_code a left join borrow_book d on d.del = 0  and a.bar_code = d.bar_code
         where a.del = 0 and b.del = 0 and c.del = 0
         and a.book_storage_item_id = b.id and a.book_storage_id = c.id
         and a.school_code = #para(school_code) and c.status = 1 and a.bar_code not in (select bar_code from borrow_book where return_status = 0 and del = 0)
-        #if(catalog_id)
+        #if(catalog_id != -1)
           and b.catalog_id = #para(catalog_id)
         #end
         #if(begin_time)
