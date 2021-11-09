@@ -234,7 +234,7 @@
     #end
 
     #sql("getBooksBorrowAmount")
-        select isnull(sum(c.price),0) amount
+        select isnull(sum(a.price),0) amount
         from book c, book_bar_code a, borrow_book d
         where a.del = 0 and c.del = 0 and d.del = 0
         and a.book_id = c.id and a.bar_code = d.bar_code
