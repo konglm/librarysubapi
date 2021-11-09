@@ -475,6 +475,7 @@ public class BookLogic {
 			data.put("bar_code", bookInfo.getStr("bar_code"));
 			data.put("check_no", bookInfo.getStr("check_no"));
 			data.put("book_name", bookInfo.getStr("book_name"));
+			data.put("book_img_url", bookInfo.getStr("book_img_url"));
 			data.put("author", bookInfo.getStr("author"));
 			data.put("publisher", bookInfo.getStr("publisher"));
 			data.put("publish_date", bookInfo.getStr("publish_date"));
@@ -486,6 +487,7 @@ public class BookLogic {
 			data.put("bar_code", "");
 			data.put("check_no", "");
 			data.put("book_name", "");
+			data.put("book_img_url", "");
 			data.put("author","");
 			data.put("publisher", "");
 			data.put("publish_date", "");
