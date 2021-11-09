@@ -141,7 +141,7 @@
           or c.author like ('%' + #para(keyword) + '%'))
         #end
         group by a.book_id, a.bar_code, a.check_no, c.book_name, c.author, c.publisher, a.price
-                , c.create_time, c.create_user_code, c.create_user_name, c.catalog_name
+                , a.create_time, a.create_user_code, a.create_user_name, c.catalog_name
     #end
 
     #sql("getBooksInCnt")
