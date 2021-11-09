@@ -161,7 +161,7 @@ public class BookLogic {
 	 * @return
 	 */
 	public Page<Record> getBooksIn(int catalogId, String beginTime, String endTime, String keyword, int pageNumber, int pageSize) {
-		Page<Record> items = this.itemBarCodeService.getBooksIn(CurrentUser.getSchoolCode(), catalogId, beginTime, endTime, keyword, pageNumber, pageSize);
+		Page<Record> items = this.service.getBooksIn(CurrentUser.getSchoolCode(), catalogId, beginTime, endTime, keyword, pageNumber, pageSize);
 		return items;
 	}
 
@@ -224,7 +224,7 @@ public class BookLogic {
 
 		int pageNumber = 1;
 		int pageSize = 500;
-		Page<Record> page= this.itemBarCodeService.getBooksIn(CurrentUser.getSchoolCode(), catalogId, beginTime, endTime, keyword, pageNumber, pageSize);
+		Page<Record> page= this.service.getBooksIn(CurrentUser.getSchoolCode(), catalogId, beginTime, endTime, keyword, pageNumber, pageSize);
 		int totalRow = page.getTotalRow();
 		int seqIndex = 1;
 		while(page.getTotalPage() >= pageNumber){
@@ -249,7 +249,7 @@ public class BookLogic {
 				}
 			}
 			pageNumber = pageNumber + 1;
-			page = this.itemBarCodeService.getBooksIn(CurrentUser.getSchoolCode(), catalogId, beginTime, endTime, keyword, pageNumber, pageSize);
+			page = this.service.getBooksIn(CurrentUser.getSchoolCode(), catalogId, beginTime, endTime, keyword, pageNumber, pageSize);
 		}
 		return wb;
 	}
@@ -263,7 +263,7 @@ public class BookLogic {
 	 * @return
 	 */
 	public String getBooksInCnt(int catalogId, String beginTime, String endTime, String keyword) {
-		Record record = this.itemBarCodeService.getBooksInCnt(CurrentUser.getSchoolCode(), catalogId, beginTime, endTime, keyword);
+		Record record = this.service.getBooksInCnt(CurrentUser.getSchoolCode(), catalogId, beginTime, endTime, keyword);
 		return record.getStr("cnt");
 	}
 
@@ -276,7 +276,7 @@ public class BookLogic {
 	 * @return
 	 */
 	public String getBooksInAmount(int catalogId, String beginTime, String endTime, String keyword) {
-		Record record = this.itemBarCodeService.getBooksInAmount(CurrentUser.getSchoolCode(), catalogId, beginTime, endTime, keyword);
+		Record record = this.service.getBooksInAmount(CurrentUser.getSchoolCode(), catalogId, beginTime, endTime, keyword);
 		return record.getStr("amount");
 	}
 
@@ -292,7 +292,7 @@ public class BookLogic {
 	 * @return
 	 */
 	public Page<Record> getBooksBorrow(int catalogId, int isOverDay, String beginTime, String endTime, String keyword, int pageNumber, int pageSize) {
-		Page<Record> records = this.itemBarCodeService.getBooksBorrow(CurrentUser.getSchoolCode(), catalogId, isOverDay, beginTime, endTime, keyword, pageNumber, pageSize);
+		Page<Record> records = this.service.getBooksBorrow(CurrentUser.getSchoolCode(), catalogId, isOverDay, beginTime, endTime, keyword, pageNumber, pageSize);
 		BorrowSetting borrowSetting = settingLogic.queryIfNotNewBySchool(CurrentUser.getSchoolCode());
 		Integer borrowDays = 0;
 		if(borrowSetting != null) {
@@ -383,7 +383,7 @@ public class BookLogic {
 
 		int pageNumber = 1;
 		int pageSize = 500;
-		Page<Record> page= this.itemBarCodeService.getBooksBorrow(CurrentUser.getSchoolCode(), catalogId, isOverDay, beginTime, endTime, keyword, pageNumber, pageSize);
+		Page<Record> page= this.service.getBooksBorrow(CurrentUser.getSchoolCode(), catalogId, isOverDay, beginTime, endTime, keyword, pageNumber, pageSize);
 		BorrowSetting borrowSetting = settingLogic.queryIfNotNewBySchool(CurrentUser.getSchoolCode());
 		Integer borrowDays = borrowSetting.getBorrowDays();
 		for (Record record:page.getList()){
@@ -430,7 +430,7 @@ public class BookLogic {
 				}
 			}
 			pageNumber = pageNumber + 1;
-			page = this.itemBarCodeService.getBooksBorrow(CurrentUser.getSchoolCode(), catalogId, isOverDay, beginTime, endTime, keyword, pageNumber, pageSize);
+			page = this.service.getBooksBorrow(CurrentUser.getSchoolCode(), catalogId, isOverDay, beginTime, endTime, keyword, pageNumber, pageSize);
 		}
 		return wb;
 	}
@@ -445,7 +445,7 @@ public class BookLogic {
 	 * @return
 	 */
 	public String getBooksBorrowCnt(int catalogId, int isOverDay, String beginTime, String endTime, String keyword) {
-		Record record = this.itemBarCodeService.getBooksBorrowCnt(CurrentUser.getSchoolCode(), catalogId, isOverDay, beginTime, endTime, keyword);
+		Record record = this.service.getBooksBorrowCnt(CurrentUser.getSchoolCode(), catalogId, isOverDay, beginTime, endTime, keyword);
 		return record.getStr("cnt");
 	}
 
@@ -459,7 +459,7 @@ public class BookLogic {
 	 * @return
 	 */
 	public String getBooksBorrowAmount(int catalogId, int isOverDay, String beginTime, String endTime, String keyword) {
-		Record record = this.itemBarCodeService.getBooksBorrowAmount(CurrentUser.getSchoolCode(), catalogId, isOverDay, beginTime, endTime, keyword);
+		Record record = this.service.getBooksBorrowAmount(CurrentUser.getSchoolCode(), catalogId, isOverDay, beginTime, endTime, keyword);
 		return record.getStr("amount");
 	}
 
@@ -470,7 +470,7 @@ public class BookLogic {
 	 */
 	public JSONObject getBookInfoByBar(String barCode, int pageNumber, int pageSize) {
 		JSONObject data = new JSONObject();
-		Record bookInfo = this.itemBarCodeService.getBookInfoByBar(CurrentUser.getSchoolCode(), barCode);
+		Record bookInfo = this.service.getBookInfoByBar(CurrentUser.getSchoolCode(), barCode);
 		if(bookInfo != null) {
 			data.put("bar_code", bookInfo.getStr("bar_code"));
 			data.put("check_no", bookInfo.getStr("check_no"));
@@ -494,7 +494,7 @@ public class BookLogic {
 			data.put("create_time", "");
 			data.put("create_user_name", "");
 		}
-		Page<Record> borrowList = this.itemBarCodeService.getBookBorrowList(CurrentUser.getSchoolCode(), barCode, pageNumber, pageSize);
+		Page<Record> borrowList = this.service.getBookBorrowList(CurrentUser.getSchoolCode(), barCode, pageNumber, pageSize);
 		for (Record record:borrowList.getList()){
 			if ("".equals(record.getStr("return_time"))) {
 				long borrowDays = CommonKit.differDays(record.getDate("borrow_time"), new Date());

@@ -121,4 +121,159 @@
 	        and a.catalog_id in (#(catalog_ids))
 	#end
 
+	#sql("getBooksIn")
+        select a.book_id, a.bar_code, a.check_no, c.book_name, c.author, c.publisher, a.price
+        , a.create_time, a.create_user_code, a.create_user_name, c.catalog_name, count(a.bar_code) borrow_cnt
+        from book c, book_bar_code a left join borrow_book d on d.del = 0  and a.bar_code = d.bar_code
+        where a.del = 0 and c.del = 0 and a.book_id = c.id
+        and a.school_code = #para(school_code) and a.status = 1 and a.bar_code not in (select bar_code from borrow_book where return_status = 0 and del = 0)
+        #if(catalog_id != -1)
+          and c.catalog_id = #para(catalog_id)
+        #end
+        #if(begin_time)
+          AND CONVERT(varchar,a.create_time,23) >= #para(begin_time)
+        #end
+        #if(end_time)
+          AND CONVERT(varchar,a.create_time,23) <= #para(end_time)
+        #end
+        #if(keyword)
+          and (a.bar_code like ('%' + #para(keyword) + '%') or c.book_name like ('%' + #para(keyword) + '%')
+          or c.author like ('%' + #para(keyword) + '%'))
+        #end
+        group by a.book_id, a.bar_code, a.check_no, c.book_name, c.author, c.publisher, a.price
+                , c.create_time, c.create_user_code, c.create_user_name, c.catalog_name
+    #end
+
+    #sql("getBooksInCnt")
+        select count(1) cnt
+        from book c, book_bar_code a
+        where a.del = 0 and c.del = 0 and a.book_id = c.id
+        and a.school_code = #para(school_code) and a.status = 1 and a.bar_code not in (select bar_code from borrow_book where return_status = 0 and del = 0)
+        #if(catalog_id != -1)
+          and c.catalog_id = #para(catalog_id)
+        #end
+        #if(begin_time)
+          AND CONVERT(varchar,a.create_time,23) >= #para(begin_time)
+        #end
+        #if(end_time)
+          AND CONVERT(varchar,a.create_time,23) <= #para(end_time)
+        #end
+        #if(keyword)
+          and (a.bar_code like ('%' + #para(keyword) + '%') or c.book_name like ('%' + #para(keyword) + '%')
+          or c.author like ('%' + #para(keyword) + '%'))
+        #end
+    #end
+
+    #sql("getBooksInAmount")
+        select isnull(sum(a.price),0) amount
+        from book c, book_bar_code a
+        where a.del = 0 and c.del = 0 and a.book_id = c.id
+        and a.school_code = #para(school_code) and a.status = 1 and a.bar_code not in (select bar_code from borrow_book where return_status = 0 and del = 0)
+        #if(catalog_id != -1)
+          and c.catalog_id = #para(catalog_id)
+        #end
+        #if(begin_time)
+          AND CONVERT(varchar,a.create_time,23) >= #para(begin_time)
+        #end
+        #if(end_time)
+          AND CONVERT(varchar,a.create_time,23) <= #para(end_time)
+        #end
+        #if(keyword)
+          and (a.bar_code like ('%' + #para(keyword) + '%') or c.book_name like ('%' + #para(keyword) + '%')
+          or c.author like ('%' + #para(keyword) + '%'))
+        #end
+    #end
+
+    #sql("getBooksBorrow")
+        select a.book_storage_id, a.book_storage_item_id, a.bar_code, a.check_no, c.book_name, c.author, d.borrower, isnull(d.dpt_name,'') dpt_name
+            , isnull(d.grd_name,'') grd_name, isnull(d.cls_name,'') cls_name, d.borrow_time, d.return_time, d.over_days, a.book_id
+        from book c, book_bar_code a, borrow_book d
+        where a.del = 0 and c.del = 0 and d.del = 0
+        and a.book_id = c.id and a.bar_code = d.bar_code
+        and a.school_code = #para(school_code) and a.status = 1 and d.return_status = 0
+        #if(catalog_id != -1)
+          and c.catalog_id = #para(catalog_id)
+        #end
+        #if(begin_time)
+          AND CONVERT(varchar,a.create_time,23) >= #para(begin_time)
+        #end
+        #if(end_time)
+          AND CONVERT(varchar,a.create_time,23) <= #para(end_time)
+        #end
+        #if(is_over_day == 1)
+          AND d.over_days > 0
+        #end
+        #if(keyword)
+          and (a.bar_code like ('%' + #para(keyword) + '%') or c.book_name like ('%' + #para(keyword) + '%')
+          or c.author like ('%' + #para(keyword) + '%'))
+        #end
+    #end
+
+    #sql("getBooksBorrowCnt")
+        select count(1) cnt
+        from book c, book_bar_code a, borrow_book d
+        where a.del = 0 and c.del = 0 and d.del = 0
+        and a.book_id = c.id and a.bar_code = d.bar_code
+        and a.school_code = #para(school_code) and a.status = 1 and d.return_status = 0
+        #if(catalog_id != -1)
+          and c.catalog_id = #para(catalog_id)
+        #end
+        #if(begin_time)
+          AND CONVERT(varchar,a.create_time,23) >= #para(begin_time)
+        #end
+        #if(end_time)
+          AND CONVERT(varchar,a.create_time,23) <= #para(end_time)
+        #end
+        #if(is_over_day == 1)
+          AND d.over_days > 0
+        #end
+        #if(keyword)
+          and (a.bar_code like ('%' + #para(keyword) + '%') or c.book_name like ('%' + #para(keyword) + '%')
+          or c.author like ('%' + #para(keyword) + '%'))
+        #end
+    #end
+
+    #sql("getBooksBorrowAmount")
+        select isnull(sum(c.price),0) amount
+        from book c, book_bar_code a, borrow_book d
+        where a.del = 0 and c.del = 0 and d.del = 0
+        and a.book_id = c.id and a.bar_code = d.bar_code
+        and a.school_code = #para(school_code) and a.status = 1 and d.return_status = 0
+        #if(catalog_id != -1)
+          and c.catalog_id = #para(catalog_id)
+        #end
+        #if(begin_time)
+          AND CONVERT(varchar,a.create_time,23) >= #para(begin_time)
+        #end
+        #if(end_time)
+          AND CONVERT(varchar,a.create_time,23) <= #para(end_time)
+        #end
+        #if(is_over_day == 1)
+          AND d.over_days > 0
+        #end
+        #if(keyword)
+          and (a.bar_code like ('%' + #para(keyword) + '%') or c.book_name like ('%' + #para(keyword) + '%')
+          or c.author like ('%' + #para(keyword) + '%'))
+        #end
+    #end
+
+    #sql("getBookInfoByBar")
+        select a.bar_code, a.check_no, c.book_name, c.author, c.publisher, c.publish_date, a.price, c.catalog_name, c.book_img_url
+        , a.create_time, a.create_user_name
+        from book c, book_bar_code a
+        where a.del = 0 and c.del = 0 and a.book_id = c.id
+        and a.school_code = #para(school_code) and a.bar_code = #para(bar_code)
+    #end
+
+    #sql("getBookBorrowList")
+        select a.book_id, a.bar_code, c.book_name, c.author, d.borrower, isnull(d.dpt_name,'') dpt_name
+        , isnull(d.grd_name,'') grd_name, isnull(d.cls_name,'') cls_name, d.borrow_time, isnull(d.return_time,'') return_time
+        , d.over_days, d.return_status
+        from book c, book_bar_code a, borrow_book d
+        where a.del = 0 and c.del = 0 and d.del = 0
+        and a.book_id = c.id and a.bar_code = d.bar_code
+        and a.school_code = #para(school_code) and a.bar_code = #para(bar_code)
+        and a.status = 1
+    #end
+
 #end
