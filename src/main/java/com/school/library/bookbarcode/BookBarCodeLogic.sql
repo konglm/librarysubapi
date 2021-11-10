@@ -71,14 +71,14 @@
         select count(1) total_cnt
         from book_bar_code
         where school_code = #para(school_code)
-        and del = 0 and status = 1
+        and del = 0 and ((status = 1) or (status = 2))
     #end
 
     #sql("statisticsTotalAmount")
         select isnull(sum(price),0) total_amount
         from book_bar_code
         where school_code = #para(school_code)
-        and del = 0 and status = 1
+        and del = 0 and ((status = 1) or (status = 2))
     #end
 
     #sql("statisticsTotalIn")
