@@ -7,14 +7,22 @@ import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Page;
 import com.jfinal.plugin.activerecord.SqlPara;
 import com.jfnice.ext.CondPara;
+import com.jfnice.ext.CurrentUser;
+import com.jfnice.model.Book;
 import com.jfnice.model.BookBarCode;
+import com.jfnice.model.BookDamaged;
+import com.school.library.book.BookService;
 
+import java.util.Date;
 import java.util.List;
 
 public class BookBarCodeLogic {
 
 	@Inject
 	private BookBarCodeService service;
+
+	@Inject
+	private BookService bookService;
 
 	public Page<BookBarCode> queryPage(CondPara condPara) {
 		buildCondPara(condPara);
@@ -70,6 +78,19 @@ public class BookBarCodeLogic {
 		Kv kv = Kv.by("bar_code", barCode).set("school_code", unitCode).set("del_reason", delReason);
 		SqlPara barSql = Db.getSqlPara("BookBarCodeLogic.writeoffByBarcode", kv);
 		Db.update(barSql);
+
+		Book book = bookService.queryByBarCode(unitCode, barCode);
+		BookDamaged bookDamaged = new BookDamaged();
+		bookDamaged.setBarCode(barCode);
+		bookDamaged.setBookName(book.getBookName());
+		bookDamaged.setAuthor(book.getAuthor());
+		bookDamaged.setBookStatus(6);
+		bookDamaged.setExplain(delReason);
+		bookDamaged.setLastStatus(6);
+		bookDamaged.setRecorder(CurrentUser.getUserName());
+		bookDamaged.setRecorderCode(CurrentUser.getUserCode());
+		bookDamaged.setRecordTime(new Date());
+		bookDamaged.save(); //往问题图书加一条注销记录
 	}
 
 }

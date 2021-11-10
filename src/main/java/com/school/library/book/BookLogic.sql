@@ -32,7 +32,7 @@
 	#end
 
 	#sql("queryByBookName")
-	    select a.*, (select MIN(price) from book_bar_code b where b.del = 0 and b.book_id = a.id) as price from book a
+	    select a.*, (select MIN(price) from book_bar_code b where b.del = 0 and b.status != 6 and b.book_id = a.id) as price from book a
 	        where a.del = 0 and a.school_code = #para(school_code)
 	        #if(book_name)
 	            and a.book_name like ('%' + #para(book_name) + '%')
@@ -42,7 +42,7 @@
 
 	#sql("queryByBarCode")
 	    select b.*, a.bar_code, a.price from book_bar_code a left join book b on a.book_id = b.id
-	        where a.del = 0 and b.del = 0 and a.school_code = #para(school_code)
+	        where a.del = 0 and b.del = 0 and a.school_code = #para(school_code) and a.status != 6
 	        and a.bar_code = #para(bar_code)
 	#end
 
@@ -99,7 +99,7 @@
                            avg(bbc.price) as price
                     FROM book_bar_code bbc
                              INNER JOIN book b ON b.id = bbc.book_id
-                    where bbc.del = 0
+                    where bbc.del = 0  and bbc.status != 6
                     GROUP BY bbc.book_id)
         select b.*,T1.price,T1.book_num  from  book b
         left join T1 on T1.book_id = b.id
