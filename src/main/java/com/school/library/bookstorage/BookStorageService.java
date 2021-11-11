@@ -94,7 +94,7 @@ public class BookStorageService extends JFniceBaseService<BookStorage> {
 	 */
 	public Record statisticsTotalStorage(String schoolCode) {
 		Kv kv = Kv.by("school_code", schoolCode);
-		SqlPara sqlPara = Db.getSqlPara("BookStorageLogic.statisticsTotalStorage", kv);
+		SqlPara sqlPara = Db.getSqlPara("BookStorageItemBarCodeLogic.statisticsTotalStorage", kv);
 		Record record = Db.findFirst(sqlPara);
 		return record;
 	}

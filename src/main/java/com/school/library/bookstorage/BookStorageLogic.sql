@@ -31,11 +31,4 @@
 	        where a.del = 0 and a.school_code = #para(school_code) and a.status = #para(status)
 	#end
 
-    #sql("statisticsTotalStorage")
-        select count(1) total_storage_cnt, isnull(sum(price),0) total_storage_amount
-        from book_storage_item_bar_code
-        where del = 0 and school_code = #para(school_code)
-        and status = 5
-    #end
-
 #end
