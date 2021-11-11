@@ -52,7 +52,17 @@
                bb.book_img_url
         from book_damaged bd
                  LEFT JOIN borrow_book bb ON bb.id = bd.borrow_id
-        WHERE  bd.id = #(id)
+        WHERE  bd.id = #(id) and bd.book_status != 6
+        union
+        select bd.book_status,bd.deductions,bd.explain,bd.recorder,
+               bd.record_time,bd.last_status,bd.repairer,bd.repair_time,
+               bbc.bar_code,bb.book_name,bb.author,bb.publisher,
+               bb.publish_date,bbc.price,bb.catalog_name,bb.check_no,
+               '' borrower,'' cls_name,'' grd_name,'' sno,'' dpt_name,
+               bb.book_img_url
+        from book_damaged bd, book bb, book_bar_code bbc
+        WHERE bb.id = bbc.book_id and bd.bar_code = bbc.bar_code
+        and bd.id = #(id) and bd.book_status = 6
     #end
 
     #sql("queryCheckList")

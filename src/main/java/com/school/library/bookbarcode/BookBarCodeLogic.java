@@ -83,6 +83,8 @@ public class BookBarCodeLogic {
 		bookDamaged.setAuthor(book.getAuthor());
 		bookDamaged.setBookStatus(6);
 		bookDamaged.setExplain(delReason);
+		bookDamaged.setJudge(2);
+		bookDamaged.setDeductions(0);
 		bookDamaged.setLastStatus(6);
 		bookDamaged.setRecorder(CurrentUser.getUserName());
 		bookDamaged.setRecorderCode(CurrentUser.getUserCode());
