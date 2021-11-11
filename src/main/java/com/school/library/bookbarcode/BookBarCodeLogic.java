@@ -77,6 +77,7 @@ public class BookBarCodeLogic {
 	public void writeoffByBarcode(String barCode,String unitCode, String delReason){
 		Book book = bookService.queryByBarCode(unitCode, barCode);
 		BookDamaged bookDamaged = new BookDamaged();
+		bookDamaged.setUnitCode(unitCode);
 		bookDamaged.setBarCode(barCode);
 		bookDamaged.setBookName(book.getBookName());
 		bookDamaged.setAuthor(book.getAuthor());
