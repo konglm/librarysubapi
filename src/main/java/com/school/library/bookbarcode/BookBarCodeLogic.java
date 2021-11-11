@@ -75,10 +75,6 @@ public class BookBarCodeLogic {
 	 * 注销图书
 	 */
 	public void writeoffByBarcode(String barCode,String unitCode, String delReason){
-		Kv kv = Kv.by("bar_code", barCode).set("school_code", unitCode).set("del_reason", delReason);
-		SqlPara barSql = Db.getSqlPara("BookBarCodeLogic.writeoffByBarcode", kv);
-		Db.update(barSql);
-
 		Book book = bookService.queryByBarCode(unitCode, barCode);
 		BookDamaged bookDamaged = new BookDamaged();
 		bookDamaged.setBarCode(barCode);
@@ -91,6 +87,10 @@ public class BookBarCodeLogic {
 		bookDamaged.setRecorderCode(CurrentUser.getUserCode());
 		bookDamaged.setRecordTime(new Date());
 		bookDamaged.save(); //往问题图书加一条注销记录
+
+		Kv kv = Kv.by("bar_code", barCode).set("school_code", unitCode).set("del_reason", delReason);
+		SqlPara barSql = Db.getSqlPara("BookBarCodeLogic.writeoffByBarcode", kv);
+		Db.update(barSql);
 	}
 
 }
