@@ -195,7 +195,7 @@
 
     #sql("depositList")
         select bar_code, book_name, over_days, book_status, deductions, borrower, isnull(dpt_name,'') dpt_name, isnull(grd_name,'') grd_name
-        , isnull(cls_name,'') cls_name, return_status
+        , isnull(cls_name,'') cls_name, return_status, stu_code, update_time
         from borrow_book where del = 0 and school_code = #para(school_code)
         #if(start_time)
         and update_time > #para(start_time)

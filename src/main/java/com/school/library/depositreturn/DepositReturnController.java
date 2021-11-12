@@ -81,7 +81,7 @@ public class DepositReturnController extends JFniceBaseController {
 								 @Para("begin_time") String startTime,
 								 @Para("end_time") String endTime){
 		SXSSFWorkbook wb = this.logic.createExcelDepositList(keywords,startTime,endTime);
-		render(new ExcelExport(wb, "押金扣除记录"));
+		render(new ExcelExport(wb, "押金退还记录"));
 	}
 
 }
