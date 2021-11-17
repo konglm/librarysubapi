@@ -195,7 +195,7 @@ public class BorrowBookController extends JFniceBaseController {
 	 * 押金扣除记录
 	 */
 	public void depositList(@Para("keywords") String keywords,
-							@Para("begin_time") String startTime,
+							@Para("start_time") String startTime,
 							@Para("end_time") String endTime,
 							@Para(value = "page_number", defaultValue = "1") int pageNumber,
 							@Para(value = "page_size", defaultValue = "10") int pageSize){
