@@ -25,10 +25,10 @@ public class BorrowSettingValidator extends JFniceBaseValidator {
 					validateInteger("second_beyond_unit_cost", 0, 100000,"ERROR_SECOND_BEYOND_COST", "超出借阅期费用必须为整数，最小值为0，最大值为1000");
 					validateInteger("max_borrow_cost", 0, 100000,"ERROR_MAX_BORROW_COST", "总费用必须为整数，最小值为0，最大值为1000");
 
-					validateInteger("beyond_warning_days", 0, 1000,"ERROR_BEYOND_WARNING_DAYS", "超期预警天数必须为整数，最小值为0，最大值为1000");
-					validateInteger("unreturn_warning_days", 0, 1000,"ERROR_UNRETURN_WARNING_DAYS", "未归还预警天数必须为整数，最小值为0，最大值为1000");
-					validateInteger("deposit_warning", 0, 100000,"ERROR_DEPOSIT_WARNING", "押金预警金额必须为整数，最小值为0，最大值为1000");
-					validateInteger("uncheck_warning_days", 0, 1000,"ERROR_UNCHECK_WARNING_DAYS", "未盘点预警天数必须为整数，最小值为0，最大值为1000");
+//					validateInteger("beyond_warning_days", 0, 1000,"ERROR_BEYOND_WARNING_DAYS", "超期预警天数必须为整数，最小值为0，最大值为1000");
+//					validateInteger("unreturn_warning_days", 0, 1000,"ERROR_UNRETURN_WARNING_DAYS", "未归还预警天数必须为整数，最小值为0，最大值为1000");
+//					validateInteger("deposit_warning", 0, 100000,"ERROR_DEPOSIT_WARNING", "押金预警金额必须为整数，最小值为0，最大值为1000");
+//					validateInteger("uncheck_warning_days", 0, 1000,"ERROR_UNCHECK_WARNING_DAYS", "未盘点预警天数必须为整数，最小值为0，最大值为1000");
 					validateInteger("deposit_audit_flag", 0, 1,"ERROR_DEPOSIT_AUDIT_FLAG", "押金扣除审核必填，且值为0或1");
 					break;
 				default:
