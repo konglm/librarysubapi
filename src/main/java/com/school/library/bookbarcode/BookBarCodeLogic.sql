@@ -69,60 +69,60 @@
 
 	#sql("statisticsTotalCnt")
         select count(1) total_cnt
-        from book_bar_code
-        where school_code = #para(school_code)
-        and del = 0 and ((status = 1) or (status = 2))
+        from book_bar_code a, book b
+        where a.book_id = b.id and a.school_code = #para(school_code)
+        and a.del = 0 and b.del = 0 and ((a.status = 1) or (a.status = 2))
     #end
 
     #sql("statisticsTotalAmount")
         select isnull(sum(price),0) total_amount
-        from book_bar_code
-        where school_code = #para(school_code)
-        and del = 0 and ((status = 1) or (status = 2))
+        from book_bar_code a, book b
+        where a.book_id = b.id and a.school_code = #para(school_code)
+        and a.del = 0 and b.del = 0 and ((a.status = 1) or (a.status = 2))
     #end
 
     #sql("statisticsTotalIn")
         select count(1) total_cnt
-        from book_bar_code
-        where school_code = #para(school_code)
-        and del = 0 and status = 1 and bar_code
+        from book_bar_code a, book b
+        where a.book_id = b.id and a.school_code = #para(school_code)
+        and a.del = 0 and b.del = 0 and a.status = 1 and a.bar_code
         not in (select bar_code from borrow_book where del = 0 and school_code = #para(school_code) and return_status = 0)
     #end
 
     #sql("statisticsTotalOut")
         select count(1) total_cnt
-        from book_bar_code
-        where school_code = #para(school_code)
-        and del = 0 and status = 1 and bar_code
+        from book_bar_code a, book b
+        where a.book_id = b.id and a.school_code = #para(school_code)
+        and a.del = 0 and b.del = 0 and a.status = 1 and a.bar_code
         in (select bar_code from borrow_book where del = 0 and school_code = #para(school_code) and return_status = 0)
     #end
 
     #sql("statisticsTotalRepair")
         select count(1) total_cnt
-        from book_bar_code
-        where school_code = #para(school_code)
-        and del = 0 and status = 2
+        from book_bar_code a, book b
+        where a.book_id = b.id and a.school_code = #para(school_code)
+        and a.del = 0 and b.del = 0 and a.status = 2
     #end
 
     #sql("statisticsTotalDamage")
         select count(1) total_damage_cnt, isnull(sum(price),0) total_damage_amount
-        from book_bar_code
-        where del = 0 and school_code = #para(school_code)
-        and status = 3
+        from book_bar_code a, book b
+        where a.book_id = b.id and a.school_code = #para(school_code)
+        and a.del = 0 and b.del = 0 and a.status = 3
     #end
 
     #sql("statisticsTotalLose")
         select count(1) total_lose_cnt, isnull(sum(price),0) total_lose_amount
-        from book_bar_code
-        where del = 0 and school_code = #para(school_code)
-        and status = 4
+        from book_bar_code a, book b
+        where a.book_id = b.id and a.school_code = #para(school_code)
+        and a.del = 0 and b.del = 0 and a.status = 4
     #end
 
     #sql("statisticsTotalWriteOff")
         select count(1) total_write_off_cnt, isnull(sum(price),0) total_write_off_amount
-        from book_bar_code
-        where del = 0 and school_code = #para(school_code)
-        and status = 6
+        from book_bar_code a, book b
+        where a.book_id = b.id and a.school_code = #para(school_code)
+        and a.del = 0 and b.del = 0 and a.status = 6
     #end
 
 #end
