@@ -123,7 +123,7 @@
 
 	#sql("getBooksIn")
         select a.book_id, a.bar_code, a.check_no, c.book_name, c.author, c.publisher, a.price
-        , a.create_time, a.create_user_code, a.create_user_name, c.catalog_name, count(a.bar_code) borrow_cnt
+        , a.create_time, a.create_user_code, a.create_user_name, c.catalog_name, count(d.bar_code) borrow_cnt
         from book c, book_bar_code a left join borrow_book d on d.del = 0  and a.bar_code = d.bar_code
         where a.del = 0 and c.del = 0 and a.book_id = c.id
         and a.school_code = #para(school_code) and a.status = 1 and a.bar_code not in (select bar_code from borrow_book where return_status = 0 and del = 0)

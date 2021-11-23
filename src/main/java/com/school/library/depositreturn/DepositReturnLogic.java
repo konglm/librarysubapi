@@ -133,10 +133,18 @@ public class DepositReturnLogic {
 								cell.setCellValue(seqIndex++);
 								break;
 							case "return_amount":
-								cell.setCellValue((double)r.getInt(key)/100);
+								if(r.get(key) == null) {
+									cell.setCellValue(0);
+								} else {
+									cell.setCellValue((double) r.getInt(key) / 100);
+								}
 								break;
 							case "return_time":
-								cell.setCellValue(sdf.format(r.getDate(key)));
+								if(r.get(key) == null) {
+									cell.setCellValue("");
+								} else {
+									cell.setCellValue(sdf.format(r.getDate(key)));
+								}
 								break;
 							default:
 								cell.setCellValue(r.getStr(key));
