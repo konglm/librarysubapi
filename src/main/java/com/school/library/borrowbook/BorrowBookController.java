@@ -219,7 +219,7 @@ public class BorrowBookController extends JFniceBaseController {
 	 */
 	@JsyPermissions(OpCodeEnum.INDEX)
 	public void excelDepositList(@Para("keywords") String keywords,
-								 @Para("begin_time") String startTime,
+								 @Para("start_time") String startTime,
 								 @Para("end_time") String endTime){
 		SXSSFWorkbook wb = this.logic.createExcelDepositList(keywords,startTime,endTime);
 		render(new ExcelExport(wb, "押金扣除记录"));

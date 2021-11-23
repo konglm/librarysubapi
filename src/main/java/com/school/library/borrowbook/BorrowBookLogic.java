@@ -619,7 +619,7 @@ public class BorrowBookLogic {
 								break;
 							case "over_days":
 								if(r.get(key) == null) {
-									cell.setCellValue(0);
+									cell.setCellValue("0");
 								} else {
 									cell.setCellValue(r.getStr(key));
 								}
