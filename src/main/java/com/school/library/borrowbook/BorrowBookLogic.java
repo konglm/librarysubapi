@@ -529,12 +529,13 @@ public class BorrowBookLogic {
 		headMap.put("部门", "dpt_name");
 		headMap.put("年级", "grd_name");
 		headMap.put("班级", "cls_name");
-		headMap.put("姓名", "user_name");
-		headMap.put("图书编号", "recharge_amount");
+		headMap.put("姓名", "borrower");
+		headMap.put("图书编号", "bar_code");
 		headMap.put("书名", "book_name");
 		headMap.put("超期天数", "over_days");
 		headMap.put("归还情况", "return_status");
 		headMap.put("押金扣除/元", "deductions");
+		headMap.put("扣除时间", "update_time");
 
 		SXSSFWorkbook wb = new SXSSFWorkbook();
 		SXSSFSheet sheet = wb.createSheet("sheet1");
@@ -578,6 +579,7 @@ public class BorrowBookLogic {
 			h++;
 		}
 
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		int pageNumber = 1;
 		int pageSize = 500;
 		Page<Record> page= this.depositList(keywords, startDate, endDate, pageNumber, pageSize);
@@ -617,6 +619,9 @@ public class BorrowBookLogic {
 								break;
 							case "deductions":
 								cell.setCellValue((double)r.getInt(key)/100);
+								break;
+							case "update_time":
+								cell.setCellValue(sdf.format(r.getDate(key)));
 								break;
 							default:
 								cell.setCellValue(r.getStr(key));
