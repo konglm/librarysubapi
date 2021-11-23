@@ -173,7 +173,7 @@ public class BookLogic {
 		headMap.put("编号", "bar_code");
 		headMap.put("书名", "book_name");
 		headMap.put("著者", "author");
-		headMap.put("金额", "price");
+		headMap.put("金额/元", "price");
 		headMap.put("目录名称", "catalog_name");
 		headMap.put("索书号", "check_no");
 		headMap.put("入库日期", "create_time");
@@ -222,6 +222,7 @@ public class BookLogic {
 			h++;
 		}
 
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		int pageNumber = 1;
 		int pageSize = 500;
 		Page<Record> page= this.service.getBooksIn(CurrentUser.getSchoolCode(), catalogId, beginTime, endTime, keyword, pageNumber, pageSize);
@@ -240,6 +241,12 @@ public class BookLogic {
 						switch ( key ) {
 							case "seq":
 								cell.setCellValue(seqIndex++);
+								break;
+							case "price":
+								cell.setCellValue((double)r.getInt(key)/100);
+								break;
+							case "create_time":
+								cell.setCellValue(sdf.format(r.getDate(key)));
 								break;
 							default:
 								cell.setCellValue(r.getStr(key));
@@ -381,6 +388,7 @@ public class BookLogic {
 			h++;
 		}
 
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		int pageNumber = 1;
 		int pageSize = 500;
 		Page<Record> page= this.service.getBooksBorrow(CurrentUser.getSchoolCode(), catalogId, isOverDay, beginTime, endTime, keyword, pageNumber, pageSize);
@@ -421,6 +429,9 @@ public class BookLogic {
 						switch ( key ) {
 							case "seq":
 								cell.setCellValue(seqIndex++);
+								break;
+							case "borrow_time":
+								cell.setCellValue(sdf.format(r.getDate(key)));
 								break;
 							default:
 								cell.setCellValue(r.getStr(key));

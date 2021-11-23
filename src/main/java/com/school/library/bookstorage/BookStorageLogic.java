@@ -43,6 +43,7 @@ import org.apache.poi.xssf.streaming.SXSSFRow;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class BookStorageLogic {
@@ -587,7 +588,7 @@ public class BookStorageLogic {
 		headMap.put("书名", "book_name");
 		headMap.put("著者", "author");
 		headMap.put("出版社", "publisher");
-		headMap.put("图书金额", "price");
+		headMap.put("图书金额/元", "price");
 		headMap.put("入库事件", "name");
 		headMap.put("入库日期", "create_time");
 		headMap.put("入库人", "create_user_name");
@@ -634,6 +635,7 @@ public class BookStorageLogic {
 			h++;
 		}
 
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		int pageNumber = 1;
 		int pageSize = 500;
 		Page<Record> page= this.itemBarCodeService.getItemByName(CurrentUser.getSchoolCode(), name, beginTime, endTime, keyword, pageNumber, pageSize);
@@ -652,6 +654,12 @@ public class BookStorageLogic {
 						switch ( key ) {
 							case "seq":
 								cell.setCellValue(seqIndex++);
+								break;
+							case "price":
+								cell.setCellValue((double)r.getInt(key)/100);
+								break;
+							case "create_time":
+								cell.setCellValue(sdf.format(r.getDate(key)));
 								break;
 							default:
 								cell.setCellValue(r.getStr(key));

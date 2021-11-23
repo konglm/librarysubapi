@@ -29,6 +29,7 @@ import org.apache.poi.xssf.streaming.SXSSFRow;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class BookDamagedLogic {
@@ -223,6 +224,7 @@ public class BookDamagedLogic {
 			h++;
 		}
 
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		int pageNumber = 1;
 		int pageSize = 500;
 		Page<BookDamaged> page= this.damagedList(unitCode, pageNumber, pageSize,keywords,repairType,bookStatus);
@@ -236,6 +238,8 @@ public class BookDamagedLogic {
 				}
 			} else if ("3".equals(record.getStr("book_status"))) {
 				record.set("book_status", "损毁");
+			} else if ("6".equals(record.getStr("book_status"))) {
+				record.set("book_status", "注销");
 			} else {
 				record.set("book_status", "丢失");
 				record.set("last_status", "");
@@ -256,6 +260,10 @@ public class BookDamagedLogic {
 						switch ( key ) {
 							case "seq":
 								cell.setCellValue(seqIndex++);
+								break;
+							case "record_time":
+							case "repair_time":
+								cell.setCellValue(sdf.format(r.getDate(key)));
 								break;
 							default:
 								cell.setCellValue(r.getStr(key));

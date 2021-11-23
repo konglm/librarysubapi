@@ -21,6 +21,7 @@ import org.apache.poi.xssf.streaming.SXSSFRow;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class DepositRechargeLogic {
@@ -119,6 +120,7 @@ public class DepositRechargeLogic {
 			h++;
 		}
 
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		int pageNumber = 1;
 		int pageSize = 500;
 		Page<Record> page= this.depositList(keywords, startDate, endDate, pageNumber, pageSize);
@@ -144,6 +146,12 @@ public class DepositRechargeLogic {
 						switch ( key ) {
 							case "seq":
 								cell.setCellValue(seqIndex++);
+								break;
+							case "recharge_amount":
+								cell.setCellValue((double)r.getInt(key)/100);
+								break;
+							case "recharge_time":
+								cell.setCellValue(sdf.format(r.getDate(key)));
 								break;
 							default:
 								cell.setCellValue(r.getStr(key));

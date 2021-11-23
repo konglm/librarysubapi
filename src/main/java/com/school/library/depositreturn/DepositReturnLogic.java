@@ -19,6 +19,7 @@ import org.apache.poi.xssf.streaming.SXSSFRow;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -104,6 +105,7 @@ public class DepositReturnLogic {
 			h++;
 		}
 
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		int pageNumber = 1;
 		int pageSize = 500;
 		Page<Record> page= this.depositList(keywords, startDate, endDate, pageNumber, pageSize);
@@ -129,6 +131,12 @@ public class DepositReturnLogic {
 						switch ( key ) {
 							case "seq":
 								cell.setCellValue(seqIndex++);
+								break;
+							case "return_amount":
+								cell.setCellValue((double)r.getInt(key)/100);
+								break;
+							case "return_time":
+								cell.setCellValue(sdf.format(r.getDate(key)));
 								break;
 							default:
 								cell.setCellValue(r.getStr(key));

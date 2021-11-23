@@ -534,7 +534,7 @@ public class BorrowBookLogic {
 		headMap.put("书名", "book_name");
 		headMap.put("超期天数", "over_days");
 		headMap.put("归还情况", "return_status");
-		headMap.put("押金扣除", "deductions");
+		headMap.put("押金扣除/元", "deductions");
 
 		SXSSFWorkbook wb = new SXSSFWorkbook();
 		SXSSFSheet sheet = wb.createSheet("sheet1");
@@ -614,6 +614,9 @@ public class BorrowBookLogic {
 						switch ( key ) {
 							case "seq":
 								cell.setCellValue(seqIndex++);
+								break;
+							case "deductions":
+								cell.setCellValue((double)r.getInt(key)/100);
 								break;
 							default:
 								cell.setCellValue(r.getStr(key));
