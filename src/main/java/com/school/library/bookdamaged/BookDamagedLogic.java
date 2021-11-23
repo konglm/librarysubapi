@@ -238,8 +238,10 @@ public class BookDamagedLogic {
 				}
 			} else if ("3".equals(record.getStr("book_status"))) {
 				record.set("book_status", "损毁");
+				record.set("last_status", "");
 			} else if ("6".equals(record.getStr("book_status"))) {
 				record.set("book_status", "注销");
+				record.set("last_status", "");
 			} else {
 				record.set("book_status", "丢失");
 				record.set("last_status", "");
@@ -263,7 +265,11 @@ public class BookDamagedLogic {
 								break;
 							case "record_time":
 							case "repair_time":
-								cell.setCellValue(sdf.format(r.getDate(key)));
+								if(r.get(key) == null) {
+									cell.setCellValue("");
+								} else {
+									cell.setCellValue(sdf.format(r.getDate(key)));
+								}
 								break;
 							default:
 								cell.setCellValue(r.getStr(key));
