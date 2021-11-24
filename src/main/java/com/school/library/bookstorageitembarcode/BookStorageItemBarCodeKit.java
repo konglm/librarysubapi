@@ -2,9 +2,11 @@ package com.school.library.bookstorageitembarcode;
 
 
 import com.alibaba.fastjson.JSONObject;
+import com.jfinal.aop.Inject;
 import com.jfinal.ext.kit.DateKit;
 import com.jfnice.commons.CacheName;
 import com.jfnice.cache.JsyCacheKit;
+import com.school.library.bookbarcode.BookBarCodeService;
 import com.school.library.constants.RedisConstants;
 
 import java.util.Date;
@@ -22,17 +24,21 @@ public class BookStorageItemBarCodeKit {
      * 生成条形码
      * @return
      */
-    public static String[] generateBarCode(String schoolCode, int count){
+    public static String[] generateBarCode(String schoolCode, int count, int index){
         String [] barCodes = new String[count];
         String lock = schoolCode.intern();
         StringBuilder codeBuild = new StringBuilder();
+        String DateStr = DateKit.toStr(new Date(), "yyMMdd");
         synchronized(lock){
             String redisKey = RedisConstants.BAR_CODE_SEQ_KEY_PREFIX + schoolCode;
             Integer seq = JsyCacheKit.get(CacheName.DEFAULT_SUB_NAME, redisKey);
+            if(((seq != null) && (index > seq)) || ((seq == null) && (index > 0))) { //辅助判断seq
+                seq = index;
+            }
             int i = 0;
             while(i < count){
                 seq = seq == null ? 1 : (seq + 1) ;
-                codeBuild.append(DateKit.toStr(new Date(), "yyMMdd"));
+                codeBuild.append(DateStr);
                 codeBuild.append(String.format("%06d",seq));
                 barCodes[i] = codeBuild.toString();
                 codeBuild = new StringBuilder();

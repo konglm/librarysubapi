@@ -295,7 +295,8 @@ public class BookStorageLogic {
 		}
 		//新增的入库条形码信息
 		if(addItemBarCodeNum > 0){
-			String[] barCodes = BookStorageItemBarCodeKit.generateBarCode(CurrentUser.getSchoolCode(), addItemBarCodeNum);
+			String index = barCodeService.getBarCodeIndex(CurrentUser.getSchoolCode(), DateKit.toStr(new Date(), "yyMMdd"));
+			String[] barCodes = BookStorageItemBarCodeKit.generateBarCode(CurrentUser.getSchoolCode(), addItemBarCodeNum, Integer.parseInt(index));
 			for(int i = 0; i < addItemBarCodeNum; i++){
 				BookStorageItemBarCode barCode = new BookStorageItemBarCode();
 				barCode.setBookStorageId(item.getBookStorageId());

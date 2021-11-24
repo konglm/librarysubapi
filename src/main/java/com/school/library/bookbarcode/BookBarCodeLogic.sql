@@ -125,4 +125,9 @@
         and a.del = 0 and b.del = 0 and a.status = 6
     #end
 
+    #sql("getBarCodeIndex")
+        select ISNULL(MAX(SUBSTRING(bar_code, 7, LEN(bar_code) + 1)),'000000') code from book_bar_code where school_code = #para(school_code)
+        and SUBSTRING(bar_code, 0, 7) = #para(date_str)
+    #end
+
 #end

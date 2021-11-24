@@ -226,4 +226,17 @@ public class BookBarCodeService extends JFniceBaseService<BookBarCode> {
 		return record;
 	}
 
+	/**
+	 * 获取条码的顺序号
+	 * @param schoolCode
+	 * @param DateStr
+	 * @return
+	 */
+	public String getBarCodeIndex(String schoolCode, String DateStr) {
+		Kv kv = Kv.by("school_code", schoolCode).set("date_str", DateStr);
+		SqlPara sqlPara = Db.getSqlPara("BookBarCodeLogic.getBarCodeIndex", kv);
+		Record record = Db.findFirst(sqlPara);
+		return record.getStr("code");
+	}
+
 }
