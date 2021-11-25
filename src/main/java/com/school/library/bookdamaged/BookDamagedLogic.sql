@@ -79,7 +79,7 @@
                             ui.mobile ,ui.sex,ui.user_code,ui.stu_code,ui.user_type   FROM borrow_book bb
             LEFT JOIN  user_info ui  ON  bb.stu_code = ui.stu_code  OR bb.user_code = ui.user_code
         ) AS a ON a.borrow_id = bd.borrow_id
-        where bd.del = 0
+        where bd.del = 0 and bd.book_status != 6
         #if(judge == '0')
         and bd.judge = 0
         #else

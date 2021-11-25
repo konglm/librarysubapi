@@ -516,6 +516,9 @@ public class BorrowBookLogic {
 				record.set("user_type","teacher");
 				record.set("user_type_text","老师");
 			}
+			if((record.getInt("book_status") == 2) || (record.getInt("book_status") == 3) || (record.getInt("book_status") == 4)){
+				record.set("return_status",record.getInt("book_status"));
+			}
 		}
 		return list;
 	}
