@@ -494,6 +494,7 @@ public class BookLogic {
 	public JSONObject getBookInfoByBar(String barCode, int pageNumber, int pageSize) {
 		JSONObject data = new JSONObject();
 		Record bookInfo = this.service.getBookInfoByBar(CurrentUser.getSchoolCode(), barCode);
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		if(bookInfo != null) {
 			data.put("bar_code", bookInfo.getStr("bar_code"));
 			data.put("check_no", bookInfo.getStr("check_no"));
@@ -504,7 +505,7 @@ public class BookLogic {
 			data.put("publish_date", bookInfo.getStr("publish_date"));
 			data.put("price", bookInfo.getStr("price"));
 			data.put("catalog_name", bookInfo.getStr("catalog_name"));
-			data.put("create_time", bookInfo.getStr("create_time"));
+			data.put("create_time", sdf.format(bookInfo.getDate("create_time")));
 			data.put("create_user_name", bookInfo.getStr("create_user_name"));
 		} else {
 			data.put("bar_code", "");
@@ -521,9 +522,10 @@ public class BookLogic {
 		}
 		Page<Record> borrowList = this.service.getBookBorrowList(CurrentUser.getSchoolCode(), barCode, pageNumber, pageSize);
 		for (Record record:borrowList.getList()){
-			if ("".equals(record.getStr("return_time"))) {
+			if (record.get("return_time") == null) {
 				long borrowDays = CommonKit.differDays(record.getDate("borrow_time"), new Date());
 				record.set("borrow_days", borrowDays);
+				record.set("return_time", "");
 			} else {
 				long borrowDays = CommonKit.differDays(record.getDate("borrow_time"), record.getDate("return_time"));
 				record.set("borrow_days", borrowDays);

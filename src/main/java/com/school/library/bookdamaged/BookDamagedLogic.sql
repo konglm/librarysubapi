@@ -66,7 +66,11 @@
     #end
 
     #sql("queryCheckList")
-        select  a.*,bd.book_status,bd.recorder,bd.record_time,bd.last_status,bd.deductions,bd.id,bd.judge,bd.explain,bd.judge_time
+        select  a.borrow_id,a.bar_code,a.book_name,a.author,a.publisher,
+                a.publish_date,isnull(a.price,0) price,a.catalog_name,a.check_no,
+                a.borrower,a.cls_name,a.grd_name,a.sno,a.dpt_name,
+                a.mobile ,a.sex,a.user_code,a.stu_code,a.user_type,
+                bd.book_status,bd.recorder,bd.record_time,bd.last_status,bd.deductions,bd.id,bd.judge,bd.explain,bd.judge_time
         from book_damaged bd
         LEFT JOIN (
             SELECT DISTINCT bb.id AS borrow_id,bb.bar_code,bb.book_name,bb.author,bb.publisher,
