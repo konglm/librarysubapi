@@ -483,6 +483,21 @@ public class BorrowBookLogic {
 			borrow.setReturnTime(new Date());
 			borrow.setReturnStatus(1);
 			borrow.setBookStatus(1);
+
+			BorrowSetting borrowSetting = settingLogic.queryIfNotNewBySchool(schoolCode);
+			Integer borrowDays = borrowSetting.getBorrowDays();
+
+			Date borrow_time = borrow.getBorrowTime();
+			Date nowTime = new Date();
+
+			int borrowDay = (int) ((nowTime.getTime() - borrow_time.getTime()) / (1000 * 3600 * 24));
+
+			if (borrowDay > borrowDays) {
+				borrow.setOverDays(borrowDay - borrowDays);
+			} else {
+				borrow.setOverDays(0);
+			}
+
 			borrow.setDeductions(cost(schoolCode,borrow.getBorrowTime()));
 			totalcost = totalcost +borrow.getDeductions();
 		}
