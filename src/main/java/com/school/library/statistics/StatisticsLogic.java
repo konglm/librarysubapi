@@ -16,6 +16,7 @@ import com.school.api.map.GrdMap;
 import com.school.library.bookbarcode.BookBarCodeService;
 import com.school.library.bookbarcode.BookBarCodeStatusEnum;
 import com.school.library.bookstorage.BookStorageService;
+import com.school.library.bookstorageitembarcode.BookStorageItemBarCodeService;
 import com.school.library.borrowbook.BorrowBookLogic;
 import com.school.library.borrowbook.BorrowBookService;
 import com.school.library.constants.SysConstants;
@@ -54,6 +55,8 @@ public class StatisticsLogic {
     private BookStorageService storageService;
     @Inject
     private BorrowBookService borrowBookService;
+    @Inject
+    private BookStorageItemBarCodeService bookStorageItemBarCodeService;
 
     /**
      * 统计书本数量
@@ -315,10 +318,10 @@ public class StatisticsLogic {
      * @return
      */
     public JSONObject statisticsStorage(){
-        Record recordTotalStorage = this.storageService.statisticsTotalStorage(CurrentUser.getSchoolCode());
-        Record recordTotalDamage = this.storageService.statisticsTotalDamage(CurrentUser.getSchoolCode());
-        Record recordTotalLose = this.storageService.statisticsTotalLose(CurrentUser.getSchoolCode());
-        Record recordTotalWriteOff = this.storageService.statisticsTotalWriteOff(CurrentUser.getSchoolCode());
+        Record recordTotalStorage = this.bookStorageItemBarCodeService.statisticsTotalStorage(CurrentUser.getSchoolCode());
+        Record recordTotalDamage = this.bookBarCodeService.statisticsTotalDamage(CurrentUser.getSchoolCode());
+        Record recordTotalLose = this.bookBarCodeService.statisticsTotalLose(CurrentUser.getSchoolCode());
+        Record recordTotalWriteOff = this.bookBarCodeService.statisticsTotalWriteOff(CurrentUser.getSchoolCode());
         JSONObject data = new JSONObject();
         data.put("total_storage_cnt", recordTotalStorage.getStr("total_storage_cnt"));
         data.put("total_damage_cnt", recordTotalDamage.getStr("total_damage_cnt"));

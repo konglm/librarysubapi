@@ -31,4 +31,8 @@
 	        where a.del = 0 and a.school_code = #para(school_code) and a.status = #para(status)
 	#end
 
+    #sql("getNameByLike")
+	    select a.name from book_storage a
+	    where a.school_code = #para(school_code) and a.name like (#para(date_str) + '%' + #para(part_name))
+	#end
 #end

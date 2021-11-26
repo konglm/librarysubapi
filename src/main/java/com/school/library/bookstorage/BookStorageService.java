@@ -88,51 +88,14 @@ public class BookStorageService extends JFniceBaseService<BookStorage> {
 	}
 
 	/**
-	 * 获取入库总数
+	 * 通过条件获取名称
 	 * @param schoolCode
 	 * @return
 	 */
-	public Record statisticsTotalStorage(String schoolCode) {
-		Kv kv = Kv.by("school_code", schoolCode);
-		SqlPara sqlPara = Db.getSqlPara("BookStorageItemBarCodeLogic.statisticsTotalStorage", kv);
-		Record record = Db.findFirst(sqlPara);
-		return record;
-	}
-
-	/**
-	 * 获取损毁总数
-	 * @param schoolCode
-	 * @return
-	 */
-	public Record statisticsTotalDamage(String schoolCode) {
-		Kv kv = Kv.by("school_code", schoolCode);
-		SqlPara sqlPara = Db.getSqlPara("BookBarCodeLogic.statisticsTotalDamage", kv);
-		Record record = Db.findFirst(sqlPara);
-		return record;
-	}
-
-	/**
-	 * 获取丢失总数
-	 * @param schoolCode
-	 * @return
-	 */
-	public Record statisticsTotalLose(String schoolCode) {
-		Kv kv = Kv.by("school_code", schoolCode);
-		SqlPara sqlPara = Db.getSqlPara("BookBarCodeLogic.statisticsTotalLose", kv);
-		Record record = Db.findFirst(sqlPara);
-		return record;
-	}
-
-	/**
-	 * 获取注销总数+
-	 * @param schoolCode
-	 * @return
-	 */
-	public Record statisticsTotalWriteOff(String schoolCode) {
-		Kv kv = Kv.by("school_code", schoolCode);
-		SqlPara sqlPara = Db.getSqlPara("BookBarCodeLogic.statisticsTotalWriteOff", kv);
-		Record record = Db.findFirst(sqlPara);
-		return record;
+	public List<Record> getNameByLike(String schoolCode, String dateStr, String partName) {
+		Kv kv = Kv.by("school_code", schoolCode).set("date_str", dateStr).set("part_name", partName);
+		SqlPara sqlPara = Db.getSqlPara("BookStorageLogic.getNameByLike", kv);
+		return Db.find(sqlPara);
 	}
 
 }

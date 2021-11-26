@@ -239,4 +239,40 @@ public class BookBarCodeService extends JFniceBaseService<BookBarCode> {
 		return record.getStr("code");
 	}
 
+	/**
+	 * 获取损毁总数
+	 * @param schoolCode
+	 * @return
+	 */
+	public Record statisticsTotalDamage(String schoolCode) {
+		Kv kv = Kv.by("school_code", schoolCode);
+		SqlPara sqlPara = Db.getSqlPara("BookBarCodeLogic.statisticsTotalDamage", kv);
+		Record record = Db.findFirst(sqlPara);
+		return record;
+	}
+
+	/**
+	 * 获取丢失总数
+	 * @param schoolCode
+	 * @return
+	 */
+	public Record statisticsTotalLose(String schoolCode) {
+		Kv kv = Kv.by("school_code", schoolCode);
+		SqlPara sqlPara = Db.getSqlPara("BookBarCodeLogic.statisticsTotalLose", kv);
+		Record record = Db.findFirst(sqlPara);
+		return record;
+	}
+
+	/**
+	 * 获取注销总数
+	 * @param schoolCode
+	 * @return
+	 */
+	public Record statisticsTotalWriteOff(String schoolCode) {
+		Kv kv = Kv.by("school_code", schoolCode);
+		SqlPara sqlPara = Db.getSqlPara("BookBarCodeLogic.statisticsTotalWriteOff", kv);
+		Record record = Db.findFirst(sqlPara);
+		return record;
+	}
+
 }

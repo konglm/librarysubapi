@@ -1,5 +1,6 @@
 package com.school.library.bookstorageitembarcode;
 
+import com.jfinal.kit.Kv;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Page;
 import com.jfinal.plugin.activerecord.Record;
@@ -227,5 +228,17 @@ public class BookStorageItemBarCodeService extends JFniceBaseService<BookStorage
 		condPara.put("keyword", keyword);
 		SqlPara sqlPara = Db.getSqlPara("BookStorageItemBarCodeLogic.getItemByNameAmount", condPara);
 		return Db.findFirst(sqlPara);
+	}
+
+	/**
+	 * 获取入库总数
+	 * @param schoolCode
+	 * @return
+	 */
+	public Record statisticsTotalStorage(String schoolCode) {
+		Kv kv = Kv.by("school_code", schoolCode);
+		SqlPara sqlPara = Db.getSqlPara("BookStorageItemBarCodeLogic.statisticsTotalStorage", kv);
+		Record record = Db.findFirst(sqlPara);
+		return record;
 	}
 }

@@ -103,12 +103,18 @@ public class BookStorageLogic {
 		}
 		String partName = "图书入库";
 		String dateStr = DateKit.toStr(new Date(), "yyyy年MM月dd日");
+
+		List<Record> records = service.getNameByLike(CurrentUser.getSchoolCode(), dateStr, partName);
+		int index = records.size(); //记录数据库里面的名称个数
 		//自动生成名字
 		StringBuilder nameBuild = new StringBuilder();
 		nameBuild.append(dateStr);
 		//redis计数，生成入库次数
 		String key = RedisConstants.BOOK_STORAGE_COUNT_KEY_PREFIX + CurrentUser.getSchoolCode() + "_" + dateStr;
 		Integer count = JsyCacheKit.get(CacheName.DEFAULT_SUB_NAME, key);
+		if(((count != null) && (index > count)) || ((count == null) && (index > 0))) { //辅助判断
+			count = index;
+		}
 		JsyCacheKit.put(CacheName.DEFAULT_SUB_NAME, key, null == count ? 1 : (count + 1), RedisConstants.TIME_TO_LIVE_SECONDS);
 		if(null != count){
 			nameBuild.append("（").append(count).append("）");
