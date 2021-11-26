@@ -8,6 +8,10 @@ import java.util.Enumeration;
 
 public abstract class JFniceBaseValidator extends Validator {
 
+    /**
+     * 错误代码前缀
+     */
+    private final String prefix = "error_";
     private static String[] specialCharacterArray = {
             " ", "`", "~", "!", "@", "#", "$", "%", "^", "&", "*", "(", ")", "=", "+",
             "[", "]", "{", "}", "\\", "|", ";", ":", "'", "\"", ",", "<", ">", "/", "?",
@@ -23,10 +27,16 @@ public abstract class JFniceBaseValidator extends Validator {
         setShortCircuit(true);
     }
 
+    @Override
+    protected void addError(String errorKey, String errorMessage) {
+        // 添加前缀，以便与其他参数区别
+        errorKey = prefix + errorKey;
+        super.addError(errorKey, errorMessage);
+    }
+
     /**
      * 实现Validator基类的handleError方法
      *
-     * @return 无
      * @author JFnice
      */
     @Override
@@ -77,7 +87,6 @@ public abstract class JFniceBaseValidator extends Validator {
     /**
      * 检验验证错误信息。如果是AJAX请求方式则返回JSON错误数据，否则跳转错误处理页面
      *
-     * @return 无
      * @author JFnice
      */
     protected void checkError() {
@@ -85,13 +94,17 @@ public abstract class JFniceBaseValidator extends Validator {
         Enumeration<String> e = c.getAttrNames();
         while (e.hasMoreElements()) {
             String code = e.nextElement();
-            String msg = c.getAttrForStr(code);
-            if (isAjax()) {
-                c.fail(msg, code);
-            } else {
-                c.showErrorView(code, msg);
+            // 只获取有前缀打头的参数信息
+            if (code.startsWith(prefix)) {
+                String msg = c.getAttrForStr(code);
+                code = code.replace(prefix, "");
+                if (isAjax()) {
+                    c.fail(msg, code);
+                } else {
+                    c.showErrorView(code, msg);
+                }
+                break;//短路模式
             }
-            break;//短路模式
         }
     }
 
@@ -100,9 +113,7 @@ public abstract class JFniceBaseValidator extends Validator {
      *
      * @param field     字段名称
      * @param errorKey  错误代码
-     * @param errorMsg  错误提示
      * @param fieldName 字段名称对应的中文名称
-     * @return 无
      * @author JFnice
      */
     protected void validateSpecialCharacter(String field, String errorKey, String fieldName) {
