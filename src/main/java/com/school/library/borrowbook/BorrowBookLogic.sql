@@ -194,19 +194,20 @@
     #end
 
     #sql("depositList")
-        select bar_code, book_name, over_days, book_status, deductions, borrower, isnull(dpt_name,'') dpt_name, isnull(grd_name,'') grd_name
-        , isnull(cls_name,'') cls_name, return_status, stu_code, update_time
-        from borrow_book where del = 0 and school_code = #para(school_code) and deductions > 0
+        select bb.bar_code, bb.book_name, bb.over_days, bb.book_status, (bb.deductions + isnull(bd.deductions,0)) deductions, bb.borrower, isnull(bb.dpt_name,'') dpt_name, isnull(bb.grd_name,'') grd_name
+        , isnull(bb.cls_name,'') cls_name, bb.return_status, bb.stu_code, bb.update_time
+        from borrow_book bb left join book_damaged bd on bb.id = bd.borrow_id and bd.del = 0
+        where bb.del = 0 and bb.school_code = #para(school_code) and bb.deductions > 0
         #if(start_time)
-        and update_time > #para(start_time)
+        and bb.update_time > #para(start_time)
         #end
         #if(end_time)
-        and update_time < #para(end_time)
+        and bb.update_time < #para(end_time)
         #end
         #if(keywords)
         and charindex(#para(keywords),ISNULL(sno, '')+ISNULL(borrower, ''))>0
         #end
-        order by update_time desc
+        order by bb.update_time desc
     #end
 
      #sql("getTotalDepositAmount")
