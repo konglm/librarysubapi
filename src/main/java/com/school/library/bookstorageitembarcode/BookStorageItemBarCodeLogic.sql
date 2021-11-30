@@ -74,7 +74,7 @@
 	    , c.create_time, c.create_user_code, c.create_user_name
 	    from book_storage_item_bar_code a, book_storage_item b, book_storage c
         where a.del = 0 and b.del = 0 and c.del = 0 and a.book_storage_item_id = b.id and a.book_storage_id = c.id
-        and a.school_code = #para(school_code)
+        and a.school_code = #para(school_code) and a.status = 5
         #if(name)
           and c.name like ('%' + #para(name) + '%')
         #end
@@ -94,7 +94,7 @@
         select count(1) total_cnt
         from book_storage_item_bar_code a, book_storage_item b, book_storage c
         where a.del = 0 and b.del = 0 and c.del = 0 and a.book_storage_item_id = b.id and a.book_storage_id = c.id
-        and a.school_code = #para(school_code)
+        and a.school_code = #para(school_code) and a.status = 5
         #if(name)
           and c.name like ('%' + #para(name) + '%')
         #end
@@ -114,7 +114,7 @@
         select isnull(sum(b.price),0) total_amount
         from book_storage_item_bar_code a, book_storage_item b, book_storage c
         where a.del = 0 and b.del = 0 and c.del = 0 and a.book_storage_item_id = b.id and a.book_storage_id = c.id
-        and a.school_code = #para(school_code)
+        and a.school_code = #para(school_code) and a.status = 5
         #if(name)
           and c.name like ('%' + #para(name) + '%')
         #end
