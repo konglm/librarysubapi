@@ -31,7 +31,7 @@
 
     #sql("damagedTotalAmount")
         select sum(b.price) total_amount from book_bar_code b, book_damaged d where d.del = 0
-        and b.bar_code = d.bar_code and d.unit_code = #para(school_code)
+        and b.bar_code = d.bar_code and d.unit_code = #para(school_code) and b.school_code = d.unit_code
         #if(keywords)
         and charindex(#para(keywords),ISNULL(d.book_name, '')+ISNULL(d.author, '')+ISNULL(d.bar_code, ''))>0
         #end

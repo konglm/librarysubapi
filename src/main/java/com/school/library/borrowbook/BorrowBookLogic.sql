@@ -211,13 +211,14 @@
     #end
 
      #sql("getTotalDepositAmount")
-        select sum(deductions) total_amount
-        from borrow_book where del = 0 and school_code = #para(school_code)
+        select sum((bb.deductions + isnull(bd.deductions,0))) total_amount
+        from borrow_book bb left join book_damaged bd on bb.id = bd.borrow_id and bd.del = 0
+        where bb.del = 0 and bb.school_code = #para(school_code) and bb.deductions > 0
         #if(start_time)
-        and update_time > #para(start_time)
+        and bb.update_time > #para(start_time)
         #end
         #if(end_time)
-        and update_time < #para(end_time)
+        and bb.update_time < #para(end_time)
         #end
         #if(keywords)
         and charindex(#para(keywords),ISNULL(sno, '')+ISNULL(borrower, ''))>0
