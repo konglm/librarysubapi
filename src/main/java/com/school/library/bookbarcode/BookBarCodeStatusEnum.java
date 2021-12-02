@@ -11,7 +11,8 @@ public enum BookBarCodeStatusEnum {
     BROKEN(2, "破损"),
     DAMAGE(3, "损毁"),
     LOSE(4, "丢失"),
-    CONFIRM(5, "已确认");
+    CONFIRM(5, "已确认"),
+    WRITEOFF(6, "注销"),;
 
     private int status;
 

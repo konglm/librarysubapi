@@ -134,7 +134,8 @@ public class BookInventoryLogic {
 					BookBarCodeStatusEnum.UNCONFIRM.getStatus(),
 					BookBarCodeStatusEnum.DAMAGE.getStatus(),
 					BookBarCodeStatusEnum.LOSE.getStatus(),
-					BookBarCodeStatusEnum.CONFIRM.getStatus()}
+					BookBarCodeStatusEnum.CONFIRM.getStatus(),
+					BookBarCodeStatusEnum.WRITEOFF.getStatus()}
 					).stream()
 					.map(s -> s.toString())
 					.collect(Collectors.joining(","));
