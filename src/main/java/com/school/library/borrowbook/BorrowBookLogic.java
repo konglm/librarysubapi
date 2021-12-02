@@ -424,10 +424,10 @@ public class BorrowBookLogic {
 	/**
 	 * 计算费用
 	 */
-	public Integer cost(String schoolCode,Date borrow_time){
+	public Integer cost(String schoolCode,int borrowDay){
 		BorrowSetting borrowSetting = settingLogic.queryIfNotNewBySchool(schoolCode);
 		Integer borrowDays = borrowSetting.getBorrowDays();
-		int borrowDay = (int) ((new Date().getTime() - borrow_time.getTime()) / (1000 * 3600 * 24));
+//		int borrowDay = (int) ((new Date().getTime() - borrow_time.getTime()) / (1000 * 3600 * 24));
 		int money = 0;
 		if (borrowDay > borrowDays) {
 			if (borrowDay - borrowDays > borrowSetting.getFirstBeyondDays()) {
@@ -492,13 +492,14 @@ public class BorrowBookLogic {
 
 			int borrowDay = (int) ((nowTime.getTime() - borrow_time.getTime()) / (1000 * 3600 * 24));
 
+			//增加假期设置后，还书时，正好假期，则借书时长应该减去剩余假期天数
 			if (borrowDay > borrowDays) {
 				borrow.setOverDays(borrowDay - borrowDays);
 			} else {
 				borrow.setOverDays(0);
 			}
 
-			borrow.setDeductions(cost(schoolCode,borrow.getBorrowTime()));
+			borrow.setDeductions(cost(schoolCode,borrowDay));
 			totalcost = totalcost +borrow.getDeductions();
 		}
 		UserInfo userInfo = userInfoLogic.findByUserCode(schoolCode, userCode, userType);
