@@ -14,6 +14,7 @@ import com.jfinal.plugin.activerecord.Record;
 import com.jfnice.ext.CurrentUser;
 import com.jfnice.ext.ErrorMsg;
 import com.jfnice.model.*;
+import com.school.api.gx.RsApi;
 import com.school.library.book.BookService;
 import com.school.library.bookbarcode.BookBarCodeLogic;
 import com.school.library.borrowsetting.BorrowSettingLogic;
@@ -492,8 +493,33 @@ public class BorrowBookLogic {
 
 			int borrowDay = (int) ((nowTime.getTime() - borrow_time.getTime()) / (1000 * 3600 * 24));
 
-			//增加假期设置后，还书时，正好假期，则借书时长应该减去剩余假期天数
-			if (borrowDay > borrowDays) {
+			//增加假期设置后，还书时，应还书日正好假期，则借书时长应该减去剩余假期天数
+			String nowDate = DateKit.toStr(new Date(), "yyyy-MM-dd"); //当天
+			Calendar c = Calendar.getInstance();
+			c.add(Calendar.DATE, 1);
+			String tomorrowDate = DateKit.toStr(c.getTime(), "yyyy-MM-dd"); //明天
+			List<String> vacationList = RsApi.getDays(1); //假期
+			List<String> workList = RsApi.getDays(2); //补班
+			if(vacationList.contains(nowDate)) { //还书日正好假期
+				int addDay = 0;
+				for(String vocation: vacationList) {
+					if(DateKit.toDate(vocation).getTime() > (new Date()).getTime()) { //比当前日期大的假期，顺延
+						addDay++;
+					}
+				}
+				borrowDay = borrowDay + addDay;
+			}
+
+			String dayOfWeek = CommonKit.getSimpleDayOfWeek(null, nowDate);
+			if(dayOfWeek.equals("六") && !workList.contains(nowDate) && !workList.contains(tomorrowDate)) { //还书日正好周六并且今明两天不是补班日
+				borrowDay = borrowDay + 2;
+			} else if(dayOfWeek.equals("六") && !workList.contains(nowDate) && workList.contains(tomorrowDate)) { //还书日正好周六并且今天不是补班日，明天是补班日
+				borrowDay = borrowDay + 1;
+			} else if(dayOfWeek.equals("日") && !workList.contains(nowDate)) { //还书日正好周日并且周日不是补班日
+				borrowDay = borrowDay + 1;
+			}
+
+			if (borrowDay > borrowDays) { //借书时长跟借书设置中的可借时长比较
 				borrow.setOverDays(borrowDay - borrowDays);
 			} else {
 				borrow.setOverDays(0);

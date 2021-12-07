@@ -1,5 +1,6 @@
 package com.school.library.kit;
 
+import com.jfinal.ext.kit.DateKit;
 import com.jfinal.kit.StrKit;
 import org.apache.commons.codec.digest.DigestUtils;
 
@@ -23,6 +24,11 @@ import java.time.ZonedDateTime;
  **/
 
 public class CommonKit {
+
+    /**
+     * 星期几的简单写法
+     */
+    private static final String[] simpleDaysOfWeek = {"日", "一", "二", "三", "四", "五", "六"};
 
     /**
      * 格式化金额，将分转换成元
@@ -204,6 +210,38 @@ public class CommonKit {
         numberFormat.setMaximumFractionDigits(2);
         String result = numberFormat.format((float)  numerator/ (float)denominator* 100);//所占百分比
         return result;
+    }
+
+    /**
+     *
+     * @Description 将日期字符串转换成简洁版的星期几
+     * @author jinshiye
+     * @date 2018年7月2日下午5:19:59
+     * @Title getSimpleDayOfWeek
+     * @param date
+     * @return
+     */
+    public static String getSimpleDayOfWeek(Date date, String dateStr){
+        String week = "";
+        if(null!= date){
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(date);
+            int w = calendar.get(Calendar.DAY_OF_WEEK) - 1;
+            if (w < 0){
+                w = 0;
+            }
+            week = simpleDaysOfWeek[w];
+        }else if(StrKit.notBlank(dateStr)){
+            Date dateTime = DateKit.toDate(dateStr);
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(dateTime);
+            int w = calendar.get(Calendar.DAY_OF_WEEK) - 1;
+            if (w < 0){
+                w = 0;
+            }
+            week = simpleDaysOfWeek[w];
+        }
+        return week;
     }
 
 }

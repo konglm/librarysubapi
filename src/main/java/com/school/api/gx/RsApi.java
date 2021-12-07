@@ -436,6 +436,24 @@ public class RsApi {
         return response.isOk() && response.getData() != null ? JSONObject.parseObject(response.getData()).getJSONArray("list").toJavaList(JsyUser.class) : new ArrayList<>();
     }
 
+    /**
+     * 获取假期和补班日期
+     * @param dayType
+     * @return
+     */
+    public static List<String> getDays(int dayType) {
+        Map<String, Object> paraMap = new HashMap<String, Object>() {{
+            put("platform_code", CurrentUser.getPlatformCode());
+            put("app_code", CurrentUser.getAppCode());
+            put("unit_code", CurrentUser.getSchoolCode());
+            put("index_code", CurrentUser.getIndexCode());
+            put("access_token", CurrentUser.getAccessToken());
+            put("day_type", dayType);
+        }};
+        GxRequest request = new GxRequest("vacation/getDays", paraMap);
+        GxResponse response = client.getResponse(request);
+        return response.isOk() && response.getData() != null ? JSONObject.parseObject(response.getData()).getJSONArray("list").toJavaList(String.class) : new ArrayList<>();
+    }
 
 
 }
