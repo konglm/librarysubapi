@@ -85,7 +85,10 @@ public class BookDamagedLogic {
 		borrowBook.setUpdateUserCode(CurrentUser.getUserCode());
 		borrowBook.setReturnTime(new Date());
 		borrowBook.setReturnStatus(1);
-		Integer overTimeCost = borrowBookLogic.cost(unitCode, borrowBook.getBorrowTime());
+		Date nowTime = new Date();
+		Date borrow_time = borrowBook.getBorrowTime();
+		int borrowDay = (int) ((nowTime.getTime() - borrow_time.getTime()) / (1000 * 3600 * 24));
+		Integer overTimeCost = borrowBookLogic.cost(unitCode, borrowDay);
 //		borrowBook.setDeductions(cost+overTimeCost);
 		borrowBook.setDeductions(overTimeCost);
 		borrowBook.setOverDays(borrowBookLogic.overDays(borrowBook.getBorrowTime()));
