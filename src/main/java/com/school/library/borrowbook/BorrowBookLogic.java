@@ -352,22 +352,26 @@ public class BorrowBookLogic {
 		List<String> vacationList = RsApi.getDays(1); //假期
 		List<String> workList = RsApi.getDays(2); //补班
 		if(vacationList.contains(returnDate)) { //应还书日正好假期
-			int addDay = 0;
+			int vacationDay = 0;
 			for(String vocation: vacationList) {
 				if(DateKit.toDate(vocation).getTime() >= DateKit.toDate(returnDate).getTime()) { //比还书日日期大的假期，顺延
-					addDay++;
+					vacationDay++;
 				}
 			}
-			borrowDay = borrowDay + addDay;
+			borrowDay = borrowDay - vacationDay;
 		}
 
 		String dayOfWeek = CommonKit.getSimpleDayOfWeek(null, returnDate);
 		if(dayOfWeek.equals("六") && !workList.contains(returnDate) && !workList.contains(tomorrowDate)) { //还书日正好周六并且今明两天不是补班日
-			borrowDay = borrowDay + 2;
+			borrowDay = borrowDay - 2;
 		} else if(dayOfWeek.equals("六") && !workList.contains(returnDate) && workList.contains(tomorrowDate)) { //还书日正好周六并且今天不是补班日，明天是补班日
-			borrowDay = borrowDay + 1;
+			borrowDay = borrowDay - 1;
 		} else if(dayOfWeek.equals("日") && !workList.contains(returnDate)) { //还书日正好周日并且周日不是补班日
-			borrowDay = borrowDay + 1;
+			borrowDay = borrowDay - 1;
+		}
+
+		if(borrowDay < 0) {
+			borrowDay = 0;
 		}
 
 		int money = 0;
@@ -436,22 +440,26 @@ public class BorrowBookLogic {
 				List<String> vacationList = RsApi.getDays(1); //假期
 				List<String> workList = RsApi.getDays(2); //补班
 				if(vacationList.contains(returnDate)) { //应还书日正好假期
-					int addDay = 0;
+					int vacationDay = 0;
 					for(String vocation: vacationList) {
 						if(DateKit.toDate(vocation).getTime() >= DateKit.toDate(returnDate).getTime()) { //比还书日日期大的假期，顺延
-							addDay++;
+							vacationDay++;
 						}
 					}
-					borrowDay = borrowDay + addDay;
+					borrowDay = borrowDay - vacationDay;
 				}
 
 				String dayOfWeek = CommonKit.getSimpleDayOfWeek(null, returnDate);
 				if(dayOfWeek.equals("六") && !workList.contains(returnDate) && !workList.contains(tomorrowDate)) { //还书日正好周六并且今明两天不是补班日
-					borrowDay = borrowDay + 2;
+					borrowDay = borrowDay - 2;
 				} else if(dayOfWeek.equals("六") && !workList.contains(returnDate) && workList.contains(tomorrowDate)) { //还书日正好周六并且今天不是补班日，明天是补班日
-					borrowDay = borrowDay + 1;
+					borrowDay = borrowDay - 1;
 				} else if(dayOfWeek.equals("日") && !workList.contains(returnDate)) { //还书日正好周日并且周日不是补班日
-					borrowDay = borrowDay + 1;
+					borrowDay = borrowDay - 1;
+				}
+
+				if(borrowDay < 0) {
+					borrowDay = 0;
 				}
 
 				int money = 0;
@@ -567,22 +575,26 @@ public class BorrowBookLogic {
 			List<String> vacationList = RsApi.getDays(1); //假期
 			List<String> workList = RsApi.getDays(2); //补班
 			if(vacationList.contains(returnDate)) { //应还书日正好假期
-				int addDay = 0;
+				int vacationDay = 0;
 				for(String vocation: vacationList) {
 					if(DateKit.toDate(vocation).getTime() >= DateKit.toDate(returnDate).getTime()) { //比还书日日期大的假期，顺延
-						addDay++;
+						vacationDay++;
 					}
 				}
-				borrowDay = borrowDay + addDay;
+				borrowDay = borrowDay - vacationDay;
 			}
 
 			String dayOfWeek = CommonKit.getSimpleDayOfWeek(null, returnDate);
 			if(dayOfWeek.equals("六") && !workList.contains(returnDate) && !workList.contains(tomorrowDate)) { //还书日正好周六并且今明两天不是补班日
-				borrowDay = borrowDay + 2;
+				borrowDay = borrowDay - 2;
 			} else if(dayOfWeek.equals("六") && !workList.contains(returnDate) && workList.contains(tomorrowDate)) { //还书日正好周六并且今天不是补班日，明天是补班日
-				borrowDay = borrowDay + 1;
+				borrowDay = borrowDay - 1;
 			} else if(dayOfWeek.equals("日") && !workList.contains(returnDate)) { //还书日正好周日并且周日不是补班日
-				borrowDay = borrowDay + 1;
+				borrowDay = borrowDay - 1;
+			}
+
+			if(borrowDay < 0) {
+				borrowDay = 0;
 			}
 
 			if (borrowDay > borrowDays) { //借书时长跟借书设置中的可借时长比较
