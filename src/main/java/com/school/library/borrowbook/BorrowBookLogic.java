@@ -354,7 +354,7 @@ public class BorrowBookLogic {
 		if(vacationList.contains(returnDate)) { //应还书日正好假期
 			int vacationDay = 0;
 			for(String vocation: vacationList) {
-				if(DateKit.toDate(vocation).getTime() > DateKit.toDate(returnDate).getTime()) { //比还书日日期大的假期，顺延
+				if(DateKit.toDate(vocation).getTime() >= DateKit.toDate(returnDate).getTime()) { //比还书日日期大的假期，顺延
 					vacationDay++;
 				}
 			}
@@ -442,7 +442,7 @@ public class BorrowBookLogic {
 				if(vacationList.contains(returnDate)) { //应还书日正好假期
 					int vacationDay = 0;
 					for(String vocation: vacationList) {
-						if(DateKit.toDate(vocation).getTime() > DateKit.toDate(returnDate).getTime()) { //比还书日日期大的假期，顺延
+						if(DateKit.toDate(vocation).getTime() >= DateKit.toDate(returnDate).getTime()) { //比还书日日期大的假期，顺延
 							vacationDay++;
 						}
 					}
@@ -577,7 +577,7 @@ public class BorrowBookLogic {
 			if(vacationList.contains(returnDate)) { //应还书日正好假期
 				int vacationDay = 0;
 				for(String vocation: vacationList) {
-					if(DateKit.toDate(vocation).getTime() > DateKit.toDate(returnDate).getTime()) { //比还书日日期大的假期，顺延
+					if(DateKit.toDate(vocation).getTime() >= DateKit.toDate(returnDate).getTime()) { //比还书日日期大的假期，顺延
 						vacationDay++;
 					}
 				}
