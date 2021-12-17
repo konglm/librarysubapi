@@ -47,25 +47,23 @@
             <version>4.5</version>
         </dependency>
 
-        <!-- 避免控制台输出如下提示信息：
-             SLF4J: Failed to load class "org.slf4j.impl.StaticLoggerBinder".
-             项目中实际上用不到这个 jar 包，本 jfinal demo 用不上这个依赖，在此仅为大家
-             在未来基于 jfinal demo 为模板做开发时做准备工作
-             注意：eclipse 下可以将 scope 设置为 provided
-             -->
+        <!-- 添加slf4j日志api -->
         <dependency>
             <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-nop</artifactId>
-            <version>1.7.25</version>
-            <!-- 打包前改成 provided，此处使用 compile 仅为支持 IDEA -->
-            <scope>compile</scope>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.20</version>
         </dependency>
-
-        <!-- log4j -->
+        <!-- 添加logback-classic依赖 -->
         <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <version>1.2.16</version>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.2.7</version>
+        </dependency>
+        <!-- 添加logback-core依赖 -->
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-core</artifactId>
+            <version>1.2.7</version>
         </dependency>
 
         <!--sql server-->
@@ -270,6 +268,31 @@
                 <version>2.12.4</version>
                 <configuration>
                     <skip>true</skip>
+                </configuration>
+            </plugin>
+            <!-- war包配置 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>2.6</version>
+                <configuration>
+                    <!--打包时去除*-test.xml、*.txt文件、上传的临时文件-->
+                    <packagingExcludes>
+                        WEB-INF/classes/*-test.xml,
+                        WEB-INF/classes/*.txt,
+                        Admin/**,
+                        upload/temp/**
+                    </packagingExcludes>
+                    <!--打包时添加本地jar-->
+                    <!--<webResources>
+                        <resource>
+                            <directory>lib/</directory>
+                            <targetPath>WEB-INF/lib</targetPath>
+                            <includes>
+                                <include>**/*.jar</include>
+                            </includes>
+                        </resource>
+                    </webResources>-->
                 </configuration>
             </plugin>
         </plugins>
