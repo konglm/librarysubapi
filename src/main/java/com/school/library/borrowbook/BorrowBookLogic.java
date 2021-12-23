@@ -446,16 +446,17 @@ public class BorrowBookLogic {
 							vacationDay++;
 						}
 					}
-					borrowDay = borrowDay - vacationDay + borrowDays;
-				}
-
-				String dayOfWeek = CommonKit.getSimpleDayOfWeek(null, returnDate);
-				if(dayOfWeek.equals("六") && !workList.contains(returnDate) && !workList.contains(tomorrowDate)) { //还书日正好周六并且今明两天不是补班日
-					borrowDay = borrowDay - 2;
-				} else if(dayOfWeek.equals("六") && !workList.contains(returnDate) && workList.contains(tomorrowDate)) { //还书日正好周六并且今天不是补班日，明天是补班日
-					borrowDay = borrowDay - 1;
-				} else if(dayOfWeek.equals("日") && !workList.contains(returnDate)) { //还书日正好周日并且周日不是补班日
-					borrowDay = borrowDay - 1;
+//					borrowDay = borrowDay - vacationDay + borrowDays;
+					borrowDay = borrowDay - vacationDay;
+				} else {
+					String dayOfWeek = CommonKit.getSimpleDayOfWeek(null, returnDate);
+					if (dayOfWeek.equals("六") && !workList.contains(returnDate) && !workList.contains(tomorrowDate)) { //还书日正好周六并且今明两天不是补班日
+						borrowDay = borrowDay - 2;
+					} else if (dayOfWeek.equals("六") && !workList.contains(returnDate) && workList.contains(tomorrowDate)) { //还书日正好周六并且今天不是补班日，明天是补班日
+						borrowDay = borrowDay - 1;
+					} else if (dayOfWeek.equals("日") && !workList.contains(returnDate)) { //还书日正好周日并且周日不是补班日
+						borrowDay = borrowDay - 1;
+					}
 				}
 
 				if(borrowDay < 0) {
