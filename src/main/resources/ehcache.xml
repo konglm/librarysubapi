@@ -3,7 +3,7 @@
 	updateCheck="false" monitoring="autodetect" dynamicConfig="true">
 
     <!-- 指定数据存储位置 -->
-    <diskStore path="java.io.tmpdir/JsySys/ehcache"/>
+    <diskStore path="java.io.tmpdir/JsySys/ehcache/schlibsubapi"/>
 
 	<!-- 默认的管理策略 -->
     <defaultCache maxElementsInMemory="2000"
