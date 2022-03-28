@@ -99,8 +99,10 @@ public class UserInfoLogic {
 			List<UserInfo> updateList = new ArrayList<>();
 			List<UserInfo> deleteList = new ArrayList<>();
 			Db.tx(() -> {
-				for(int i = 0; i < count.length; i++){
-					String clsCodes = clsCodeList.subList(count[i][0], count[i][1]).stream().map(c -> c).collect(Collectors.joining(","));
+				//暂时屏蔽掉按多次取数据，因为调班会出现问题
+//				for(int i = 0; i < count.length; i++){
+//					String clsCodes = clsCodeList.subList(count[i][0], count[i][1]).stream().map(c -> c).collect(Collectors.joining(","));
+					String clsCodes = clsCodeList.stream().map(c -> c).collect(Collectors.joining(","));
 					//人事的学生数据
 					List<Stu> stuList = RsApi.getStuList(clsCodes);
 					//人事数据组装成Map
@@ -191,7 +193,7 @@ public class UserInfoLogic {
 							deleteList.add(u);
 						});
 					});
-				}
+//				}
 				if(!addList.isEmpty()){
 					this.service.batchSave(addList);
 				}
