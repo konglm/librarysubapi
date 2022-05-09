@@ -16,16 +16,19 @@ public class UpgradeService {
         Db.template("UpgradeLogic.upgradeDepositReturn", kv).update();
         Db.template("UpgradeLogic.upgradeUserInfo", kv).update();
         //将毕业班移动到历史表
-        Kv kvHis = Kv.by("schoolCode", schId).set("grdCodes", grdList.stream().filter(grd ->
-                grd.getIsFinish() == 1).map(Grd::getGrdCode).collect(Collectors.joining(",")));
-        Db.template("UpgradeLogic.hisBorrowBook", kvHis).update();
-        Db.template("UpgradeLogic.hisDepositRecharge", kvHis).update();
-        Db.template("UpgradeLogic.hisDepositReturnn", kvHis).update();
-        Db.template("UpgradeLogic.hisUserInfo", kvHis).update();
-        //删除毕业班数据
-        Db.template("UpgradeLogic.delHisBorrowBook", kvHis).update();
-        Db.template("UpgradeLogic.delHisDepositRecharge", kvHis).update();
-        Db.template("UpgradeLogic.delHisDepositReturn", kvHis).update();
-        Db.template("UpgradeLogic.delHisUserInfo", kvHis).update();
+        List<Grd> grdListFinish  = grdList.stream().filter(grd -> grd.getIsFinish() == 1).collect(Collectors.toList());
+        if(grdListFinish.size() > 0) {
+            Kv kvHis = Kv.by("schoolCode", schId).set("grdCodes", grdList.stream().filter(grd ->
+                    grd.getIsFinish() == 1).map(Grd::getGrdCode).collect(Collectors.joining(",")));
+            Db.template("UpgradeLogic.hisBorrowBook", kvHis).update();
+            Db.template("UpgradeLogic.hisDepositRecharge", kvHis).update();
+            Db.template("UpgradeLogic.hisDepositReturnn", kvHis).update();
+            Db.template("UpgradeLogic.hisUserInfo", kvHis).update();
+            //删除毕业班数据
+            Db.template("UpgradeLogic.delHisBorrowBook", kvHis).update();
+            Db.template("UpgradeLogic.delHisDepositRecharge", kvHis).update();
+            Db.template("UpgradeLogic.delHisDepositReturn", kvHis).update();
+            Db.template("UpgradeLogic.delHisUserInfo", kvHis).update();
+        }
     }
 }
