@@ -127,7 +127,8 @@ public class JFniceMainConfig extends JFinalConfig {
         // 配置ActiveRecord插件
         ActiveRecordPlugin arp = new ActiveRecordPlugin(druidPlugin);
         arp.setTransactionLevel(Connection.TRANSACTION_READ_COMMITTED);
-        arp.setShowSql(Start.showSql);
+//        arp.setShowSql(Start.showSql);
+        arp.setShowSql(false);
         arp.setDialect(new SqlServerDialect());
         // 所有映射在 MappingKit 中自动化搞定
         _MappingKit.mapping(arp);
